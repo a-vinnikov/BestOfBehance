@@ -20,7 +20,6 @@ import com.example.bestofbehance.viewModels.*
 class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener{
 
     lateinit var jsonModel: ParseInVM
-    lateinit var model: CurrentPosition
 
     val VIEW_MODE_LISTVIEW = 0
     val VIEW_MODE_GRIDVIEW = 1
@@ -79,7 +78,6 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener{
         super.onViewCreated(view, savedInstanceState)
         swipe.setOnRefreshListener(this)
         jsonModel = ViewModelProviders.of(this, ViewModelFactory()).get(ParseInVM::class.java)
-        //model = ViewModelProviders.of(this).get(CurrentPosition::class.java)
 
         sharedCurrentViewMode()
         if (recycler_view.adapter == null) {
@@ -96,7 +94,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener{
 
 
         if (jsonModel.recList.value == null || swipe.isRefreshing) {
-            jsonModel.getGeneral()
+            jsonModel.setGeneral()
         }
 
         val observerGSON = Observer<MutableList<CardBinding>> {
@@ -106,14 +104,14 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener{
                         sharedPosition(position)
                     }
                     override fun onItemClick(item: CardBinding) {
-                        NaviController(activity).toDetails() } })
+                        NaviController(activity).toDetails(item) } })
             } else {
                 recycler_view.adapter = AdapterViewHolder(it!!, 1, object : InClick {
                     override fun setPosition(position: Int) {
                         sharedPosition(position)
                     }
                     override fun onItemClick(item: CardBinding) {
-                        NaviController(activity).toDetails() } })
+                        NaviController(activity).toDetails(item) } })
             }
         }
         jsonModel.recList.observe(this, observerGSON)

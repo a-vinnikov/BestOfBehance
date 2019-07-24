@@ -1,20 +1,18 @@
 package com.example.bestofbehance.layout
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.view.*
+import androidx.navigation.fragment.navArgs
 import com.example.bestofbehance.R
-import com.example.bestofbehance.viewModels.ParseInVM
-import com.example.bestofbehance.viewModels.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_details.*
 
 
 class DetailsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
-    lateinit var jsonModel: ParseInVM
+    private val args: DetailsFragmentArgs by navArgs()
     var position = 0
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -42,18 +40,11 @@ class DetailsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        jsonModel = ViewModelProviders.of(this, ViewModelFactory()).get(ParseInVM::class.java)
-
         val sharedPreference = activity?.getSharedPreferences("ViewMode", AppCompatActivity.MODE_PRIVATE)
         position = sharedPreference!!.getInt("position", position)
         list_name1.text = position.toString()
 
-        list_post1.text = jsonModel.getGeneral().value?.get(position)?.post.toString()
+        list_post1.text = args.cardBindingArg.id
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-        //textDetails.text = "123"
     }
 }

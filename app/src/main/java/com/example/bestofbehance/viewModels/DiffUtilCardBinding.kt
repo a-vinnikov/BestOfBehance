@@ -17,7 +17,7 @@ class DiffUtilCardBinding(private val oldList: MutableList<CardBinding>, private
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldData = oldList[oldItemPosition]
         val newData = newList[newItemPosition]
-        return oldData.Id === newData.Id
+        return oldData.id === newData.id
 }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {

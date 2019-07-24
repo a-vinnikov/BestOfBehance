@@ -1,10 +1,11 @@
 package com.example.bestofbehance.viewModels
 
+import android.os.Bundle
 import android.support.v4.app.FragmentActivity
-import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.example.bestofbehance.R
-import java.nio.file.Files.find
+import com.example.bestofbehance.gson.CardBinding
+import com.example.bestofbehance.layout.BestDirections
 
 
 class NaviController(internal val activity: FragmentActivity?) {
@@ -13,7 +14,7 @@ class NaviController(internal val activity: FragmentActivity?) {
 
     val controller = Navigation.findNavController(activity!!, R.id.fr)
 
-    fun toDetails() {
-        controller.navigate(R.id.details)
+    fun toDetails(item: CardBinding) {
+        controller.navigate(BestDirections.actionBestToDetails(item))
     }
 }

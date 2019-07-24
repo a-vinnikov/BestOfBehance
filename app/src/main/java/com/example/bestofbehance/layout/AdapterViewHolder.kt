@@ -11,10 +11,7 @@ import com.example.bestofbehance.R
 import kotlinx.android.synthetic.main.list_item.view.*
 import com.example.bestofbehance.gson.CardBinding
 import com.example.bestofbehance.databinding.ListItemBinding
-import com.example.bestofbehance.viewModels.CurrentPosition
 import com.example.bestofbehance.viewModels.InClick
-import com.squareup.picasso.Picasso
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -63,9 +60,12 @@ class AdapterViewHolder(private val list: MutableList<CardBinding>, val ViewMode
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(Api: CardBinding) {
-            Picasso.with(itemView.bigImageView.context).load(Api.bigImage).fit().centerCrop().transform(RoundedCornersTransformation(15, 0)).into(itemView.bigImageView)
-            Picasso.with(itemView.avatarView.context).load(Api.avatar).fit().centerCrop().into(itemView.avatarView)
+            //Picasso.with(itemView.bigImageView.context).load(Api.bigImage).fit().centerCrop().transform(RoundedCornersTransformation(15, 0)).into(itemView.bigImageView)
+            //Picasso.with(itemView.avatarView.context).load(Api.avatar).fit().centerCrop().into(itemView.avatarView)
             binding.cardView = Api
+            CardBinding().setImageUrl(binding.bigImageView, Api.bigImage.toString())
+            CardBinding().setImageUrl(binding.avatarView, Api.avatar.toString())
+
 
         }
 

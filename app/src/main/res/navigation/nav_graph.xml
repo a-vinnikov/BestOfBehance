@@ -25,6 +25,11 @@
               android:label="Project"
               tools:layout="@layout/fragment_details">
         <action android:id="@+id/action_details_to_profile" app:destination="@id/profile"/>
+
+        <argument
+                android:name="cardBindingArg"
+                app:argType="com.example.bestofbehance.gson.CardBinding" />
+
     </fragment>
     <fragment android:id="@+id/profile"
               android:name="com.example.bestofbehance.layout.ProfileFragment"

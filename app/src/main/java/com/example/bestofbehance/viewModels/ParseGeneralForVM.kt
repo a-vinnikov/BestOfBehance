@@ -1,6 +1,5 @@
 package com.example.bestofbehance.viewModels
 
-import android.arch.lifecycle.MutableLiveData
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.VolleyLog
@@ -12,11 +11,11 @@ import org.json.JSONObject
 
 class ParseGeneralForVM {
 
-    private val _recList: MutableList<CardBinding> = mutableListOf()
+    private val recList: MutableList<CardBinding> = mutableListOf()
     private val getMostAppreciations = "projects?sort=appreciations&"
     private val apiKey = "0QmPh684DRz1SpWHDikkyFCzLShGiHPi"
 
-    fun parseGeneral(recList: MutableLiveData<MutableList<CardBinding>>): MutableLiveData<MutableList<CardBinding>> {
+    fun parseGeneral(myCallBack: (result: MutableList<CardBinding>) -> Unit){
         val url = "https://api.behance.net/v2/${getMostAppreciations}api_key=$apiKey"
         val request = JsonObjectRequest(Request.Method.GET, url, null,
             Response.Listener<JSONObject> { responce ->
@@ -33,11 +32,12 @@ class ParseGeneralForVM {
                     val Posts = responce_gson.projects?.get(i)?.fields?.get(0)
                     val Id = responce_gson.projects?.get(i)?.id
 
-                    //mAPIList.add(APIList(Arts, Avatars, Names, Posts, Views, Appreciations, Comments, Id))
-                    _recList.add(CardBinding(Arts, Avatars, Names, Posts, Views.toString(), Appreciations.toString(), Comments.toString(), Id.toString()))
+                    //mAPIList.add(APIList(Arts, Avatars, Names, Posts, Views, Appreciations, Comments, id))
+                    recList.add(CardBinding(Arts, Avatars, Names, Posts, Views.toString(), Appreciations.toString(), Comments.toString(), Id.toString()))
                     i + 1
                 }
-                recList.postValue(_recList)
+                //callback recList
+                myCallBack.invoke(recList)
 
             }, Response.ErrorListener {
                 VolleyLog.e(VolleyLog.TAG, "ERROR")
@@ -45,7 +45,5 @@ class ParseGeneralForVM {
         )
         VolleySingleton.requestQueue.add(request)
         VolleySingleton.requestQueue.start()
-
-        return recList
     }
 }
