@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph" app:startDestination="@id/best">
+    <fragment android:id="@+id/best"
+              android:name="com.example.bestofbehance.layout.Best"
+              android:label="@string/best_title"
+              tools:layout="@layout/fragment_best">
+        <action android:id="@+id/action_best_to_details" app:destination="@id/details"/>
+    </fragment>
+    <fragment android:id="@+id/people"
+              android:name="com.example.bestofbehance.layout.PeopleFragment"
+              android:label="@string/people_title"
+              tools:layout="@layout/fragment_people">
+        <action android:id="@+id/action_people_to_profile" app:destination="@id/profile"/>
+    </fragment>
+    <fragment android:id="@+id/projects"
+              android:name="com.example.bestofbehance.layout.ProjectsFragment"
+              android:label="@string/projects_title"
+              tools:layout="@layout/fragment_projects">
+        <action android:id="@+id/action_projects_to_details" app:destination="@id/details"/>
+    </fragment>
+    <fragment android:id="@+id/details"
+              android:name="com.example.bestofbehance.layout.DetailsFragment"
+              android:label="Project"
+              tools:layout="@layout/fragment_details">
+        <action android:id="@+id/action_details_to_profile" app:destination="@id/profile"/>
+    </fragment>
+    <fragment android:id="@+id/profile"
+              android:name="com.example.bestofbehance.layout.ProfileFragment"
+              android:label="Profile"
+              tools:layout="@layout/fragment_profile">
+        <action android:id="@+id/action_profile_to_details" app:destination="@id/details"/>
+    </fragment>
+</navigation>
