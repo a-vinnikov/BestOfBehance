@@ -63,10 +63,8 @@ class AdapterViewHolder(private val list: MutableList<CardBinding>, val ViewMode
             //Picasso.with(itemView.bigImageView.context).load(Api.bigImage).fit().centerCrop().transform(RoundedCornersTransformation(15, 0)).into(itemView.bigImageView)
             //Picasso.with(itemView.avatarView.context).load(Api.avatar).fit().centerCrop().into(itemView.avatarView)
             binding.cardView = Api
-            CardBinding().setImageUrl(binding.bigImageView, Api.bigImage.toString())
-            CardBinding().setImageUrl(binding.avatarView, Api.avatar.toString())
-
-
+            CardBinding().setImageUrl(binding.bigImageView, Api.bigImage.toString(), "rounded")
+            CardBinding().setImageUrl(binding.avatarView, Api.avatar.toString(), "rounded")
         }
 
         fun decimal(number: String): String {

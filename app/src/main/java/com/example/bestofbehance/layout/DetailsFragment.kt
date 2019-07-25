@@ -1,5 +1,6 @@
 package com.example.bestofbehance.layout
 
+import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
@@ -7,6 +8,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.*
 import androidx.navigation.fragment.navArgs
 import com.example.bestofbehance.R
+import com.example.bestofbehance.databinding.FragmentDetailsBinding
+import com.example.bestofbehance.gson.CardBinding
 import kotlinx.android.synthetic.main.fragment_details.*
 
 
@@ -31,10 +34,18 @@ class DetailsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         retainInstance = true
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_details, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        val binding : FragmentDetailsBinding = DataBindingUtil.inflate(inflater ,R.layout.fragment_details,container , false)
+        val fragmentDetailsView : View  = binding.root
+
+        // setting values to model
+        val argsBinding = args.cardBindingArg
+        binding.cardView = argsBinding
+        CardBinding().setImageUrl(binding.bigImageView1, args.cardBindingArg.bigImage.toString(), "not rounded")
+        CardBinding().setImageUrl(binding.avatarView1, args.cardBindingArg.avatar.toString(), "not rounded")
+
+        return fragmentDetailsView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,7 +55,6 @@ class DetailsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         position = sharedPreference!!.getInt("position", position)
         list_name1.text = position.toString()
 
-        list_post1.text = args.cardBindingArg.id
-
+        //list_post1.text = args.cardBindingArg.id
     }
 }

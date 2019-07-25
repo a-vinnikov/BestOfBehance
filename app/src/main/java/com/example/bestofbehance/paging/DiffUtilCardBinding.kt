@@ -1,4 +1,4 @@
-package com.example.bestofbehance.viewModels
+package com.example.bestofbehance.paging
 
 import android.support.v7.util.DiffUtil
 import com.example.bestofbehance.gson.CardBinding

@@ -23,10 +23,15 @@ data class CardBinding(
     var comments: String? = "0",
     var id: String? = null
 
-): Serializable {
+) : Serializable {
     @BindingAdapter("loadingImage")
-    fun setImageUrl(view: ImageView, url: String) {
-        Glide.with(view.context).load(url).apply(bitmapTransform(RoundedCornersTransformation(15, 0))).into(view)
+    fun setImageUrl(view: ImageView, url: String, rounded: String) {
+        if (rounded == "rounded") {
+            Glide.with(view.context).load(url).apply(bitmapTransform(RoundedCornersTransformation(15, 0))).into(view)
+        } else if (rounded == "not rounded") {
+            Glide.with(view.context).load(url).into(view)
+        }
+
     }
 }
 
