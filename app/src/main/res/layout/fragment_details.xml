@@ -9,7 +9,7 @@
         <variable name="cardView" type="com.example.bestofbehance.gson.CardBinding"/>
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constLayout1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -83,7 +83,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/line1"
                 app:layout_constraintEnd_toStartOf="@id/view_text1"
-                app:layout_constraintBottom_toTopOf="@id/bigImageView1"/>
+                app:layout_constraintBottom_toTopOf="@id/bigImageView1"
+                tools:ignore="ContentDescription"/>
 
         <TextView
                 android:id="@+id/view_text1"
@@ -109,7 +110,8 @@
                 app:layout_constraintStart_toEndOf="@id/view_text1"
                 app:layout_constraintTop_toBottomOf="@id/line1"
                 app:layout_constraintEnd_toStartOf="@id/appreciation_text1"
-                app:layout_constraintBottom_toTopOf="@id/bigImageView1"/>
+                app:layout_constraintBottom_toTopOf="@id/bigImageView1"
+                tools:ignore="ContentDescription"/>
 
         <TextView
                 android:id="@+id/appreciation_text1"
@@ -135,7 +137,8 @@
                 app:layout_constraintStart_toEndOf="@id/appreciation_text1"
                 app:layout_constraintTop_toBottomOf="@id/line1"
                 app:layout_constraintEnd_toStartOf="@id/comments_text1"
-                app:layout_constraintBottom_toTopOf="@id/bigImageView1"/>
+                app:layout_constraintBottom_toTopOf="@id/bigImageView1"
+                tools:ignore="ContentDescription"/>
 
         <TextView
                 android:id="@+id/comments_text1"
@@ -162,5 +165,5 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/bigImageView1"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

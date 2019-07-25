@@ -1,6 +1,6 @@
 package com.example.bestofbehance.viewModels
 
-import android.arch.lifecycle.*
+import androidx.lifecycle.*
 import com.example.bestofbehance.gson.CardBinding
 
 class ParseInVM: ViewModel() {

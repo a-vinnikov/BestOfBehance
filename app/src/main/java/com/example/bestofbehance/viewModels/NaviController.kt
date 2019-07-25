@@ -1,7 +1,7 @@
 package com.example.bestofbehance.viewModels
 
 import android.os.Bundle
-import android.support.v4.app.FragmentActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.Navigation
 import com.example.bestofbehance.R
 import com.example.bestofbehance.gson.CardBinding

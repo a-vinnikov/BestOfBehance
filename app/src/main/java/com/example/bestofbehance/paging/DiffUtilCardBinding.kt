@@ -1,6 +1,6 @@
 package com.example.bestofbehance.paging
 
-import android.support.v7.util.DiffUtil
+import androidx.recyclerview.widget.DiffUtil
 import com.example.bestofbehance.gson.CardBinding
 
 

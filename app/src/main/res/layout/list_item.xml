@@ -9,7 +9,7 @@
         <variable name="imageUrl" type="String"/>
     </data>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
             android:id="@+id/cardview"
             android:layout_width="match_parent"
             android:layout_height="400dp"
@@ -21,7 +21,7 @@
             app:cardElevation="4dp"
             app:cardCornerRadius="6dp">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -37,7 +37,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/avatarView"/>
+                    app:layout_constraintBottom_toTopOf="@id/avatarView"
+                    tools:ignore="ContentDescription"/>
 
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -95,7 +96,8 @@
                     app:layout_constraintTop_toBottomOf="@id/line"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/view_text"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:ignore="ContentDescription"/>
 
             <TextView
                     android:id="@+id/view_text"
@@ -122,7 +124,8 @@
                     app:layout_constraintStart_toEndOf="@+id/view_text"
                     app:layout_constraintEnd_toStartOf="@+id/appreciation_text"
                     app:layout_constraintTop_toBottomOf="@id/line"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:ignore="ContentDescription"/>
 
             <TextView
                     android:id="@+id/appreciation_text"
@@ -148,7 +151,8 @@
                     app:layout_constraintStart_toEndOf="@+id/appreciation_text"
                     app:layout_constraintEnd_toStartOf="@+id/comments_text"
                     app:layout_constraintTop_toBottomOf="@id/line"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:ignore="ContentDescription"/>
 
             <TextView
                     android:id="@+id/comments_text"
@@ -161,7 +165,7 @@
                     app:layout_constraintTop_toBottomOf="@id/line"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ToggleButton
                 android:id="@+id/bookmark"
@@ -175,6 +179,6 @@
                 style="@style/toggleButton"
                 android:background="@drawable/toggle_bg"/>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 </layout>
