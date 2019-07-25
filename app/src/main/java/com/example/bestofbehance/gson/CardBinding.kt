@@ -1,13 +1,8 @@
 package com.example.bestofbehance.gson
 
 import androidx.databinding.BindingAdapter
-import android.graphics.Bitmap
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
-import com.bumptech.glide.load.Transformation
-import com.bumptech.glide.load.resource.bitmap.FitCenter
-import com.bumptech.glide.request.RequestOptions
 import java.io.Serializable
 
 import com.bumptech.glide.request.RequestOptions.bitmapTransform

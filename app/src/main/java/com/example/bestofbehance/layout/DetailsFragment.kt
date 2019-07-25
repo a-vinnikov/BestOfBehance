@@ -10,6 +10,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.bestofbehance.R
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
 import com.example.bestofbehance.gson.CardBinding
+import com.example.bestofbehance.viewModels.ParseForVM
 import kotlinx.android.synthetic.main.fragment_details.*
 
 
@@ -36,8 +37,9 @@ class DetailsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        val binding : FragmentDetailsBinding = DataBindingUtil.inflate(inflater ,R.layout.fragment_details,container , false)
-        val fragmentDetailsView : View  = binding.root
+        val binding: FragmentDetailsBinding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_details, container, false)
+        val fragmentDetailsView: View = binding.root
 
         // setting values to model
         val argsBinding = args.cardBindingArg
@@ -54,6 +56,11 @@ class DetailsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         val sharedPreference = activity?.getSharedPreferences("ViewMode", AppCompatActivity.MODE_PRIVATE)
         position = sharedPreference!!.getInt("position", position)
         list_name1.text = position.toString()
+
+        ParseForVM().parseDescription(args.cardBindingArg.id!!.toInt()) { result ->
+            if (result == "") description.text = "No description"
+            else description.text = result
+        }
 
         //list_post1.text = args.cardBindingArg.id
     }

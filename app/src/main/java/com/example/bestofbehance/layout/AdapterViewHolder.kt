@@ -1,12 +1,12 @@
 package com.example.bestofbehance.layout
 
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.bestofbehance.R
 import kotlinx.android.synthetic.main.list_item.view.*
 import com.example.bestofbehance.gson.CardBinding
@@ -20,6 +20,13 @@ class AdapterViewHolder(private val list: MutableList<CardBinding>, val ViewMode
     RecyclerView.Adapter<AdapterViewHolder.ViewHolder>() {
 
     lateinit var context: Context
+
+    fun addData(list: MutableList<CardBinding>) {
+        val size = list.size
+        list.addAll(list)
+        val sizeNew = list.size
+        notifyItemRangeChanged(size, sizeNew)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -42,6 +49,10 @@ class AdapterViewHolder(private val list: MutableList<CardBinding>, val ViewMode
             holder.itemView.bigImageView.layoutParams.height = floatResources.toInt()
         }
 
+        if(holder.adapterPosition == list.size-1){
+            Toast.makeText(context, "End", Toast.LENGTH_SHORT).show()
+        }
+
         val copyList = list[holder.adapterPosition].copy()
         if (ViewMode == 1) {
             copyList.views = holder.decimal(copyList.views.toString())
@@ -60,8 +71,6 @@ class AdapterViewHolder(private val list: MutableList<CardBinding>, val ViewMode
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(Api: CardBinding) {
-            //Picasso.with(itemView.bigImageView.context).load(Api.bigImage).fit().centerCrop().transform(RoundedCornersTransformation(15, 0)).into(itemView.bigImageView)
-            //Picasso.with(itemView.avatarView.context).load(Api.avatar).fit().centerCrop().into(itemView.avatarView)
             binding.cardView = Api
             CardBinding().setImageUrl(binding.bigImageView, Api.bigImage.toString(), "rounded")
             CardBinding().setImageUrl(binding.avatarView, Api.avatar.toString(), "rounded")

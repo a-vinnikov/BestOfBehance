@@ -13,7 +13,6 @@ import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuInflater
 import com.example.bestofbehance.gson.CardBinding
-import com.example.bestofbehance.R
 import com.example.bestofbehance.viewModels.*
 
 
@@ -25,14 +24,18 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener{
     val VIEW_MODE_GRIDVIEW = 1
     var currentViewMode = 0
     var position = 0
+    private val PAGE_START = 1
+    private val CURRENT_PAGE = PAGE_START
+    private var isLoading = false
+    private val isLastPage = false
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.one_button_toolbar, menu)
+        inflater.inflate(com.example.bestofbehance.R.menu.one_button_toolbar, menu)
         if (currentViewMode == 0) {
-            menu.findItem(R.id.menu_switcher)?.setIcon(R.drawable.list)
+            menu.findItem(com.example.bestofbehance.R.id.menu_switcher)?.setIcon(com.example.bestofbehance.R.drawable.list)
         } else {
-            menu.findItem(R.id.menu_switcher)?.setIcon(R.drawable.tile)
+            menu.findItem(com.example.bestofbehance.R.id.menu_switcher)?.setIcon(com.example.bestofbehance.R.drawable.tile)
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -41,14 +44,14 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener{
         sharedCurrentViewMode()
         val editor = activity?.getSharedPreferences("ViewMode", AppCompatActivity.MODE_PRIVATE)?.edit()
         when (item.itemId) {
-            R.id.menu_switcher -> {
+            com.example.bestofbehance.R.id.menu_switcher -> {
                 if (currentViewMode == 1) {
-                    item.setIcon(R.drawable.list)
+                    item.setIcon(com.example.bestofbehance.R.drawable.list)
                     createRecyclerView(VIEW_MODE_LISTVIEW)
                     editor?.putInt("currentViewMode", VIEW_MODE_LISTVIEW)
                     editor?.apply()
                 } else {
-                    item.setIcon(R.drawable.tile)
+                    item.setIcon(com.example.bestofbehance.R.drawable.tile)
                     createRecyclerView(VIEW_MODE_GRIDVIEW)
                     editor?.putInt("currentViewMode", VIEW_MODE_GRIDVIEW)
                     editor?.apply()
@@ -71,7 +74,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener{
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_best, container, false)
+        return inflater.inflate(com.example.bestofbehance.R.layout.fragment_best, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -83,16 +86,38 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener{
         if (recycler_view.adapter == null) {
             createRecyclerView(currentViewMode)
         }
+
+
+        /*recycler_view.addOnScrollListener(object : PaginationScrollListener(LinearLayoutManager(activity)) {
+            override fun isLastPage(): Boolean {
+                return isLastPage
+            }
+
+            override fun isLoading(): Boolean {
+                return isLoading
+            }
+
+            override fun loadMoreItems() {
+                isLoading = true
+                getMoreItems()
+            }
+        })*/
+
     }
+
+    /*fun getMoreItems() {
+        isLoading = false
+        jsonModel.setGeneral()
+        recycler_view.adapter.addData(list)
+    }*/
+
 
     override fun onResume() {
         super.onResume()
-        activity?.navigation?.menu?.findItem(R.id.best)?.isChecked = true
+        activity?.navigation?.menu?.findItem(com.example.bestofbehance.R.id.best)?.isChecked = true
     }
 
     fun createRecyclerView(currentViewMode: Int) {
-
-
         if (jsonModel.recList.value == null || swipe.isRefreshing) {
             jsonModel.setGeneral()
         }

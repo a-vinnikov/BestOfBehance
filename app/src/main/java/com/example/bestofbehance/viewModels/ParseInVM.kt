@@ -8,7 +8,7 @@ class ParseInVM: ViewModel() {
     val recList: MutableLiveData<MutableList<CardBinding>> by lazy { MutableLiveData<MutableList<CardBinding>>() }
 
     fun setGeneral(){
-        ParseGeneralForVM().parseGeneral{ result -> recList.postValue(result) }
+        ParseForVM().parseGeneral{ result -> recList.postValue(result)}
     }
 
 

@@ -37,6 +37,14 @@
                 app:layout_constraintTop_toBottomOf="@id/view_image1"
                 tools:ignore="ContentDescription"/>
 
+        <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/bigImageView1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
 
         <TextView
                 android:id="@+id/list_name1"
