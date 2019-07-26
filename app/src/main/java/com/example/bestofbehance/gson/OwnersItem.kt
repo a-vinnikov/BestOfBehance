@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class OwnersItem(
 
-	@field:SerializedName("images")
-	val images: Images? = null,
+	@field:SerializedName("imagesGeneral")
+	val imagesGeneral: ImagesGeneral? = null,
 
 	@field:SerializedName("display_name")
 	val displayName: String? = null,

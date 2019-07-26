@@ -7,11 +7,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.appcompat.app.AppCompatActivity
 import android.view.*
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.R
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
 import com.example.bestofbehance.gson.CardBinding
 import com.example.bestofbehance.viewModels.ParseForVM
+import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.fragment_details.*
+import kotlinx.android.synthetic.main.list_details.*
 
 
 class DetailsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
@@ -42,10 +45,11 @@ class DetailsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         val fragmentDetailsView: View = binding.root
 
         // setting values to model
-        val argsBinding = args.cardBindingArg
+        /*val argsBinding = args.cardBindingArg
         binding.cardView = argsBinding
         CardBinding().setImageUrl(binding.bigImageView1, args.cardBindingArg.bigImage.toString(), "not rounded")
-        CardBinding().setImageUrl(binding.avatarView1, args.cardBindingArg.avatar.toString(), "not rounded")
+        CardBinding().setImageUrl(binding.avatarView1, args.cardBindingArg.avatar.toString(), "not rounded")*/
+
 
         return fragmentDetailsView
     }
@@ -53,7 +57,20 @@ class DetailsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sharedPreference = activity?.getSharedPreferences("ViewMode", AppCompatActivity.MODE_PRIVATE)
+        val asd: MutableList<Ilist> = mutableListOf()
+
+        asd.add(0, Ilist.GeneralList(args.cardBindingArg))
+
+        val wadd: MutableList<Ilist> = mutableListOf()
+        ParseForVM().parseComments(args.cardBindingArg.id!!.toInt()) { result ->
+
+            for (i in 1 until result.size) {
+                asd.add(i, Ilist.CommentsList(result[i]))
+            }
+            recycler_view1.adapter = AdapterGeneralComments(asd)
+            recycler_view1.layoutManager = LinearLayoutManager(activity)
+        }
+        /*val sharedPreference = activity?.getSharedPreferences("ViewMode", AppCompatActivity.MODE_PRIVATE)
         position = sharedPreference!!.getInt("position", position)
         list_name1.text = position.toString()
 
@@ -61,7 +78,7 @@ class DetailsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             if (result == "") description.text = "No description"
             else description.text = result
         }
-
+*/
         //list_post1.text = args.cardBindingArg.id
     }
 }
