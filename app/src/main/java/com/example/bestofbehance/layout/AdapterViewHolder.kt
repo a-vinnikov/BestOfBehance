@@ -21,13 +21,6 @@ class AdapterViewHolder(private val list: MutableList<CardBinding>, val ViewMode
 
     lateinit var context: Context
 
-    fun addData(list: MutableList<CardBinding>) {
-        val size = list.size
-        list.addAll(list)
-        val sizeNew = list.size
-        notifyItemRangeChanged(size, sizeNew)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ListItemBinding.inflate(inflater)
@@ -49,7 +42,7 @@ class AdapterViewHolder(private val list: MutableList<CardBinding>, val ViewMode
             holder.itemView.bigImageView.layoutParams.height = floatResources.toInt()
         }
 
-        if(holder.adapterPosition == list.size-1){
+        if(holder.adapterPosition == list.size){
             Toast.makeText(context, "End", Toast.LENGTH_SHORT).show()
         }
 
@@ -72,8 +65,8 @@ class AdapterViewHolder(private val list: MutableList<CardBinding>, val ViewMode
 
         fun bind(Api: CardBinding) {
             binding.cardView = Api
-            CardBinding().setImageUrl(binding.bigImageView, Api.bigImage.toString(), "rounded")
-            CardBinding().setImageUrl(binding.avatarView, Api.avatar.toString(), "rounded")
+            CardBinding().setImageUrl(binding.bigImageView, Api.bigImage.toString(), itemView.context.resources.getString(R.string.rounded))
+            CardBinding().setImageUrl(binding.avatarView, Api.avatar.toString(), itemView.context.resources.getString(R.string.rounded))
         }
 
         fun decimal(number: String): String {

@@ -22,7 +22,7 @@ data class CardBinding(
     @BindingAdapter("loadingImage")
     fun setImageUrl(view: ImageView, url: String, rounded: String) {
         if (rounded == "rounded") {
-            Glide.with(view.context).load(url).apply(bitmapTransform(RoundedCornersTransformation(15, 0))).into(view)
+            Glide.with(view.context).load(url).apply(bitmapTransform(RoundedCornersTransformation(50, 0))).into(view)
         } else if (rounded == "not rounded") {
             Glide.with(view.context).load(url).into(view)
         }

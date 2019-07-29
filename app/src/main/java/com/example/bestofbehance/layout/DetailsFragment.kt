@@ -4,15 +4,12 @@ import androidx.databinding.DataBindingUtil
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.appcompat.app.AppCompatActivity
 import android.view.*
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.R
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
-import com.example.bestofbehance.gson.CardBinding
 import com.example.bestofbehance.viewModels.ParseForVM
-import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.fragment_details.*
 import kotlinx.android.synthetic.main.list_details.*
 
@@ -57,27 +54,23 @@ class DetailsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val asd: MutableList<Ilist> = mutableListOf()
+        val listForIlisit: MutableList<Ilist> = mutableListOf()
 
-        asd.add(0, Ilist.GeneralList(args.cardBindingArg))
+        //listForIlisit.add(0, Ilist.GeneralList(args.cardBindingArg))
 
-        val wadd: MutableList<Ilist> = mutableListOf()
-        ParseForVM().parseComments(args.cardBindingArg.id!!.toInt()) { result ->
+        /*ParseForVM().parseComments(args.cardBindingArg.id!!.toInt()) { result ->
 
             for (i in 1 until result.size) {
-                asd.add(i, Ilist.CommentsList(result[i]))
+                listForIlisit.add(i, Ilist.CommentsList(result[i]))
             }
-            recycler_view1.adapter = AdapterGeneralComments(asd)
+            recycler_view1.adapter = AdapterGeneralComments(listForIlisit)
             recycler_view1.layoutManager = LinearLayoutManager(activity)
-        }
+        }*/
         /*val sharedPreference = activity?.getSharedPreferences("ViewMode", AppCompatActivity.MODE_PRIVATE)
         position = sharedPreference!!.getInt("position", position)
         list_name1.text = position.toString()
 
-        ParseForVM().parseDescription(args.cardBindingArg.id!!.toInt()) { result ->
-            if (result == "") description.text = "No description"
-            else description.text = result
-        }
+
 */
         //list_post1.text = args.cardBindingArg.id
     }

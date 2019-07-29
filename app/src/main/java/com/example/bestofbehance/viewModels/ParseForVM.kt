@@ -25,7 +25,7 @@ class ParseForVM {
 
                     val Arts = responce_gson.projects?.get(i)?.covers?.original
                     val Names = responce_gson.projects?.get(i)?.owners?.get(0)?.displayName
-                    val Avatars = responce_gson.projects?.get(i)?.owners?.get(0)?.imagesGeneral?.jsonMember138
+                    val Avatars = responce_gson.projects?.get(i)?.owners?.get(0)?.images?.jsonMember138
                     val Appreciations = responce_gson.projects?.get(i)?.stats?.appreciations
                     val Views = responce_gson.projects?.get(i)?.stats?.views
                     val Comments = responce_gson.projects?.get(i)?.stats?.comments

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class User(
 
-	@field:SerializedName("imagesGeneral")
+	@field:SerializedName("images")
 	val images: Images? = null,
 
 	@field:SerializedName("display_name")
