@@ -65,8 +65,8 @@ class AdapterViewHolder(private val list: MutableList<CardBinding>, val ViewMode
 
         fun bind(Api: CardBinding) {
             binding.cardView = Api
-            CardBinding().setImageUrl(binding.bigImageView, Api.bigImage.toString(), itemView.context.resources.getString(R.string.rounded))
-            CardBinding().setImageUrl(binding.avatarView, Api.avatar.toString(), itemView.context.resources.getString(R.string.rounded))
+            CardBinding().setRoundedImageUrl(binding.bigImageView, Api.bigImage.toString())
+            CardBinding().setRoundedImageUrl(binding.avatarView, Api.avatar.toString())
         }
 
         fun decimal(number: String): String {

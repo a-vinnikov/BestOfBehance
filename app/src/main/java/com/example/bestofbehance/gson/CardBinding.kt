@@ -20,14 +20,14 @@ data class CardBinding(
 
 ) : Serializable {
     @BindingAdapter("loadingImage")
-    fun setImageUrl(view: ImageView, url: String, rounded: String) {
-        if (rounded == "rounded") {
-            Glide.with(view.context).load(url).apply(bitmapTransform(RoundedCornersTransformation(50, 0))).into(view)
-        } else if (rounded == "not rounded") {
+    fun setImageUrl(view: ImageView, url: String) {
             Glide.with(view.context).load(url).into(view)
-        }
-
     }
+    @BindingAdapter("loadingRoundedImage")
+    fun setRoundedImageUrl(view: ImageView, url: String) {
+            Glide.with(view.context).load(url).apply(bitmapTransform(RoundedCornersTransformation(50, 0))).into(view)
+    }
+
 }
 
 //.apply( RequestOptions().circleCrop())

@@ -11,8 +11,8 @@ import org.json.JSONObject
 class ParseForVM {
 
     private val recList: MutableList<CardBinding> = mutableListOf()
+    private val imageList: MutableList<ImageBinding> = mutableListOf()
     private val comList: MutableList<CommentsBinding> = mutableListOf()
-    private var description: String? = ""
     private val apiKey = "0QmPh684DRz1SpWHDikkyFCzLShGiHPi"
 
     fun parseGeneral(myCallBack: (result: MutableList<CardBinding>) -> Unit){
@@ -47,16 +47,27 @@ class ParseForVM {
         VolleySingleton.requestQueue.start()
     }
 
-    fun parseDescription(projectId: Int, myCallBack: (result: String?) -> Unit){
+    fun parseProject(projectId: Int, myCallBack: (result: MutableList<ImageBinding>) -> Unit){
         val url = "https://www.behance.net/v2/projects/$projectId?api_key=$apiKey"
         val request = JsonObjectRequest(Request.Method.GET, url, null,
             Response.Listener<JSONObject> { responce ->
-                val responce_gson = Gson().fromJson(responce.toString(), Description::class.java)
+                val responce_gson = Gson().fromJson(responce.toString(), ImageResponce::class.java)
+                //val jsonArray = responce.getJSONArray("project")
+                for (i in 0 until responce_gson.project?.modules!!.size) {
 
+                    val image = responce_gson.project.modules[i]?.sizes?.disp
+                    val description = responce_gson.project.description
 
-                description = responce_gson.project?.description
-
-                myCallBack.invoke(description)
+                    imageList.add(ImageBinding(image, description))
+                    //mAPIList.add(APIList(Arts, Avatars, Names, Posts, Views, Appreciations, Comments, id))
+                    /*if (i < jsonArray.length()-1){
+                        imageList.add(ImageBinding(image, null))
+                    } else if (i == jsonArray.length()-1) {
+                        imageList.add(ImageBinding(image, description))
+                    }*/
+                    i + 1
+                }
+                myCallBack.invoke(imageList)
 
             }, Response.ErrorListener {
                 VolleyLog.e(VolleyLog.TAG, "ERROR")

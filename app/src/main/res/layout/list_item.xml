@@ -6,7 +6,6 @@
 
     <data>
         <variable name="cardView" type="com.example.bestofbehance.gson.CardBinding"/>
-        <variable name="imageUrl" type="String"/>
     </data>
 
     <androidx.cardview.widget.CardView
