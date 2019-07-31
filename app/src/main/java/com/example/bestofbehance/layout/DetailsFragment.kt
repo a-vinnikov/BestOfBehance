@@ -21,7 +21,7 @@ import com.example.bestofbehance.viewModels.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_details.*
 
 
-class DetailsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class DetailsFragment : Fragment(){
 
     private val args: DetailsFragmentArgs by navArgs()
     lateinit var jsonModel: ParseInVM
@@ -30,10 +30,6 @@ class DetailsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.two_buttons_toolbar, menu)
         super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onRefresh() {
-        //swipe.isRefreshing = false
     }
 
 
@@ -45,7 +41,6 @@ class DetailsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        //val binding0: FragmentDetailsBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_details, container, false)
         val binding = FragmentDetailsBinding.inflate(inflater)
         val fragmentDetailsView: View = binding.root
 
@@ -83,8 +78,6 @@ class DetailsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         /*val sharedPreference = activity?.getSharedPreferences("ViewMode", AppCompatActivity.MODE_PRIVATE)
         position = sharedPreference!!.getInt("position", position)
         list_name1.text = position.toString()*/
-
-        //list_post1.text = args.cardBindingArg.id
     }
 
     private fun fetchData(): MediatorLiveData<MutableList<Ilist>> {

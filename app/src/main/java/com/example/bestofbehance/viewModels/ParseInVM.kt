@@ -4,14 +4,14 @@ import androidx.lifecycle.*
 import com.example.bestofbehance.gson.CardBinding
 import com.example.bestofbehance.layout.Ilist
 
-class ParseInVM: ViewModel() {
+class ParseInVM : ViewModel() {
 
     val recList: MutableLiveData<MutableList<CardBinding>> by lazy { MutableLiveData<MutableList<CardBinding>>() }
     val listForIlisit: MutableLiveData<MutableList<Ilist>> by lazy { MutableLiveData<MutableList<Ilist>>() }
     val listForIlisit1: MutableLiveData<MutableList<Ilist>> by lazy { MutableLiveData<MutableList<Ilist>>() }
 
-    fun setGeneral(){
-        ParseForVM().parseGeneral{ result -> recList.postValue(result)}
+    fun setGeneral() {
+        ParseForVM().parseGeneral { result -> recList.postValue(result) }
     }
 
     fun setImage(id: String): MutableLiveData<MutableList<Ilist>> {

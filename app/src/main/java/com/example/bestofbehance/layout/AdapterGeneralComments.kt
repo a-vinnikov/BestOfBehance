@@ -69,7 +69,7 @@ class AdapterGeneralComments(private val list: List<Ilist>) : RecyclerView.Adapt
         fun onBindImage(list: Ilist.ImageList) {
             binding.cardViewImage = list.imaList
             visibilityOfDescription(list)
-            if (list.imaList.bigImageCard != null){
+            if (list.imaList.bigImageCard != null) {
                 ImageBinding().setImageUrl1(binding.bigImageCard, list.imaList.bigImageCard.toString())
             }
             /*holder.itemView.list_name1.text = list.generalCard.name?.trim()
@@ -84,10 +84,10 @@ class AdapterGeneralComments(private val list: List<Ilist>) : RecyclerView.Adapt
 
         }
 
-        fun visibilityOfDescription(list: Ilist.ImageList){
-            if(list.imaList.description == null){
+        fun visibilityOfDescription(list: Ilist.ImageList) {
+            if (list.imaList.description == null) {
                 binding.description.visibility = GONE
-            } else{
+            } else {
                 binding.description.visibility = View.VISIBLE
             }
         }
@@ -119,13 +119,13 @@ class AdapterGeneralComments(private val list: List<Ilist>) : RecyclerView.Adapt
             }
         }
 
-        fun numberOfComments(list: Ilist.CommentsList){
-            if(list.comList.commentsName == null){
+        fun numberOfComments(list: Ilist.CommentsList) {
+            if (list.comList.commentsName == null) {
                 binding.commentAvatarView.visibility = GONE
                 binding.dateText.visibility = GONE
                 binding.commentLine.visibility = GONE
-                i+1
-            }else{
+                i + 1
+            } else {
                 binding.commentAvatarView.visibility = View.VISIBLE
                 binding.dateText.visibility = View.VISIBLE
                 binding.commentLine.visibility = View.VISIBLE
