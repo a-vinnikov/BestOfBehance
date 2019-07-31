@@ -58,7 +58,11 @@ class ParseForVM {
                     val image = responce_gson.project.modules[i]?.sizes?.disp
                     val description = responce_gson.project.description
 
-                    imageList.add(ImageBinding(image, description))
+                    if (i < responce_gson.project.modules.size -1 ){
+                        imageList.add(ImageBinding(image, null))
+                    }else{
+                        imageList.add(ImageBinding(image, description))
+                    }
                     //mAPIList.add(APIList(Arts, Avatars, Names, Posts, Views, Appreciations, Comments, id))
                     /*if (i < jsonArray.length()-1){
                         imageList.add(ImageBinding(image, null))
@@ -92,7 +96,11 @@ class ParseForVM {
                     val numberOfComments = jsonArray.length().toString()
 
                     //mAPIList.add(APIList(Arts, Avatars, Names, Posts, Views, Appreciations, Comments, id))
-                    comList.add(CommentsBinding(commentsAvatarView, commentsName, comment, date, numberOfComments))
+                    if (i == 0){
+                        val temp = "Comments($numberOfComments)"
+                        comList.add(CommentsBinding(null, null, temp, null))
+                    }
+                    comList.add(CommentsBinding(commentsAvatarView, commentsName, comment, date))
                     i + 1
                 }
                 myCallBack.invoke(comList)

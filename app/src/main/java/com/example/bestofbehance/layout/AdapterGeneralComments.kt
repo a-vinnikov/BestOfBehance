@@ -3,8 +3,10 @@ package com.example.bestofbehance.layout
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -21,7 +23,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class AdapterGeneralComments(private val list: MutableList<Ilist>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class AdapterGeneralComments(private val list: List<Ilist>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val TYPE_IMAGE = 0
@@ -34,16 +36,14 @@ class AdapterGeneralComments(private val list: MutableList<Ilist>) : RecyclerVie
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (viewType) {
         TYPE_IMAGE -> {
             val inflater = LayoutInflater.from(parent.context)
-            val binding = ListDetailsBinding.inflate(inflater)
-            binding0 = binding
-            ImageViewHolder(binding)
+            binding0 = ListDetailsBinding.inflate(inflater, parent, false)
+            ImageViewHolder(binding0)
             //ImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_details, parent, false))
         }
         TYPE_COMMENTS -> {
             val inflater = LayoutInflater.from(parent.context)
-            val binding = CommentItemBinding.inflate(inflater)
-            binding1 = binding
-            CommentsViewHolder(binding)
+            binding1 = CommentItemBinding.inflate(inflater, parent, false)
+            CommentsViewHolder(binding1)
         }
         else -> throw IllegalArgumentException()
     }
@@ -68,7 +68,10 @@ class AdapterGeneralComments(private val list: MutableList<Ilist>) : RecyclerVie
 
         fun onBindImage(list: Ilist.ImageList) {
             binding.cardViewImage = list.imaList
-            ImageBinding().setImageUrl1(binding.bigImageCard, list.imaList.bigImageCard.toString())
+            visibilityOfDescription(list)
+            if (list.imaList.bigImageCard != null){
+                ImageBinding().setImageUrl1(binding.bigImageCard, list.imaList.bigImageCard.toString())
+            }
             /*holder.itemView.list_name1.text = list.generalCard.name?.trim()
             holder.itemView.list_post1.text = list.generalCard.post?.trim()
             setImageUrl(holder.itemView.bigImageView1, list.generalCard.bigImage.toString(), holder.itemView.context.resources.getString(R.string.not_rounded))
@@ -80,16 +83,28 @@ class AdapterGeneralComments(private val list: MutableList<Ilist>) : RecyclerVie
             }*/
 
         }
+
+        fun visibilityOfDescription(list: Ilist.ImageList){
+            if(list.imaList.description == null){
+                binding.description.visibility = GONE
+            } else{
+                binding.description.visibility = View.VISIBLE
+            }
+        }
     }
 
     class CommentsViewHolder(private val binding: CommentItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
+        private var i = 0
+
         fun onBindComments(list: Ilist.CommentsList) {
             binding.commentsView = list.comList
+            numberOfComments(list)
             CommentsBinding().setImageUrl2(binding.commentAvatarView, list.comList.commentsAvatarView.toString())
+            binding.dateText.text = getDateTime(list.comList.date.toString())
             /*holder.itemView.comment_name.text = list.comList.commentsName?.trim()
             holder.itemView.comment.text = list.comList.comment?.trim()
-            holder.itemView.date_text.text = getDateTime(list.comList.date.toString())*/
+            */
             //setImageUrl(holder.itemView.commentAvatarView, list.comList.commentsAvatarView.toString(), holder.itemView.context.resources.getString(R.string.not_rounded))
         }
 
@@ -100,9 +115,27 @@ class AdapterGeneralComments(private val list: MutableList<Ilist>) : RecyclerVie
                 val netDate = Date(s.toLong() * 1000)
                 sdf.format(netDate)
             } catch (e: Exception) {
-                e.toString()
+                ""
             }
         }
 
+        fun numberOfComments(list: Ilist.CommentsList){
+            if(list.comList.commentsName == null){
+                binding.commentAvatarView.visibility = GONE
+                binding.dateText.visibility = GONE
+                binding.commentLine.visibility = GONE
+                i+1
+            }else{
+                binding.commentAvatarView.visibility = View.VISIBLE
+                binding.dateText.visibility = View.VISIBLE
+                binding.commentLine.visibility = View.VISIBLE
+            }
+        }
+
+    }
+
+    @BindingAdapter("loadingImage0")
+    fun setImageUrl0(view: ImageView, url: String) {
+        Glide.with(view.context).load(url).into(view)
     }
 }

@@ -9,8 +9,7 @@ data class CommentsBinding(
     var commentsAvatarView: String? = null,
     var commentsName: String? = null,
     var comment: String? = null,
-    var date: String? = null,
-    var numberOfComments: String? = null
+    var date: String? = null
 ) : Serializable {
     @BindingAdapter("loadingImage2")
     fun setImageUrl2(view: ImageView, url: String) {

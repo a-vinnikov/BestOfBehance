@@ -14,30 +14,30 @@ class ParseInVM: ViewModel() {
         ParseForVM().parseGeneral{ result -> recList.postValue(result)}
     }
 
-    fun setImage(id: String){
-        val pepega: MutableList<Ilist> = mutableListOf()
+    fun setImage(id: String): MutableLiveData<MutableList<Ilist>> {
+        val temp: MutableList<Ilist> = mutableListOf()
 
         ParseForVM().parseProject(id.toInt()) { result ->
 
             for (i in 0 until result.size) {
-                pepega.add(i, Ilist.ImageList(result[i]))
+                temp.add(i, Ilist.ImageList(result[i]))
             }
-            listForIlisit.postValue(pepega)
+            listForIlisit.postValue(temp)
         }
+        return listForIlisit
     }
 
-    fun setComments(id: String){
-        val pepega: MutableList<Ilist> = mutableListOf()
+    fun setComments(id: String): MutableLiveData<MutableList<Ilist>> {
+        val temp: MutableList<Ilist> = mutableListOf()
 
         ParseForVM().parseComments(id.toInt()) { result ->
             for (i in 0 until result.size) {
-                pepega.add(i, Ilist.CommentsList(result[i]))
+                temp.add(i, Ilist.CommentsList(result[i]))
             }
-            listForIlisit.postValue(pepega)
+            listForIlisit1.postValue(temp)
         }
+        return listForIlisit1
 
     }
-
-
 
 }
