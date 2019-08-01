@@ -2,11 +2,8 @@ package com.example.bestofbehance.layout
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import android.view.*
-import android.widget.Toast
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.navArgs
@@ -14,9 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.R
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
 import com.example.bestofbehance.gson.CardBinding
-import com.example.bestofbehance.gson.CommentsBinding
-import com.example.bestofbehance.gson.ImageBinding
-import com.example.bestofbehance.viewModels.ParseInVM
+import com.example.bestofbehance.viewModels.VMForParse
 import com.example.bestofbehance.viewModels.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_details.*
 
@@ -24,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_details.*
 class DetailsFragment : Fragment(){
 
     private val args: DetailsFragmentArgs by navArgs()
-    lateinit var jsonModel: ParseInVM
+    lateinit var jsonModel: VMForParse
     var position = 0
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -47,7 +42,7 @@ class DetailsFragment : Fragment(){
         binding.cardViewDetails = args.cardBindingArg
         CardBinding().setImageUrl(binding.avatarView1, args.cardBindingArg.avatar.toString())
 
-        jsonModel = ViewModelProviders.of(this, ViewModelFactory()).get(ParseInVM::class.java)
+        jsonModel = ViewModelProviders.of(this, ViewModelFactory()).get(VMForParse::class.java)
 
         return fragmentDetailsView
     }
@@ -60,8 +55,8 @@ class DetailsFragment : Fragment(){
         var imageItems: MutableList<Ilist>? = null
         var commentsItems: MutableList<Ilist>? = null
 
-        liveData.observe(this, object : Observer<MutableList<Ilist>> {
-            override fun onChanged(it: MutableList<Ilist>) {
+        liveData.observe(this,
+            Observer<MutableList<Ilist>> { it ->
                 when (it[position]) {
                     is Ilist.ImageList -> imageItems = it
                     is Ilist.CommentsList -> commentsItems = it
@@ -70,10 +65,9 @@ class DetailsFragment : Fragment(){
                     val temp: List<Ilist> = imageItems.orEmpty() + commentsItems.orEmpty()
                     recycler_view1.adapter = AdapterGeneralComments(temp)
                     recycler_view1.layoutManager = LinearLayoutManager(activity)
-                    liveData.removeObserver(this)
+                    //liveData.removeObserver(this)
                 }
-            }
-        })
+            })
 
         /*val sharedPreference = activity?.getSharedPreferences("ViewMode", AppCompatActivity.MODE_PRIVATE)
         position = sharedPreference!!.getInt("position", position)
@@ -86,13 +80,13 @@ class DetailsFragment : Fragment(){
         liveDataIlist.addSource(jsonModel.setImage(args.cardBindingArg.id!!)) {
             if (it != null) {
                 liveDataIlist.value = it
-                println("Длина картиночного листа " + liveDataIlist.value?.size)
+                println("Длина листа c изображениями " + liveDataIlist.value?.size)
             }
         }
         liveDataIlist.addSource(jsonModel.setComments(args.cardBindingArg.id!!)) {
             if (it != null) {
                 liveDataIlist.value = it
-                println("Длина комментариев листа " + liveDataIlist.value?.size)
+                println("Длина листа комментариев  " + liveDataIlist.value?.size)
             }
         }
 
