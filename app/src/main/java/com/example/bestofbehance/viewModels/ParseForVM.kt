@@ -4,6 +4,9 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.VolleyLog
 import com.android.volley.toolbox.JsonObjectRequest
+import com.example.bestofbehance.gson.CardBinding
+import com.example.bestofbehance.binding.CommentsBinding
+import com.example.bestofbehance.binding.ImageBinding
 import com.example.bestofbehance.gson.*
 import com.google.gson.Gson
 import org.json.JSONObject
@@ -33,7 +36,18 @@ class ParseForVM {
                     val Id = responce_gson.projects?.get(i)?.id
 
                     //mAPIList.add(APIList(Arts, Avatars, Names, Posts, Views, Appreciations, Comments, id))
-                    recList.add(CardBinding(Arts, Avatars, Names, Posts, Views.toString(), Appreciations.toString(), Comments.toString(), Id.toString()))
+                    recList.add(
+                        CardBinding(
+                            Arts,
+                            Avatars,
+                            Names,
+                            Posts,
+                            Views.toString(),
+                            Appreciations.toString(),
+                            Comments.toString(),
+                            Id.toString()
+                        )
+                    )
                     i + 1
                 }
                 //callback recList
@@ -100,7 +114,14 @@ class ParseForVM {
                         val temp = "Comments($numberOfComments)"
                         comList.add(CommentsBinding(null, null, temp, null))
                     }
-                    comList.add(CommentsBinding(commentsAvatarView, commentsName, comment, date))
+                    comList.add(
+                        CommentsBinding(
+                            commentsAvatarView,
+                            commentsName,
+                            comment,
+                            date
+                        )
+                    )
                     i + 1
                 }
                 myCallBack.invoke(comList)

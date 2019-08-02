@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.paging.PagedListAdapter
 import kotlinx.android.synthetic.main.list_item.view.*
 import com.example.bestofbehance.gson.CardBinding
 import com.example.bestofbehance.databinding.ListItemBinding
@@ -17,11 +16,12 @@ import java.text.DecimalFormat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.paging.PaginationScrollListener
-import kotlinx.android.synthetic.main.fragment_best.*
-import kotlinx.android.synthetic.main.fragment_best.view.*
 
 
-class AdapterViewHolder(val recyclerView: RecyclerView, val list: MutableList<CardBinding>, val ViewMode: Int, val inClick: InClick) :
+
+
+class AdapterViewHolder(val recyclerView: RecyclerView, var list: MutableList<CardBinding>, val ViewMode: Int, val inClick: InClick
+) :
     RecyclerView.Adapter<AdapterViewHolder.ViewHolder>() {
 
     lateinit var context: Context
@@ -38,6 +38,9 @@ class AdapterViewHolder(val recyclerView: RecyclerView, val list: MutableList<Ca
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        /*if(position == list.lastIndex){
+            list.addAll(list)
+        }*/
         holder.itemView.constLayout.setOnClickListener {
             inClick.onItemClick(list[holder.adapterPosition])
             inClick.setPosition(holder.adapterPosition)
@@ -51,7 +54,7 @@ class AdapterViewHolder(val recyclerView: RecyclerView, val list: MutableList<Ca
             holder.itemView.bigImageView.layoutParams.height = floatResources.toInt()
         }
 
-        if(holder.adapterPosition == list.size){
+        if (holder.adapterPosition == list.size) {
             Toast.makeText(context, "End", Toast.LENGTH_SHORT).show()
         }
 
@@ -63,30 +66,47 @@ class AdapterViewHolder(val recyclerView: RecyclerView, val list: MutableList<Ca
 
         }
 
- /*       recyclerView.addOnScrollListener(object : PaginationScrollListener(LinearLayoutManager(context)) {
+        recyclerView.addOnScrollListener(object : PaginationScrollListener(LinearLayoutManager(context)) {
+            override fun getTotalPageCount(): Int {
+                //return TOTAL_PAGES
+                return 0
+            }
+
             override fun isLastPage(): Boolean {
+                println("Last")
                 return isLastPage
             }
 
             override fun isLoading(): Boolean {
+                println("Loading")
                 return isLoading
             }
 
             override fun loadMoreItems() {
+                println("More")
                 isLoading = true
                 getMoreItems()
             }
-        })*/
+        })
 
         holder.bind(copyList)
     }
 
-/*    fun getMoreItems() {
+    fun updateListData(listData: ArrayList<CardBinding>) {
+        list = listData
+    }
+
+    fun addData(listData: MutableList<CardBinding>) {
+        list.addAll(listData)
+        notifyDataSetChanged()
+    }
+
+    fun getMoreItems() {
         isLoading = false
         addData(list)
     }
 
-    fun addData(list: MutableList<CardBinding>) {
+   /* fun addData(list: MutableList<CardBinding>) {
         val size = list.size
         list.addAll(list)
         val sizeNew = list.size

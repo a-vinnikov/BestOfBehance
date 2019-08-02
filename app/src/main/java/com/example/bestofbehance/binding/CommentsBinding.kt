@@ -1,4 +1,4 @@
-package com.example.bestofbehance.gson
+package com.example.bestofbehance.binding
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter

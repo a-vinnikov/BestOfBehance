@@ -56,7 +56,7 @@ class DetailsFragment : Fragment(){
         var commentsItems: MutableList<Ilist>? = null
 
         liveData.observe(this,
-            Observer<MutableList<Ilist>> { it ->
+            Observer<MutableList<Ilist>> {
                 when (it[position]) {
                     is Ilist.ImageList -> imageItems = it
                     is Ilist.CommentsList -> commentsItems = it

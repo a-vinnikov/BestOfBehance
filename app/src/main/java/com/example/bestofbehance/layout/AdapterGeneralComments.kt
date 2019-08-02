@@ -9,16 +9,10 @@ import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.example.bestofbehance.R
 import com.example.bestofbehance.databinding.CommentItemBinding
-import com.example.bestofbehance.databinding.FragmentDetailsBinding
 import com.example.bestofbehance.databinding.ListDetailsBinding
-import com.example.bestofbehance.databinding.ListItemBinding
-import com.example.bestofbehance.gson.CommentsBinding
-import com.example.bestofbehance.gson.ImageBinding
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation
-import kotlinx.android.synthetic.main.comment_item.view.*
+import com.example.bestofbehance.binding.CommentsBinding
+import com.example.bestofbehance.binding.ImageBinding
 import java.text.SimpleDateFormat
 import java.util.*
 

@@ -12,14 +12,12 @@ import android.view.*
 import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuInflater
-import com.example.bestofbehance.R
 import com.example.bestofbehance.gson.CardBinding
 import com.example.bestofbehance.viewModels.*
-import androidx.paging.PagedList
-import androidx.paging.PositionalDataSource
-import com.example.bestofbehance.paging.MainThreadExecutor
-import com.example.bestofbehance.paging.PaginationScrollListener
-import java.util.concurrent.Executors
+import androidx.room.Room
+import com.example.bestofbehance.room.CardData
+import com.example.bestofbehance.room.CardDataBase
+import com.example.bestofbehance.room.CardDataBase_Impl
 
 
 class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
@@ -103,6 +101,8 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         if (jsonModel.recList.value == null || swipe.isRefreshing) {
             jsonModel.setGeneral()
         }
+
+        //val db = CardDataBase.getInstance(context!!)
 
         //val dataSource = CardPositionalDataSource(jsonModel.recList.value!!)
 

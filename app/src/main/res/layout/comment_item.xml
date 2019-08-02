@@ -5,7 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="commentsView" type="com.example.bestofbehance.gson.CommentsBinding"/>
+        <variable name="commentsView" type="com.example.bestofbehance.binding.CommentsBinding"/>
     </data>
 
     <androidx.cardview.widget.CardView
