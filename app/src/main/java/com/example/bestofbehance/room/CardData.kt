@@ -1,3 +1,4 @@
+/*
 package com.example.bestofbehance.room
 
 import androidx.room.Entity
@@ -19,4 +20,4 @@ data class CardData(
 ) {
     var indexInResponse: Int = -1
     //constructor():this(0,"","","","",0, 0,0)
-}
+}*/

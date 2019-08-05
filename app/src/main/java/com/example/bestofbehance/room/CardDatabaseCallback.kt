@@ -1,3 +1,4 @@
+/*
 package com.example.bestofbehance.room
 
 import androidx.room.RoomDatabase
@@ -19,9 +20,11 @@ private class WordDatabaseCallback(private val scope: CoroutineScope) : RoomData
     fun populateDatabase(cardDao: CardDao) {
         cardDao.deleteAll()
 
-        /*var word = Word("Hello")
-        wordDao.insert(word)
+        */
+/*var word = Word("Hello")
+        wordDao.insertData(word)
         word = Word("World!")
-        wordDao.insert(word)*/
+        wordDao.insertData(word)*//*
+
     }
-}
+}*/

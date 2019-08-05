@@ -1,3 +1,4 @@
+/*
 package com.example.bestofbehance.room
 
 import androidx.annotation.WorkerThread
@@ -8,5 +9,5 @@ class CardRepository(private val wordDao: CardDao) {
     val allData: LiveData<List<CardData>> = wordDao.all
 
     //@WorkerThread
-    //suspend fun insert //функция остановки
-}
+    //suspend fun insertData //функция остановки
+}*/

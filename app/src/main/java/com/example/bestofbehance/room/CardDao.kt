@@ -1,22 +1,24 @@
 package com.example.bestofbehance.room
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.*
+import com.example.bestofbehance.gson.CardBinding
 
 @Dao
 interface CardDao {
 
     @get:Query("SELECT * from CardData ORDER BY id ASC")
-    val all: LiveData<List<CardData>>
+    val all: LiveData<MutableList<CardBinding>>
 
     @Query("SELECT * FROM CardData WHERE id = :id")
-    fun getById(id: Int): CardData
+    fun getById(id: Int): CardBinding
 
-    @Insert
-    fun insert(cardBinding: CardData)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(cardBinding: CardBinding)
 
     @Update
-    fun update(cardBinding: CardData)
+    fun update(cardBinding: CardBinding)
 
     @Query("DELETE FROM CardData")
     fun deleteAll()

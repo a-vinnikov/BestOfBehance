@@ -1,5 +1,7 @@
 package com.example.bestofbehance.layout
 
+import android.app.Application
+import android.os.AsyncTask
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -12,12 +14,14 @@ import android.view.*
 import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuInflater
-import com.example.bestofbehance.gson.CardBinding
-import com.example.bestofbehance.viewModels.*
 import androidx.room.Room
-import com.example.bestofbehance.room.CardData
+import com.example.bestofbehance.gson.CardBinding
+import com.example.bestofbehance.room.CardDao
 import com.example.bestofbehance.room.CardDataBase
-import com.example.bestofbehance.room.CardDataBase_Impl
+import com.example.bestofbehance.viewModels.*
+import com.example.bestofbehance.gson.User
+
+
 
 
 class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
@@ -29,6 +33,10 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     var currentViewMode = 0
     var position = 0
     lateinit var adapterAbc: AdapterViewHolder
+
+    companion object{
+        var database: MutableList<CardBinding>? = null
+    }
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -112,9 +120,23 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             .build()*/
 
         val observerGSON = Observer<MutableList<CardBinding>> {
-
             // val pagedList = PagedList.Builder<Any, Any>(dataSource, config).setBackgroundThreadExecutor(Executors.newSingleThreadExecutor()).setMainThreadExecutor(MainThreadExecutor()).build()
 
+            //jsonModel.insertData(context!!, it)
+            //CardDataBase.DatabaseProvider.getDatabase(context!!)
+
+            /*database = Room.databaseBuilder(context!!, CardDataBase::class.java, "CardData")
+                .addMigrations(CardDataBase.DatabaseProvider.Migration1To2, CardDataBase.DatabaseProvider.Migration2To3)
+                .build()*/
+           /* cardingDao = database!!.cardDao()
+            AsyncTask.execute {
+                for (i in 0 until it.size) {
+                    cardingDao!!.insert(it[i])
+                    println(cardingDao!!.all.value?.get(i)?.id)
+                }
+            }*/
+            database = it
+            CardDataBase.getDatabase(context!!)
 
             adapterAbc = if (currentViewMode == 0) {
                 adapterFun(it, 0)
@@ -124,6 +146,8 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             recycler_view.adapter = adapterAbc
         }
         jsonModel.recList.observe(this, observerGSON)
+
+
         if (currentViewMode == 0) {
             recycler_view.layoutManager = LinearLayoutManager(activity)
         } else {
@@ -155,4 +179,5 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             }
         })
     }
+
 }

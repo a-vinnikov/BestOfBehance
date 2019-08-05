@@ -38,14 +38,15 @@ class ParseForVM {
                     //mAPIList.add(APIList(Arts, Avatars, Names, Posts, Views, Appreciations, Comments, id))
                     recList.add(
                         CardBinding(
+                            Id!!,
                             Arts,
                             Avatars,
                             Names,
                             Posts,
                             Views.toString(),
                             Appreciations.toString(),
-                            Comments.toString(),
-                            Id.toString()
+                            Comments.toString()
+
                         )
                     )
                     i + 1

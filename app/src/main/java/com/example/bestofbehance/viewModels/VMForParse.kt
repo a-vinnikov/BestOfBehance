@@ -1,10 +1,12 @@
 package com.example.bestofbehance.viewModels
 
+import android.app.Application
 import androidx.lifecycle.*
 import com.example.bestofbehance.gson.CardBinding
 import com.example.bestofbehance.layout.Ilist
 
-class VMForParse : ViewModel() {
+
+class VMForParse : AndroidViewModel(Application()) {
 
     val recList: MutableLiveData<MutableList<CardBinding>> by lazy { MutableLiveData<MutableList<CardBinding>>() }
     val listForIlisit: MutableLiveData<MutableList<Ilist>> by lazy { MutableLiveData<MutableList<Ilist>>() }
@@ -15,10 +17,10 @@ class VMForParse : ViewModel() {
         return recList
     }
 
-    fun setImage(id: String): MutableLiveData<MutableList<Ilist>> {
+    fun setImage(id: Int): MutableLiveData<MutableList<Ilist>> {
         val temp: MutableList<Ilist> = mutableListOf()
 
-        ParseForVM().parseProject(id.toInt()) { result ->
+        ParseForVM().parseProject(id) { result ->
 
             for (i in 0 until result.size) {
                 temp.add(i, Ilist.ImageList(result[i]))
@@ -28,10 +30,10 @@ class VMForParse : ViewModel() {
         return listForIlisit
     }
 
-    fun setComments(id: String): MutableLiveData<MutableList<Ilist>> {
+    fun setComments(id: Int): MutableLiveData<MutableList<Ilist>> {
         val temp: MutableList<Ilist> = mutableListOf()
 
-        ParseForVM().parseComments(id.toInt()) { result ->
+        ParseForVM().parseComments(id) { result ->
             for (i in 0 until result.size) {
                 temp.add(i, Ilist.CommentsList(result[i]))
             }
@@ -40,5 +42,11 @@ class VMForParse : ViewModel() {
         return listForIlisit1
 
     }
+
+    /*fun insertData(context: Context, it: MutableList<CardBinding>) = viewModelScope.launch(Dispatchers.IO) {
+        for (i in 0 until it.size){
+            CardDataBase.DatabaseProvider.getDatabase(context).cardDao().insert(it[i])
+        }
+    }*/
 
 }

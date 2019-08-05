@@ -1,37 +1,70 @@
 package com.example.bestofbehance.room
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
+import androidx.room.*
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.bestofbehance.gson.CardBinding
 import androidx.room.RoomDatabase
+import androidx.room.Room
+import com.example.bestofbehance.layout.Best.Companion.database
+import java.util.concurrent.Executors
 
-@Database(entities = [CardData::class], version = 1)
+
+@Database(entities = [CardBinding::class], version = 3)
 abstract class CardDataBase : RoomDatabase() {
 
     abstract fun cardDao(): CardDao
 
-    companion object {
-        @Volatile
-        private var INSTANCE: CardDataBase? = null
 
-        fun getDatabase(context: Context): CardDataBase {
-            val tempInstance = INSTANCE
-            if (tempInstance != null) {
-                return tempInstance
-            }
-            synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    CardDataBase::class.java,
-                    "CardData"
-                ).build()
-                INSTANCE = instance
-                return instance
-            }
-        }
-
-        fun destroyInstance() {
-            INSTANCE = null
+    class Migration1To2: Migration(1, 2) {
+        override fun migrate(database: SupportSQLiteDatabase) {
         }
     }
+    class Migration2To3: Migration(2, 3) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+        }
+    }
+
+    companion object {
+        @JvmField
+        val migration_1_2 = Migration1To2()
+        val migration_2_3 = Migration2To3()
+
+
+        private var INSTANCE: CardDataBase? = null
+        private val DB_NAME = "movies.db"
+        fun getDatabase(context: Context): CardDataBase? {
+            if (INSTANCE == null) {
+                synchronized(CardDataBase::class.java) {
+                    if (INSTANCE == null) {
+                        INSTANCE = Room.databaseBuilder(
+                            context.applicationContext,
+                            CardDataBase::class.java, DB_NAME
+                        ).allowMainThreadQueries().addMigrations(migration_1_2, migration_2_3).allowMainThreadQueries()
+                            .addCallback(callback)
+                            .build()
+                    }
+                }
+            }
+            return INSTANCE
+        }
+        private val callback = object : Callback() {
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
+                ioThread { for (i in 0 until database!!.size) {
+                    INSTANCE?.cardDao()?.insert(database!![i])
+                    println(INSTANCE?.cardDao()?.all?.value?.get(i)?.id)
+                } }
+                
+            }
+        }
+        private val IO_EXECUTOR = Executors.newSingleThreadExecutor()
+        fun ioThread(f : () -> Unit) {
+            IO_EXECUTOR.execute(f)
+        }
+
+    }
+
+
 }
