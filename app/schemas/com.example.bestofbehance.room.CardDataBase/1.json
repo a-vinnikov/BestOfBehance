@@ -1,0 +1,76 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "23cc9aee21808ec6982692b79eda4e2f",
+    "entities": [
+      {
+        "tableName": "CardData",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `bigImage` TEXT, `avatar` TEXT, `name` TEXT, `post` TEXT, `views` TEXT, `appreciations` TEXT, `comments` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bigImage",
+            "columnName": "bigImage",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "avatar",
+            "columnName": "avatar",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "post",
+            "columnName": "post",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "views",
+            "columnName": "views",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "appreciations",
+            "columnName": "appreciations",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "comments",
+            "columnName": "comments",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '23cc9aee21808ec6982692b79eda4e2f')"
+    ]
+  }
+}
