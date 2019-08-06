@@ -1,7 +1,5 @@
 package com.example.bestofbehance.layout
 
-import android.app.Application
-import android.os.AsyncTask
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -14,14 +12,11 @@ import android.view.*
 import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuInflater
-import androidx.room.Room
 import com.example.bestofbehance.gson.CardBinding
-import com.example.bestofbehance.room.CardDao
 import com.example.bestofbehance.room.CardDataBase
+import com.example.bestofbehance.room.DBMain
 import com.example.bestofbehance.viewModels.*
-import com.example.bestofbehance.gson.User
-
-
+import kotlinx.android.synthetic.main.list_item.*
 
 
 class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
@@ -31,12 +26,8 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     val VIEW_MODE_LISTVIEW = 0
     val VIEW_MODE_GRIDVIEW = 1
     var currentViewMode = 0
-    var position = 0
+    var page = 1
     lateinit var adapterAbc: AdapterViewHolder
-
-    companion object{
-        var database: MutableList<CardBinding>? = null
-    }
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -107,12 +98,8 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private fun createRecyclerView(currentViewMode: Int) {
         if (jsonModel.recList.value == null || swipe.isRefreshing) {
-            jsonModel.setGeneral()
+            jsonModel.setGeneral(page)
         }
-
-        //val db = CardDataBase.getInstance(context!!)
-
-        //val dataSource = CardPositionalDataSource(jsonModel.recList.value!!)
 
         /*val config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
@@ -122,21 +109,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         val observerGSON = Observer<MutableList<CardBinding>> {
             // val pagedList = PagedList.Builder<Any, Any>(dataSource, config).setBackgroundThreadExecutor(Executors.newSingleThreadExecutor()).setMainThreadExecutor(MainThreadExecutor()).build()
 
-            //jsonModel.insertData(context!!, it)
-            //CardDataBase.DatabaseProvider.getDatabase(context!!)
-
-            /*database = Room.databaseBuilder(context!!, CardDataBase::class.java, "CardData")
-                .addMigrations(CardDataBase.DatabaseProvider.Migration1To2, CardDataBase.DatabaseProvider.Migration2To3)
-                .build()*/
-           /* cardingDao = database!!.cardDao()
-            AsyncTask.execute {
-                for (i in 0 until it.size) {
-                    cardingDao!!.insert(it[i])
-                    println(cardingDao!!.all.value?.get(i)?.id)
-                }
-            }*/
-            database = it
-            CardDataBase.getDatabase(context!!)
+            //CardDataBase.getDatabase(context!!)
 
             adapterAbc = if (currentViewMode == 0) {
                 adapterFun(it, 0)
@@ -170,13 +143,15 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private fun adapterFun(list: MutableList<CardBinding>, ViewMode: Int): AdapterViewHolder {
 
         return AdapterViewHolder(recycler_view, list, ViewMode, object : InClick {
-            override fun setPosition(position: Int) {
-                sharedPosition(position)
-            }
-
             override fun onItemClick(item: CardBinding) {
                 NaviController(activity).toDetails(item)
             }
+        }, object : BookmarkClick{
+            override fun setPosition(position: Int) {
+                DBMain.add(list[position], context!!)
+                DBMain.read(context!!)
+            }
+
         })
     }
 

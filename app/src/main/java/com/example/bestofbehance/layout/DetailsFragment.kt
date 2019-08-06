@@ -1,5 +1,6 @@
 package com.example.bestofbehance.layout
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.*
@@ -11,12 +12,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.R
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
 import com.example.bestofbehance.gson.CardBinding
+import com.example.bestofbehance.room.Cards
+import com.example.bestofbehance.room.DBMain
 import com.example.bestofbehance.viewModels.VMForParse
 import com.example.bestofbehance.viewModels.ViewModelFactory
+import com.orm.SugarRecord
 import kotlinx.android.synthetic.main.fragment_details.*
 
 
-class DetailsFragment : Fragment(){
+class DetailsFragment : Fragment() {
 
     private val args: DetailsFragmentArgs by navArgs()
     lateinit var jsonModel: VMForParse
@@ -47,8 +51,11 @@ class DetailsFragment : Fragment(){
         return fragmentDetailsView
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        comments.text = "COMMENTS(${args.cardBindingArg.comments.toString()})"
 
         val liveData = fetchData()
 
@@ -59,7 +66,8 @@ class DetailsFragment : Fragment(){
             Observer<MutableList<Ilist>> {
                 when (it[position]) {
                     is Ilist.ImageList -> imageItems = it
-                    is Ilist.CommentsList -> commentsItems = it
+                    is Ilist.TextList -> imageItems = it
+                    is Ilist.CountList -> commentsItems = it
                 }
                 if (imageItems != null && commentsItems != null) {
                     val temp: List<Ilist> = imageItems.orEmpty() + commentsItems.orEmpty()
@@ -72,18 +80,22 @@ class DetailsFragment : Fragment(){
         /*val sharedPreference = activity?.getSharedPreferences("ViewMode", AppCompatActivity.MODE_PRIVATE)
         position = sharedPreference!!.getInt("position", position)
         list_name1.text = position.toString()*/
+
+        //DBMain.add(args.cardBindingArg, context!!)
+        //DBMain.clear(context!!)
+        //DBMain.read(context!!)
     }
 
     private fun fetchData(): MediatorLiveData<MutableList<Ilist>> {
         val liveDataIlist = MediatorLiveData<MutableList<Ilist>>()
 
-        liveDataIlist.addSource(jsonModel.setImage(args.cardBindingArg.id!!)) {
+        liveDataIlist.addSource(jsonModel.setContent(args.cardBindingArg.id)) {
             if (it != null) {
                 liveDataIlist.value = it
                 println("Длина листа c изображениями " + liveDataIlist.value?.size)
             }
         }
-        liveDataIlist.addSource(jsonModel.setComments(args.cardBindingArg.id!!)) {
+        liveDataIlist.addSource(jsonModel.setComments(args.cardBindingArg.id)) {
             if (it != null) {
                 liveDataIlist.value = it
                 println("Длина листа комментариев  " + liveDataIlist.value?.size)

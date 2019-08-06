@@ -16,11 +16,10 @@ import java.text.DecimalFormat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.paging.PaginationScrollListener
+import com.example.bestofbehance.viewModels.BookmarkClick
 
 
-
-
-class AdapterViewHolder(val recyclerView: RecyclerView, var list: MutableList<CardBinding>, val ViewMode: Int, val inClick: InClick
+class AdapterViewHolder(val recyclerView: RecyclerView, var list: MutableList<CardBinding>, val ViewMode: Int, val inClick: InClick, val BookmarkClick: BookmarkClick
 ) :
     RecyclerView.Adapter<AdapterViewHolder.ViewHolder>() {
 
@@ -41,9 +40,13 @@ class AdapterViewHolder(val recyclerView: RecyclerView, var list: MutableList<Ca
         /*if(position == list.lastIndex){
             list.addAll(list)
         }*/
+        holder.itemView.bookmark.setOnClickListener {
+            BookmarkClick.setPosition(position)
+        }
+
+
         holder.itemView.constLayout.setOnClickListener {
             inClick.onItemClick(list[holder.adapterPosition])
-            inClick.setPosition(holder.adapterPosition)
         }
 
         if (ViewMode == 1) {
@@ -73,27 +76,23 @@ class AdapterViewHolder(val recyclerView: RecyclerView, var list: MutableList<Ca
             }
 
             override fun isLastPage(): Boolean {
-                println("Last")
+                if (position == (list.lastIndex - 5)){
+                    isLoading = true
+                    getMoreItems()
+                }
                 return isLastPage
             }
 
             override fun isLoading(): Boolean {
-                println("Loading")
                 return isLoading
             }
 
             override fun loadMoreItems() {
-                println("More")
-                isLoading = true
-                getMoreItems()
+                Toast.makeText(context, "Need more items", Toast.LENGTH_SHORT).show()
             }
         })
 
         holder.bind(copyList)
-    }
-
-    fun updateListData(listData: ArrayList<CardBinding>) {
-        list = listData
     }
 
     fun addData(listData: MutableList<CardBinding>) {

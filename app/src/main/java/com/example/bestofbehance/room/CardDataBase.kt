@@ -7,7 +7,6 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.bestofbehance.gson.CardBinding
 import androidx.room.RoomDatabase
 import androidx.room.Room
-import com.example.bestofbehance.layout.Best.Companion.database
 import java.util.concurrent.Executors
 
 
@@ -52,11 +51,13 @@ abstract class CardDataBase : RoomDatabase() {
         private val callback = object : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
-                ioThread { for (i in 0 until database!!.size) {
+                ioThread {
+                    println("Done")
+                    /*for (i in 0 until database!!.size) {
                     INSTANCE?.cardDao()?.insert(database!![i])
                     println(INSTANCE?.cardDao()?.all?.value?.get(i)?.id)
-                } }
-                
+                }*/ }
+
             }
         }
         private val IO_EXECUTOR = Executors.newSingleThreadExecutor()

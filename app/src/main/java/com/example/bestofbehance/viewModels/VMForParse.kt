@@ -12,35 +12,19 @@ class VMForParse : AndroidViewModel(Application()) {
     val listForIlisit: MutableLiveData<MutableList<Ilist>> by lazy { MutableLiveData<MutableList<Ilist>>() }
     val listForIlisit1: MutableLiveData<MutableList<Ilist>> by lazy { MutableLiveData<MutableList<Ilist>>() }
 
-    fun setGeneral(): MutableLiveData<MutableList<CardBinding>> {
-        ParseForVM().parseGeneral { result -> recList.postValue(result) }
+    fun setGeneral(page: Int): MutableLiveData<MutableList<CardBinding>> {
+        ParseForVM().parseGeneral(page) { result -> recList.postValue(result)}
         return recList
     }
 
-    fun setImage(id: Int): MutableLiveData<MutableList<Ilist>> {
-        val temp: MutableList<Ilist> = mutableListOf()
-
-        ParseForVM().parseProject(id) { result ->
-
-            for (i in 0 until result.size) {
-                temp.add(i, Ilist.ImageList(result[i]))
-            }
-            listForIlisit.postValue(temp)
-        }
+    fun setContent(id: Int): MutableLiveData<MutableList<Ilist>> {
+        ParseForVM().parseProject(id) { result -> listForIlisit.postValue(result) }
         return listForIlisit
     }
 
     fun setComments(id: Int): MutableLiveData<MutableList<Ilist>> {
-        val temp: MutableList<Ilist> = mutableListOf()
-
-        ParseForVM().parseComments(id) { result ->
-            for (i in 0 until result.size) {
-                temp.add(i, Ilist.CommentsList(result[i]))
-            }
-            listForIlisit1.postValue(temp)
-        }
+        ParseForVM().parseComments(id) { result -> listForIlisit1.postValue(result) }
         return listForIlisit1
-
     }
 
     /*fun insertData(context: Context, it: MutableList<CardBinding>) = viewModelScope.launch(Dispatchers.IO) {

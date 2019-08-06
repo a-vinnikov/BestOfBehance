@@ -2,6 +2,6 @@ package com.example.bestofbehance.viewModels
 
 import com.example.bestofbehance.gson.CardBinding
 
-interface InClick{
-    fun onItemClick(item: CardBinding)
+interface BookmarkClick{
+    fun setPosition(position: Int)
 }

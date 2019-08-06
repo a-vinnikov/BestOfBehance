@@ -6,8 +6,7 @@ import com.bumptech.glide.Glide
 import java.io.Serializable
 
 data class ImageBinding(
-    var bigImageCard: String? = null,
-    var description: String? = null
+    var bigImageCard: String? = null
 ) : Serializable {
     @BindingAdapter("loadingImage1")
     fun setImageUrl1(view: ImageView, url: String) {
