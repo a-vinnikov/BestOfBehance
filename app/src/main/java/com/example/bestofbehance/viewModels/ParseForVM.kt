@@ -101,8 +101,9 @@ class ParseForVM {
             Response.Listener<JSONObject> { responce ->
                 val responce_gson = Gson().fromJson(responce.toString(), CommentsMain::class.java)
                 val jsonArray = responce.getJSONArray("comments")
+                val numberOfComments = jsonArray.length()
                 if(jsonArray.length() == 0){
-                    val temp = "Comments(${jsonArray.length()})"
+                    val temp = numberOfComments
                     iListCom.add(Ilist.CountList(CountBinding(temp)))
                 }
                 parse@ for (i in 0 until jsonArray.length()) {
@@ -111,11 +112,11 @@ class ParseForVM {
                     val commentsName = responce_gson.comments?.get(i)?.user?.displayName
                     val comment = responce_gson.comments?.get(i)?.comment
                     val date = responce_gson.comments?.get(i)?.createdOn.toString()
-                    val numberOfComments = jsonArray.length().toString()
+
 
                     //mAPIList.add(APIList(Arts, Avatars, Names, Posts, Views, Appreciations, Comments, id))
                     if (i == 0) {
-                        val temp = "Comments($numberOfComments)"
+                        val temp = numberOfComments
                         iListCom.add(Ilist.CountList(CountBinding(temp)))
                     }
                     iListCom.add(Ilist.CommentsList(CommentsBinding(commentsAvatarView, commentsName, comment, date)))

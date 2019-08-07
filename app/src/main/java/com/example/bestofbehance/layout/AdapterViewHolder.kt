@@ -1,6 +1,7 @@
 package com.example.bestofbehance.layout
 
 import android.content.Context
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -16,16 +17,23 @@ import java.text.DecimalFormat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.paging.PaginationScrollListener
+import com.example.bestofbehance.room.DBMain
 import com.example.bestofbehance.viewModels.BookmarkClick
 
 
-class AdapterViewHolder(val recyclerView: RecyclerView, var list: MutableList<CardBinding>, val ViewMode: Int, val inClick: InClick, val BookmarkClick: BookmarkClick
+class AdapterViewHolder(
+    val recyclerView: RecyclerView,
+    var list: MutableList<CardBinding>,
+    val ViewMode: Int,
+    val inClick: InClick,
+    val BookmarkClick: BookmarkClick
 ) :
     RecyclerView.Adapter<AdapterViewHolder.ViewHolder>() {
 
     lateinit var context: Context
     private var isLoading = false
     private val isLastPage = false
+    var position = 0
 
     //PagedListAdapter<CardBinding, AdapterViewHolder.ViewHolder>(diffCallback) {
 
@@ -37,9 +45,11 @@ class AdapterViewHolder(val recyclerView: RecyclerView, var list: MutableList<Ca
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        /*if(position == list.lastIndex){
-            list.addAll(list)
-        }*/
+        this.position = holder.adapterPosition
+        Log.d("mLog", this.position.toString())
+
+        holder.itemView.bookmark.isChecked = DBMain.find(context, list[holder.adapterPosition].id) != null
+
         holder.itemView.bookmark.setOnClickListener {
             BookmarkClick.setPosition(position)
         }
@@ -69,29 +79,6 @@ class AdapterViewHolder(val recyclerView: RecyclerView, var list: MutableList<Ca
 
         }
 
-        recyclerView.addOnScrollListener(object : PaginationScrollListener(LinearLayoutManager(context)) {
-            override fun getTotalPageCount(): Int {
-                //return TOTAL_PAGES
-                return 0
-            }
-
-            override fun isLastPage(): Boolean {
-                if (position == (list.lastIndex - 5)){
-                    isLoading = true
-                    getMoreItems()
-                }
-                return isLastPage
-            }
-
-            override fun isLoading(): Boolean {
-                return isLoading
-            }
-
-            override fun loadMoreItems() {
-                Toast.makeText(context, "Need more items", Toast.LENGTH_SHORT).show()
-            }
-        })
-
         holder.bind(copyList)
     }
 
@@ -99,19 +86,6 @@ class AdapterViewHolder(val recyclerView: RecyclerView, var list: MutableList<Ca
         list.addAll(listData)
         notifyDataSetChanged()
     }
-
-    fun getMoreItems() {
-        isLoading = false
-        addData(list)
-    }
-
-   /* fun addData(list: MutableList<CardBinding>) {
-        val size = list.size
-        list.addAll(list)
-        val sizeNew = list.size
-        notifyItemRangeChanged(size, sizeNew)
-        //adapterAbc.notifyDataSetChanged()
-    }*/
 
     override fun getItemCount() = list.size
 

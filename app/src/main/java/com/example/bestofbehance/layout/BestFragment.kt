@@ -3,6 +3,7 @@ package com.example.bestofbehance.layout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -12,11 +13,11 @@ import android.view.*
 import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuInflater
+import android.widget.Toast
 import com.example.bestofbehance.gson.CardBinding
-import com.example.bestofbehance.room.CardDataBase
+import com.example.bestofbehance.paging.PaginationScrollListener
 import com.example.bestofbehance.room.DBMain
 import com.example.bestofbehance.viewModels.*
-import kotlinx.android.synthetic.main.list_item.*
 
 
 class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
@@ -27,7 +28,10 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     val VIEW_MODE_GRIDVIEW = 1
     var currentViewMode = 0
     var page = 1
-    lateinit var adapterAbc: AdapterViewHolder
+    lateinit var adapterBest: AdapterViewHolder
+
+    private var isLoading = false
+    private val isLastPage = false
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -70,6 +74,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
+        DBMain.close(context!!)
         sharedCurrentViewMode()
         createRecyclerView(currentViewMode)
         swipe.isRefreshing = false
@@ -89,11 +94,46 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             createRecyclerView(currentViewMode)
         }
 
+        recycler_view.addOnScrollListener(object : PaginationScrollListener(LinearLayoutManager(context)) {
+            override fun getTotalPageCount(): Int {
+                //return TOTAL_PAGES
+                return 0
+            }
+
+            override fun isLastPage(): Boolean {
+                if (adapterBest.position == (adapterBest.list.size - 1)) {
+                    isLoading = true
+                    page += 1
+                    jsonModel.setAlterGeneral(page)
+                    val observerGSON0 = Observer<MutableList<CardBinding>> {
+                        adapterBest.addData(it)
+                        isLoading = false
+                        Log.d("mLog", "Loaded page $page")
+                    }
+                    jsonModel.recList1.observe(this@Best, observerGSON0)
+                }
+                return isLastPage
+            }
+
+            override fun isLoading(): Boolean {
+                return isLoading
+            }
+
+            override fun loadMoreItems() {
+                Toast.makeText(context, "Need more items", Toast.LENGTH_SHORT).show()
+            }
+        })
+
     }
 
     override fun onResume() {
         super.onResume()
         activity?.navigation?.menu?.findItem(com.example.bestofbehance.R.id.best)?.isChecked = true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        DBMain.close(context!!)
     }
 
     private fun createRecyclerView(currentViewMode: Int) {
@@ -111,12 +151,12 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
             //CardDataBase.getDatabase(context!!)
 
-            adapterAbc = if (currentViewMode == 0) {
+            adapterBest = if (currentViewMode == 0) {
                 adapterFun(it, 0)
             } else {
                 adapterFun(it, 1)
             }
-            recycler_view.adapter = adapterAbc
+            recycler_view.adapter = adapterBest
         }
         jsonModel.recList.observe(this, observerGSON)
 
@@ -146,12 +186,15 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             override fun onItemClick(item: CardBinding) {
                 NaviController(activity).toDetails(item)
             }
-        }, object : BookmarkClick{
+        }, object : BookmarkClick {
             override fun setPosition(position: Int) {
-                DBMain.add(list[position], context!!)
-                DBMain.read(context!!)
+                if (DBMain.find(context!!, list[position].id) == null) {
+                    DBMain.add(list[position], context!!)
+                    DBMain.read(context!!)
+                } else {
+                    DBMain.delete(context!!, list[position].id)
+                }
             }
-
         })
     }
 

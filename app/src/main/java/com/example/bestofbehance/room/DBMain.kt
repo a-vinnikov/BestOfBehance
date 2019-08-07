@@ -4,7 +4,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.util.Log
 import com.example.bestofbehance.gson.CardBinding
-
+import com.example.bestofbehance.room.DBHelper.Companion.KEY_ID
+import com.example.bestofbehance.room.DBHelper.Companion.TABLE_CARDS
 
 
 object DBMain {
@@ -54,11 +55,47 @@ object DBMain {
             Log.d("mLog", "0 rows")
 
         cursor.close()
+        database.close()
     }
 
     fun clear(context: Context){
         val database = DBHelper(context).writableDatabase
-        database.delete(DBHelper.TABLE_CARDS, null, null)
+        database.delete(TABLE_CARDS, null, null)
+    }
+
+    fun delete(context: Context, id: Int){
+        val database = DBHelper(context).writableDatabase
+        database.execSQL("DELETE FROM $TABLE_CARDS WHERE $KEY_ID= '$id'")
+        Log.d("mLog", "Row deleted with ID = $id")
+        //database.delete(TABLE_CARDS, "$KEY_ID=?", arrayOf(id.toString())).toLong()
+    }
+
+    fun find(context: Context, id: Int): Int? {
+        val database = DBHelper(context).writableDatabase
+        var check: Int? = null
+        val cursor = database.query(TABLE_CARDS, arrayOf(KEY_ID), null, null, null, null, null)
+        if (cursor.moveToFirst()) {
+            val idIndex = cursor.getColumnIndex(KEY_ID)
+            do {
+                if (cursor.getInt(idIndex) == id){
+                    check = cursor.getInt(idIndex)
+                    Log.d("mLog", "Found a match: ID = " + cursor.getInt(idIndex))
+                }
+
+            } while (cursor.moveToNext() && check == null)
+        } else
+            Log.d("mLog", "No matches found")
+
+        cursor.close()
+        database.close()
+        return check
+    }
+
+    fun close(context: Context) {
+        val database = DBHelper(context).writableDatabase
+        if (database != null) {
+            database.close()
+        }
     }
 
 }

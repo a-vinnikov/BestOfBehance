@@ -34,10 +34,14 @@
         <item name="android:background">@drawable/toolbar_drawer_toggle</item>
         <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
     </style>
-    <style name="toolbartoggleButton"  parent="android:Theme.Black">
+    <style name="toolbarToggleButton" parent="android:Theme.Black">
         <item name="android:buttonStyleToggle">@style/Toolbar.Widget.Button.Toggle</item>
         <item name="android:textOn"/>
         <item name="android:textOff"/>
+    </style>
+
+    <style name="Comments.Widget.Button" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:background">@android:color/transparent</item>
     </style>
 
 </resources>

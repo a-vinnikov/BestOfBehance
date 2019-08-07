@@ -9,12 +9,14 @@ import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.bestofbehance.R
 import com.example.bestofbehance.databinding.CommentItemBinding
 import com.example.bestofbehance.binding.CommentsBinding
 import com.example.bestofbehance.binding.ImageBinding
 import com.example.bestofbehance.databinding.CountItemBinding
 import com.example.bestofbehance.databinding.ListImageBinding
 import com.example.bestofbehance.databinding.ListTextBinding
+import kotlinx.android.synthetic.main.count_item.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -101,7 +103,6 @@ class AdapterGeneralComments(private val list: List<Ilist>) : RecyclerView.Adapt
 
         fun onBindImage(list: Ilist.CountList) {
             binding.countView = list.countList
-
         }
     }
 

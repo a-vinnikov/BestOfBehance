@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.*
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -28,7 +30,36 @@ class DetailsFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.two_buttons_toolbar, menu)
+
+        if (DBMain.find(context!!, args.cardBindingArg.id) == null) {
+            menu.findItem(R.id.menu_bookmark)
+                ?.setIcon(R.drawable.ic_bookmarks_normal)
+        } else {
+            menu.findItem(R.id.menu_bookmark)
+                ?.setIcon(R.drawable.ic_bookmarks_pressed)
+        }
+
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_bookmark -> {
+                if (DBMain.find(context!!, args.cardBindingArg.id) == null) {
+                    DBMain.add(args.cardBindingArg, context!!)
+                    DBMain.read(context!!)
+                    item.setIcon(R.drawable.ic_bookmarks_pressed)
+                } else {
+                    DBMain.delete(context!!, args.cardBindingArg.id)
+                    item.setIcon(R.drawable.ic_bookmarks_normal)
+                }
+            }
+
+            R.id.menu_share -> {
+                Toast.makeText(activity, "Work in progress", Toast.LENGTH_SHORT).show()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 
@@ -51,11 +82,14 @@ class DetailsFragment : Fragment() {
         return fragmentDetailsView
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        comments.text = "COMMENTS(${args.cardBindingArg.comments.toString()})"
+        comments.text = this.resources.getQuantityString(
+            R.plurals.commentsCount1,
+            args.cardBindingArg.comments!!.toInt(),
+            args.cardBindingArg.comments!!.toInt()
+        )
 
         val liveData = fetchData()
 
@@ -69,21 +103,19 @@ class DetailsFragment : Fragment() {
                     is Ilist.TextList -> imageItems = it
                     is Ilist.CountList -> commentsItems = it
                 }
+
                 if (imageItems != null && commentsItems != null) {
+
+                    comments.setOnClickListener {
+                        recycler_view1.scrollToPosition(imageItems!!.lastIndex + 1)
+                    }
+
                     val temp: List<Ilist> = imageItems.orEmpty() + commentsItems.orEmpty()
                     recycler_view1.adapter = AdapterGeneralComments(temp)
                     recycler_view1.layoutManager = LinearLayoutManager(activity)
                     //liveData.removeObserver(this)
                 }
             })
-
-        /*val sharedPreference = activity?.getSharedPreferences("ViewMode", AppCompatActivity.MODE_PRIVATE)
-        position = sharedPreference!!.getInt("position", position)
-        list_name1.text = position.toString()*/
-
-        //DBMain.add(args.cardBindingArg, context!!)
-        //DBMain.clear(context!!)
-        //DBMain.read(context!!)
     }
 
     private fun fetchData(): MediatorLiveData<MutableList<Ilist>> {
@@ -92,17 +124,13 @@ class DetailsFragment : Fragment() {
         liveDataIlist.addSource(jsonModel.setContent(args.cardBindingArg.id)) {
             if (it != null) {
                 liveDataIlist.value = it
-                println("Длина листа c изображениями " + liveDataIlist.value?.size)
             }
         }
         liveDataIlist.addSource(jsonModel.setComments(args.cardBindingArg.id)) {
             if (it != null) {
                 liveDataIlist.value = it
-                println("Длина листа комментариев  " + liveDataIlist.value?.size)
             }
         }
-
-        println("Длина медиатора-листа " + liveDataIlist.value?.size)
         return liveDataIlist
     }
 }

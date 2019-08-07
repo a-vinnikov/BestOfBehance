@@ -9,12 +9,19 @@ import com.example.bestofbehance.layout.Ilist
 class VMForParse : AndroidViewModel(Application()) {
 
     val recList: MutableLiveData<MutableList<CardBinding>> by lazy { MutableLiveData<MutableList<CardBinding>>() }
+    val recList1: MutableLiveData<MutableList<CardBinding>> by lazy { MutableLiveData<MutableList<CardBinding>>() }
     val listForIlisit: MutableLiveData<MutableList<Ilist>> by lazy { MutableLiveData<MutableList<Ilist>>() }
     val listForIlisit1: MutableLiveData<MutableList<Ilist>> by lazy { MutableLiveData<MutableList<Ilist>>() }
 
     fun setGeneral(page: Int): MutableLiveData<MutableList<CardBinding>> {
         ParseForVM().parseGeneral(page) { result -> recList.postValue(result)}
         return recList
+    }
+
+    fun setAlterGeneral(page: Int): MutableLiveData<MutableList<CardBinding>> {
+        recList1.value?.clear()
+        ParseForVM().parseGeneral(page) { result -> recList1.postValue(result)}
+        return recList1
     }
 
     fun setContent(id: Int): MutableLiveData<MutableList<Ilist>> {
