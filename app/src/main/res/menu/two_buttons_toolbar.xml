@@ -11,7 +11,7 @@
     <item
             android:id="@+id/menu_bookmark"
             android:title=""
-            android:icon="@drawable/ic_bookmarks_normal"
+            android:icon="@drawable/drawer_toolbar_bookmark"
             app:showAsAction="ifRoom"/>
 
 </menu>

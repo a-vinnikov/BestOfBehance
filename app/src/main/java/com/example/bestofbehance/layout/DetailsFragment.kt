@@ -1,11 +1,9 @@
 package com.example.bestofbehance.layout
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.*
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -14,11 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.R
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
 import com.example.bestofbehance.gson.CardBinding
-import com.example.bestofbehance.room.Cards
 import com.example.bestofbehance.room.DBMain
 import com.example.bestofbehance.viewModels.VMForParse
 import com.example.bestofbehance.viewModels.ViewModelFactory
-import com.orm.SugarRecord
 import kotlinx.android.synthetic.main.fragment_details.*
 
 
@@ -93,15 +89,15 @@ class DetailsFragment : Fragment() {
 
         val liveData = fetchData()
 
-        var imageItems: MutableList<Ilist>? = null
-        var commentsItems: MutableList<Ilist>? = null
+        var imageItems: MutableList<MultiList>? = null
+        var commentsItems: MutableList<MultiList>? = null
 
         liveData.observe(this,
-            Observer<MutableList<Ilist>> {
+            Observer<MutableList<MultiList>> {
                 when (it[position]) {
-                    is Ilist.ImageList -> imageItems = it
-                    is Ilist.TextList -> imageItems = it
-                    is Ilist.CountList -> commentsItems = it
+                    is MultiList.ImageList -> imageItems = it
+                    is MultiList.TextList -> imageItems = it
+                    is MultiList.CountList -> commentsItems = it
                 }
 
                 if (imageItems != null && commentsItems != null) {
@@ -110,7 +106,7 @@ class DetailsFragment : Fragment() {
                         recycler_view1.scrollToPosition(imageItems!!.lastIndex + 1)
                     }
 
-                    val temp: List<Ilist> = imageItems.orEmpty() + commentsItems.orEmpty()
+                    val temp: List<MultiList> = imageItems.orEmpty() + commentsItems.orEmpty()
                     recycler_view1.adapter = AdapterGeneralComments(temp)
                     recycler_view1.layoutManager = LinearLayoutManager(activity)
                     //liveData.removeObserver(this)
@@ -118,8 +114,8 @@ class DetailsFragment : Fragment() {
             })
     }
 
-    private fun fetchData(): MediatorLiveData<MutableList<Ilist>> {
-        val liveDataIlist = MediatorLiveData<MutableList<Ilist>>()
+    private fun fetchData(): MediatorLiveData<MutableList<MultiList>> {
+        val liveDataIlist = MediatorLiveData<MutableList<MultiList>>()
 
         liveDataIlist.addSource(jsonModel.setContent(args.cardBindingArg.id)) {
             if (it != null) {

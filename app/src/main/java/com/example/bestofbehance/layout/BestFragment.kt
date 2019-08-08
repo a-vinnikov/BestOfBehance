@@ -13,20 +13,20 @@ import android.view.*
 import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuInflater
-import android.widget.Toast
 import com.example.bestofbehance.gson.CardBinding
 import com.example.bestofbehance.paging.PaginationScrollListener
 import com.example.bestofbehance.room.DBMain
 import com.example.bestofbehance.viewModels.*
 
 
+val VIEW_MODE_LISTVIEW = "list"
+val VIEW_MODE_GRIDVIEW = "tile"
+
 class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     lateinit var jsonModel: VMForParse
 
-    val VIEW_MODE_LISTVIEW = 0
-    val VIEW_MODE_GRIDVIEW = 1
-    var currentViewMode = 0
+    var currentViewMode = "list"
     var page = 1
     lateinit var adapterBest: AdapterViewHolder
 
@@ -36,10 +36,10 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(com.example.bestofbehance.R.menu.one_button_toolbar, menu)
-        if (currentViewMode == 0) {
+        if (currentViewMode == "list") {
             menu.findItem(com.example.bestofbehance.R.id.menu_switcher)
                 ?.setIcon(com.example.bestofbehance.R.drawable.list)
-        } else {
+        } else if (currentViewMode == "tile"){
             menu.findItem(com.example.bestofbehance.R.id.menu_switcher)
                 ?.setIcon(com.example.bestofbehance.R.drawable.tile)
         }
@@ -48,18 +48,18 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         sharedCurrentViewMode()
-        val editor = activity?.getSharedPreferences("ViewMode", AppCompatActivity.MODE_PRIVATE)?.edit()
+        val editor = activity?.getSharedPreferences("viewMode", AppCompatActivity.MODE_PRIVATE)?.edit()
         when (item.itemId) {
             com.example.bestofbehance.R.id.menu_switcher -> {
-                if (currentViewMode == 1) {
+                if (currentViewMode == "tile") {
                     item.setIcon(com.example.bestofbehance.R.drawable.list)
                     createRecyclerView(VIEW_MODE_LISTVIEW)
-                    editor?.putInt("currentViewMode", VIEW_MODE_LISTVIEW)
+                    editor?.putString("currentViewMode", VIEW_MODE_LISTVIEW)
                     editor?.apply()
-                } else {
+                } else if (currentViewMode == "list"){
                     item.setIcon(com.example.bestofbehance.R.drawable.tile)
                     createRecyclerView(VIEW_MODE_GRIDVIEW)
-                    editor?.putInt("currentViewMode", VIEW_MODE_GRIDVIEW)
+                    editor?.putString("currentViewMode", VIEW_MODE_GRIDVIEW)
                     editor?.apply()
                 }
             }
@@ -104,13 +104,13 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 if (adapterBest.position == (adapterBest.list.size - 1)) {
                     isLoading = true
                     page += 1
-                    jsonModel.setAlterGeneral(page)
+                    jsonModel.setNextPage(page)
                     val observerGSON0 = Observer<MutableList<CardBinding>> {
                         adapterBest.addData(it)
                         isLoading = false
                         Log.d("mLog", "Loaded page $page")
                     }
-                    jsonModel.recList1.observe(this@Best, observerGSON0)
+                    jsonModel.pagingResponseList.observe(this@Best, observerGSON0)
                 }
                 return isLastPage
             }
@@ -120,7 +120,6 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             }
 
             override fun loadMoreItems() {
-                Toast.makeText(context, "Need more items", Toast.LENGTH_SHORT).show()
             }
         })
 
@@ -136,8 +135,8 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         DBMain.close(context!!)
     }
 
-    private fun createRecyclerView(currentViewMode: Int) {
-        if (jsonModel.recList.value == null || swipe.isRefreshing) {
+    private fun createRecyclerView(currentViewMode: String) {
+        if (jsonModel.mainContentList.value == null || swipe.isRefreshing) {
             jsonModel.setGeneral(page)
         }
 
@@ -151,38 +150,38 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
             //CardDataBase.getDatabase(context!!)
 
-            adapterBest = if (currentViewMode == 0) {
-                adapterFun(it, 0)
-            } else {
-                adapterFun(it, 1)
+            if (currentViewMode == "list") {
+                adapterBest = adapterFun(it, "list")
+            } else if (currentViewMode == "tile"){
+                adapterBest = adapterFun(it, "tile")
             }
             recycler_view.adapter = adapterBest
         }
-        jsonModel.recList.observe(this, observerGSON)
+        jsonModel.mainContentList.observe(this, observerGSON)
 
 
-        if (currentViewMode == 0) {
+        if (currentViewMode == "list") {
             recycler_view.layoutManager = LinearLayoutManager(activity)
-        } else {
+        } else if(currentViewMode == "tile"){
             recycler_view.layoutManager = GridLayoutManager(activity, 2)
         }
         //recycler_view.layoutManager?.scrollToPosition(position)
     }
 
     fun sharedCurrentViewMode() {
-        val sharedPreference = activity?.getSharedPreferences("ViewMode", AppCompatActivity.MODE_PRIVATE)
-        currentViewMode = sharedPreference!!.getInt("currentViewMode", currentViewMode)
+        val sharedPreference = activity?.getSharedPreferences("viewMode", AppCompatActivity.MODE_PRIVATE)
+        currentViewMode = sharedPreference!!.getString("currentViewMode", currentViewMode)!!
     }
 
     fun sharedPosition(position: Int) {
-        val editor = activity?.getSharedPreferences("ViewMode", AppCompatActivity.MODE_PRIVATE)?.edit()
+        val editor = activity?.getSharedPreferences("viewMode", AppCompatActivity.MODE_PRIVATE)?.edit()
         editor?.putInt("position", position)
         editor?.apply()
     }
 
-    private fun adapterFun(list: MutableList<CardBinding>, ViewMode: Int): AdapterViewHolder {
+    private fun adapterFun(list: MutableList<CardBinding>, viewMode: String): AdapterViewHolder {
 
-        return AdapterViewHolder(recycler_view, list, ViewMode, object : InClick {
+        return AdapterViewHolder(recycler_view, list, viewMode, object : InClick {
             override fun onItemClick(item: CardBinding) {
                 NaviController(activity).toDetails(item)
             }

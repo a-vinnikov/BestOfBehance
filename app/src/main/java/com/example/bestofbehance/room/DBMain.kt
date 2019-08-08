@@ -23,7 +23,7 @@ object DBMain {
         values.put(DBHelper.KEY_APPRECIATIONS, binding.appreciations)
         values.put(DBHelper.KEY_COMMENTS, binding.comments)
 
-        database.insert(DBHelper.TABLE_CARDS, null, values)
+        database.insert(TABLE_CARDS, null, values)
     }
 
     fun read(context: Context){
@@ -92,10 +92,7 @@ object DBMain {
     }
 
     fun close(context: Context) {
-        val database = DBHelper(context).writableDatabase
-        if (database != null) {
-            database.close()
-        }
+        DBHelper(context).writableDatabase?.close()
     }
 
 }

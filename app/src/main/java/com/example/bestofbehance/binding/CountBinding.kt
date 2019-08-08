@@ -1,3 +1,3 @@
 package com.example.bestofbehance.binding
 
-data class CountBinding(var counfOfComments: Int)
+data class CountBinding(var countOfComments: Int)

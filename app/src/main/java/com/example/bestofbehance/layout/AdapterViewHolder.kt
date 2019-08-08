@@ -7,7 +7,6 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.ViewGroup
-import android.widget.Toast
 import kotlinx.android.synthetic.main.list_item.view.*
 import com.example.bestofbehance.gson.CardBinding
 import com.example.bestofbehance.databinding.ListItemBinding
@@ -15,19 +14,11 @@ import com.example.bestofbehance.viewModels.InClick
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.bestofbehance.paging.PaginationScrollListener
 import com.example.bestofbehance.room.DBMain
 import com.example.bestofbehance.viewModels.BookmarkClick
 
 
-class AdapterViewHolder(
-    val recyclerView: RecyclerView,
-    var list: MutableList<CardBinding>,
-    val ViewMode: Int,
-    val inClick: InClick,
-    val BookmarkClick: BookmarkClick
-) :
+class AdapterViewHolder(val recyclerView: RecyclerView, var list: MutableList<CardBinding>, val viewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick) :
     RecyclerView.Adapter<AdapterViewHolder.ViewHolder>() {
 
     lateinit var context: Context
@@ -51,7 +42,7 @@ class AdapterViewHolder(
         holder.itemView.bookmark.isChecked = DBMain.find(context, list[holder.adapterPosition].id) != null
 
         holder.itemView.bookmark.setOnClickListener {
-            BookmarkClick.setPosition(position)
+            bookmarkClick.setPosition(position)
         }
 
 
@@ -59,20 +50,16 @@ class AdapterViewHolder(
             inClick.onItemClick(list[holder.adapterPosition])
         }
 
-        if (ViewMode == 1) {
+        if (viewMode == "tile") {
             holder.itemView.avatarView.visibility = GONE
-            val out = TypedValue()
-            context.resources.getValue(com.example.bestofbehance.R.dimen.height_of_grid, out, true)
-            val floatResources = out.float
+            val tValue = TypedValue()
+            context.resources.getValue(com.example.bestofbehance.R.dimen.height_of_grid, tValue, true)
+            val floatResources = tValue.float
             holder.itemView.bigImageView.layoutParams.height = floatResources.toInt()
         }
 
-        if (holder.adapterPosition == list.size) {
-            Toast.makeText(context, "End", Toast.LENGTH_SHORT).show()
-        }
-
         val copyList = list[holder.adapterPosition].copy()
-        if (ViewMode == 1) {
+        if (viewMode == "tile") {
             copyList.views = holder.decimal(copyList.views.toString())
             copyList.appreciations = holder.decimal(copyList.appreciations.toString())
             copyList.comments = holder.decimal(copyList.comments.toString())
@@ -98,16 +85,16 @@ class AdapterViewHolder(
             CardBinding().setRoundedImageUrl(binding.avatarView, Api.avatar.toString())
         }
 
-        fun decimal(number: String): String {
-            var numberK = number
-            if (numberK.toInt() > 1000) {
-                var round = numberK.toInt()
+        fun decimal(numberString: String): String {
+            var number = numberString
+            if (number.toInt() > 1000) {
+                var round = number.toInt()
                 val df = DecimalFormat("#.#")
                 round /= 1000
                 df.roundingMode = RoundingMode.CEILING
-                numberK = (df.format(round) + "k")
+                number = (df.format(round) + "k")
             }
-            return numberK
+            return number
         }
 
     }

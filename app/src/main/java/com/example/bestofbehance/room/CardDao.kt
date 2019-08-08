@@ -17,7 +17,7 @@ interface CardDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(cardBinding: CardBinding)
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     fun update(cardBinding: CardBinding)
 
     @Query("DELETE FROM CardData")
