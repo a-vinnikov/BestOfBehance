@@ -13,20 +13,21 @@ import android.view.*
 import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuInflater
-import com.example.bestofbehance.gson.CardBinding
+import com.example.bestofbehance.R
+import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.paging.PaginationScrollListener
 import com.example.bestofbehance.room.DBMain
 import com.example.bestofbehance.viewModels.*
 
 
-val VIEW_MODE_LISTVIEW = "list"
-val VIEW_MODE_GRIDVIEW = "tile"
+const val VIEW_MODE_LISTVIEW = "list"
+const val VIEW_MODE_GRIDVIEW = "tile"
 
 class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     lateinit var jsonModel: VMForParse
 
-    var currentViewMode = "list"
+    private var currentViewMode = "list"
     var page = 1
     lateinit var adapterBest: AdapterViewHolder
 
@@ -35,14 +36,13 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(com.example.bestofbehance.R.menu.one_button_toolbar, menu)
-        if (currentViewMode == "list") {
-            menu.findItem(com.example.bestofbehance.R.id.menu_switcher)
-                ?.setIcon(com.example.bestofbehance.R.drawable.list)
-        } else if (currentViewMode == "tile"){
-            menu.findItem(com.example.bestofbehance.R.id.menu_switcher)
-                ?.setIcon(com.example.bestofbehance.R.drawable.tile)
+        inflater.inflate(R.menu.one_button_toolbar, menu)
+
+        when(currentViewMode){
+            "list" -> {menu.findItem(R.id.menu_switcher)?.setIcon(R.drawable.list)}
+            "tile" -> {menu.findItem(R.id.menu_switcher)?.setIcon(R.drawable.tile)}
         }
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -50,14 +50,14 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         sharedCurrentViewMode()
         val editor = activity?.getSharedPreferences("viewMode", AppCompatActivity.MODE_PRIVATE)?.edit()
         when (item.itemId) {
-            com.example.bestofbehance.R.id.menu_switcher -> {
+            R.id.menu_switcher -> {
                 if (currentViewMode == "tile") {
-                    item.setIcon(com.example.bestofbehance.R.drawable.list)
+                    item.setIcon(R.drawable.list)
                     createRecyclerView(VIEW_MODE_LISTVIEW)
                     editor?.putString("currentViewMode", VIEW_MODE_LISTVIEW)
                     editor?.apply()
                 } else if (currentViewMode == "list"){
-                    item.setIcon(com.example.bestofbehance.R.drawable.tile)
+                    item.setIcon(R.drawable.tile)
                     createRecyclerView(VIEW_MODE_GRIDVIEW)
                     editor?.putString("currentViewMode", VIEW_MODE_GRIDVIEW)
                     editor?.apply()
@@ -81,7 +81,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.example.bestofbehance.R.layout.fragment_best, container, false)
+        return inflater.inflate(R.layout.fragment_best, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -127,7 +127,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onResume() {
         super.onResume()
-        activity?.navigation?.menu?.findItem(com.example.bestofbehance.R.id.best)?.isChecked = true
+        activity?.navigation?.menu?.findItem(R.id.best)?.isChecked = true
     }
 
     override fun onDestroy() {
@@ -181,15 +181,14 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private fun adapterFun(list: MutableList<CardBinding>, viewMode: String): AdapterViewHolder {
 
-        return AdapterViewHolder(recycler_view, list, viewMode, object : InClick {
+        return AdapterViewHolder(list, viewMode, object : InClick {
             override fun onItemClick(item: CardBinding) {
-                NaviController(activity).toDetails(item)
+                NaviController(activity).toDetailsFromBest(item)
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
                 if (DBMain.find(context!!, list[position].id) == null) {
                     DBMain.add(list[position], context!!)
-                    DBMain.read(context!!)
                 } else {
                     DBMain.delete(context!!, list[position].id)
                 }

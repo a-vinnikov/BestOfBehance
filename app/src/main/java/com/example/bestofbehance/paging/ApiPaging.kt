@@ -3,7 +3,7 @@ package com.example.bestofbehance.paging
 
 import android.util.Log
 import com.example.bestofbehance.room.CardData
-import com.example.bestofbehance.gson.CardBinding
+import com.example.bestofbehance.binding.CardBinding
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient

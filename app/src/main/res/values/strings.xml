@@ -12,6 +12,7 @@
     <string name="not_rounded">not rounded</string>
     <string name="not_description">not_description</string>
     <string name="comments">COMMENTS</string>
+    <string name="no_bookmarks">No bookmarks</string>
 
     <plurals name="commentsCount">
         <item quantity="one">Comment(%d)</item>

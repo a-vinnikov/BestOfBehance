@@ -28,7 +28,7 @@
 
         <argument
                 android:name="cardBindingArg"
-                app:argType="com.example.bestofbehance.gson.CardBinding" />
+                app:argType="com.example.bestofbehance.binding.CardBinding" />
 
     </fragment>
     <fragment android:id="@+id/profile"

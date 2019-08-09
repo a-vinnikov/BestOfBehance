@@ -1,11 +1,6 @@
 
 package com.example.bestofbehance.paging
 
-import android.content.ContentValues.TAG
-import android.util.Log
-import androidx.paging.PositionalDataSource
-import com.example.bestofbehance.gson.CardBinding
-
 
 /*internal class CardPositionalDataSource : PositionalDataSource<CardBinding>() {
 

@@ -6,7 +6,7 @@
         android:background="@color/colorMain">
 
     <data>
-        <variable name="cardViewDetails" type="com.example.bestofbehance.gson.CardBinding"/>
+        <variable name="cardViewDetails" type="com.example.bestofbehance.binding.CardBinding"/>
         <variable name="url" type="String"/>
     </data>
 

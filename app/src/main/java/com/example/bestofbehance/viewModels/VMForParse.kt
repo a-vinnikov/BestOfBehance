@@ -2,7 +2,7 @@ package com.example.bestofbehance.viewModels
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.example.bestofbehance.gson.CardBinding
+import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.layout.MultiList
 
 

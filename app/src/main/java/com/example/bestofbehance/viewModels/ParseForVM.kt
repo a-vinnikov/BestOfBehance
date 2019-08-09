@@ -4,7 +4,7 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.VolleyLog
 import com.android.volley.toolbox.JsonObjectRequest
-import com.example.bestofbehance.gson.CardBinding
+import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.binding.CommentsBinding
 import com.example.bestofbehance.binding.CountBinding
 import com.example.bestofbehance.binding.ImageBinding

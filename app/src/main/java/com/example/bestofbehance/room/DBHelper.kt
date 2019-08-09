@@ -8,7 +8,7 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
-            "create table $TABLE_CARDS($KEY_ID integer primary key,$KEY_BIGIMAGE text,$KEY_AVATAR text,$KEY_NAME text,$KEY_POST text,$KEY_VIEWS text,$KEY_APPRECIATIONS text,$KEY_COMMENTS text)"
+            "create table $TABLE_CARDS($KEY_ID integer primary key,$KEY_BIGIMAGE text,$KEY_AVATAR text,$KEY_NAME text,$KEY_POST text,$KEY_VIEWS text,$KEY_APPRECIATIONS text,$KEY_COMMENTS text,$KEY_DATE text)"
         )
 
     }
@@ -20,7 +20,7 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
     }
 
     companion object {
-        val DATABASE_VERSION = 1
+        val DATABASE_VERSION = 2
         val DATABASE_NAME = "cardDb"
         val TABLE_CARDS = "cards"
 
@@ -32,5 +32,6 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         val KEY_VIEWS = "views"
         val KEY_APPRECIATIONS = "appreciations"
         val KEY_COMMENTS = "comments"
+        val KEY_DATE = "date"
     }
 }

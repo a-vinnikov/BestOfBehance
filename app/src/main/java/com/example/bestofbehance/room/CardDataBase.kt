@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.bestofbehance.gson.CardBinding
+import com.example.bestofbehance.binding.CardBinding
 import androidx.room.RoomDatabase
 import androidx.room.Room
 import java.util.concurrent.Executors

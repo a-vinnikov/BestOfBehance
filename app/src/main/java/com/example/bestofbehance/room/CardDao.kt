@@ -1,9 +1,8 @@
 package com.example.bestofbehance.room
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.*
-import com.example.bestofbehance.gson.CardBinding
+import com.example.bestofbehance.binding.CardBinding
 
 @Dao
 interface CardDao {

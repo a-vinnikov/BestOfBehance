@@ -5,7 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="cardView" type="com.example.bestofbehance.gson.CardBinding"/>
+        <variable name="cardView" type="com.example.bestofbehance.binding.CardBinding"/>
     </data>
 
     <androidx.cardview.widget.CardView
@@ -166,12 +166,10 @@
 
             <ToggleButton
                     android:id="@+id/bookmark"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_alignParentEnd="true"
                     android:layout_gravity="top|end"
-                    android:layout_marginTop="7dp"
-                    android:layout_marginEnd="7dp"
                     android:layout_alignParentTop="true"
                     style="@style/toggleButton"
                     android:background="@drawable/toggle_bg"

@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.list_item.view.*
-import com.example.bestofbehance.gson.CardBinding
+import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.databinding.ListItemBinding
 import com.example.bestofbehance.viewModels.InClick
 import java.math.RoundingMode
@@ -18,7 +18,7 @@ import com.example.bestofbehance.room.DBMain
 import com.example.bestofbehance.viewModels.BookmarkClick
 
 
-class AdapterViewHolder(val recyclerView: RecyclerView, var list: MutableList<CardBinding>, val viewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick) :
+class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick) :
     RecyclerView.Adapter<AdapterViewHolder.ViewHolder>() {
 
     lateinit var context: Context
