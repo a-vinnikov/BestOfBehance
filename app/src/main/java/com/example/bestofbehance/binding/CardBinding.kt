@@ -1,16 +1,9 @@
 package com.example.bestofbehance.binding
 
-import androidx.databinding.BindingAdapter
-import android.widget.ImageView
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.bumptech.glide.Glide
 import java.io.Serializable
-
-import com.bumptech.glide.request.RequestOptions.bitmapTransform
-import com.google.gson.annotations.SerializedName
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 
 @Entity(tableName = "CardData")
 data class CardBinding(
@@ -24,16 +17,6 @@ data class CardBinding(
     @ColumnInfo(name = "comments") var comments: String? = "0"
 
 
-) : Serializable {
-    @BindingAdapter("loadingImage")
-    fun setImageUrl(view: ImageView, url: String) {
-            Glide.with(view.context).load(url).into(view)
-    }
-    @BindingAdapter("loadingRoundedImage")
-    fun setRoundedImageUrl(view: ImageView, url: String) {
-            Glide.with(view.context).load(url).apply(bitmapTransform(RoundedCornersTransformation(50, 0))).into(view)
-    }
-
-}
+) : Serializable
 
 //.apply( RequestOptions().circleCrop())

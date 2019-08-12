@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
 import com.example.bestofbehance.binding.CardBinding
@@ -71,7 +72,7 @@ class DetailsFragment : Fragment() {
         val fragmentDetailsView: View = binding.root
 
         binding.cardViewDetails = args.cardBindingArg
-        CardBinding().setImageUrl(binding.avatarView1, args.cardBindingArg.avatar.toString())
+        binding.notifyPropertyChanged(BR._all)
 
         jsonModel = ViewModelProviders.of(this, ViewModelFactory()).get(VMForParse::class.java)
 
@@ -109,7 +110,6 @@ class DetailsFragment : Fragment() {
                     val temp: List<MultiList> = imageItems.orEmpty() + commentsItems.orEmpty()
                     recycler_view1.adapter = AdapterGeneralComments(temp)
                     recycler_view1.layoutManager = LinearLayoutManager(activity)
-                    //liveData.removeObserver(this)
                 }
             })
     }

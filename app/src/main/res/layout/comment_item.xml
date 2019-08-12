@@ -6,10 +6,12 @@
 
     <data>
         <variable name="commentsView" type="com.example.bestofbehance.binding.CommentsBinding"/>
+        <import type="com.example.bestofbehance.binding.UnixDateConverter"/>
     </data>
 
+
     <androidx.cardview.widget.CardView
-            android:id="@+id/commentview1"
+            android:id="@+id/commentView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -24,7 +26,7 @@
                 android:layout_height="match_parent">
 
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <ImageView
                     android:id="@+id/commentAvatarView"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
@@ -32,7 +34,8 @@
                     android:layout_marginTop="6dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/commentLine"
-                    app:layout_constraintEnd_toStartOf="@id/comment_name"/>
+                    app:layout_constraintEnd_toStartOf="@id/comment_name"
+                    app:loadingCircleImage="@{commentsView.commentAvatarView}"/>
 
             <TextView
                     android:id="@+id/comment_name"
@@ -78,7 +81,7 @@
                     android:id="@+id/date_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:text="@{UnixDateConverter.convert(commentsView.date)}"
                     android:textSize="14sp"
                     android:layout_marginTop="12dp"
                     android:layout_marginEnd="2dp"

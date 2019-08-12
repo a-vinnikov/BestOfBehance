@@ -4,9 +4,12 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.bestofbehance.BR
 import com.example.bestofbehance.databinding.CommentItemBinding
 import com.example.bestofbehance.binding.CommentsBinding
+import com.example.bestofbehance.binding.CountBinding
 import com.example.bestofbehance.binding.ImageBinding
+import com.example.bestofbehance.binding.TextBinding
 import com.example.bestofbehance.databinding.CountItemBinding
 import com.example.bestofbehance.databinding.ListImageBinding
 import com.example.bestofbehance.databinding.ListTextBinding
@@ -23,44 +26,35 @@ class AdapterGeneralComments(private val list: List<MultiList>) : RecyclerView.A
         private const val TYPE_COMMENTS = 3
     }
 
-    lateinit var bindingImage: ListImageBinding
-    lateinit var bindingText: ListTextBinding
-    lateinit var bindingCount: CountItemBinding
-    lateinit var bindingComments: CommentItemBinding
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (viewType) {
         TYPE_IMAGE -> {
             val inflater = LayoutInflater.from(parent.context)
-            bindingImage = ListImageBinding.inflate(inflater, parent, false)
-            ImageViewHolder(bindingImage)
+            ImageViewHolder(ListImageBinding.inflate(inflater, parent, false))
             //ImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_image, parent, false))
         }
         TYPE_TEXT -> {
             val inflater = LayoutInflater.from(parent.context)
-            bindingText = ListTextBinding.inflate(inflater, parent, false)
-            TextViewHolder(bindingText)
+            TextViewHolder(ListTextBinding.inflate(inflater, parent, false))
             //ImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_image, parent, false))
         }
         TYPE_COUNT -> {
             val inflater = LayoutInflater.from(parent.context)
-            bindingCount = CountItemBinding.inflate(inflater, parent, false)
-            CountViewHolder(bindingCount)
+            CountViewHolder(CountItemBinding.inflate(inflater, parent, false))
             //ImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_image, parent, false))
         }
         TYPE_COMMENTS -> {
             val inflater = LayoutInflater.from(parent.context)
-            bindingComments = CommentItemBinding.inflate(inflater, parent, false)
-            CommentsViewHolder(bindingComments)
+            CommentsViewHolder(CommentItemBinding.inflate(inflater, parent, false))
         }
         else -> throw IllegalArgumentException()
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-        when (holder.itemViewType) {
-            TYPE_IMAGE -> ImageViewHolder(bindingImage).onBindImage(list[position] as MultiList.ImageList)
-            TYPE_TEXT -> TextViewHolder(bindingText).onBindImage(list[position] as MultiList.TextList)
-            TYPE_COUNT -> CountViewHolder(bindingCount).onBindImage(list[position] as MultiList.CountList)
-            TYPE_COMMENTS -> CommentsViewHolder(bindingComments).onBindComments(list[position] as MultiList.CommentsList)
+        when (holder) {
+            is ImageViewHolder -> holder.onBindImage((list[position] as MultiList.ImageList).multiImage)
+            is TextViewHolder -> holder.onBindImage((list[position] as MultiList.TextList).multiText)
+            is CountViewHolder -> holder.onBindImage((list[position] as MultiList.CountList).multiCount)
+            is CommentsViewHolder -> holder.onBindComments((list[position] as MultiList.CommentsList).multiComment)
             else -> throw IllegalArgumentException()
         }
 
@@ -77,45 +71,34 @@ class AdapterGeneralComments(private val list: List<MultiList>) : RecyclerView.A
 
     class ImageViewHolder(private val binding: ListImageBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun onBindImage(list: MultiList.ImageList) {
-            binding.cardViewImage = list.imaList
-            if (list.imaList.bigImageCard != null) {
-                ImageBinding().setBigImageUrl(binding.bigImageCard, list.imaList.bigImageCard.toString())
-            }
-
+        fun onBindImage(image: ImageBinding) {
+            binding.cardViewImage = image
+            binding.notifyPropertyChanged(BR._all)
         }
     }
+
     class TextViewHolder(private val binding: ListTextBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun onBindImage(list: MultiList.TextList) {
-            binding.cardViewText = list.textList
-
+        fun onBindImage(text: TextBinding) {
+            binding.cardViewText = text
+            binding.notifyPropertyChanged(BR._all)
         }
     }
+
     class CountViewHolder(private val binding: CountItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun onBindImage(list: MultiList.CountList) {
-            binding.countView = list.countList
+        fun onBindImage(count: CountBinding) {
+            binding.countsView = count
+            binding.notifyPropertyChanged(BR._all)
         }
     }
 
     class CommentsViewHolder(private val binding: CommentItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun onBindComments(list: MultiList.CommentsList) {
-            binding.commentsView = list.comList
-            CommentsBinding().setImageUrlComment(binding.commentAvatarView, list.comList.commentAvatarView.toString())
-            binding.dateText.text = getDateTime(list.comList.date.toString())
-        }
-
-        @SuppressLint("SimpleDateFormat")
-        private fun getDateTime(timestamp: String): String? {
-            return try {
-                val sdf = SimpleDateFormat("dd MMMM yyyy")
-                val netDate = Date(timestamp.toLong() * 1000)
-                sdf.format(netDate)
-            } catch (e: Exception) {
-                ""
-            }
+        fun onBindComments(comment: CommentsBinding) {
+            binding.commentsView = comment
+            binding.notifyPropertyChanged(BR._all)
+            //binding.dateText.text = getDateTime(comment.date.toString())
         }
 
     }

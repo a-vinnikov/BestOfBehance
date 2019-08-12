@@ -25,8 +25,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/avatarView1"
+            <ImageView
+                    android:id="@+id/avatarViewDetails"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:padding="4dp"
@@ -34,10 +34,11 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toTopOf="@+id/line1"
-                    app:layout_constraintEnd_toStartOf="@+id/list_name1"/>
+                    app:layout_constraintEnd_toStartOf="@+id/nameDetails"
+                    app:loadingCircleImage="@{cardViewDetails.avatar}"/>
 
             <TextView
-                    android:id="@+id/list_name1"
+                    android:id="@+id/nameDetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{cardViewDetails.name}"
@@ -46,18 +47,18 @@
                     android:textStyle="bold"
                     android:textColor="@color/cardview_dark_background"
                     tools:ignore="PrivateResource"
-                    app:layout_constraintStart_toEndOf="@id/avatarView1"
+                    app:layout_constraintStart_toEndOf="@id/avatarViewDetails"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/list_post1"/>
+                    app:layout_constraintBottom_toTopOf="@id/postDetails"/>
             <TextView
-                    android:id="@+id/list_post1"
+                    android:id="@+id/postDetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{cardViewDetails.post}"
                     android:textSize="14sp"
-                    app:layout_constraintTop_toBottomOf="@id/list_name1"
+                    app:layout_constraintTop_toBottomOf="@id/nameDetails"
                     app:layout_constraintBottom_toTopOf="@id/line1"
-                    app:layout_constraintStart_toEndOf="@id/avatarView1"/>
+                    app:layout_constraintStart_toEndOf="@id/avatarViewDetails"/>
 
             <View android:id="@+id/line1"
                   android:layout_width="0dp"
@@ -69,7 +70,7 @@
                   android:background="@color/colorPrimary"
                   app:layout_constraintStart_toStartOf="parent"
                   app:layout_constraintEnd_toEndOf="parent"
-                  app:layout_constraintTop_toBottomOf="@id/list_post1"/>
+                  app:layout_constraintTop_toBottomOf="@id/postDetails"/>
 
             <ImageView
                     android:id="@+id/view_image1"

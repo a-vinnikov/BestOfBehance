@@ -25,12 +25,12 @@
                 android:id="@+id/bigImageCard"
                 android:layout_width="match_parent"
                 android:layout_height="289.2dp"
-                android:src = "@drawable/ic_bb_logo_01"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                tools:ignore="ContentDescription"/>
+                tools:ignore="ContentDescription"
+                app:loadingImage="@{cardViewImage.bigImageCard}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

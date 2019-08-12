@@ -14,6 +14,7 @@ import com.example.bestofbehance.viewModels.InClick
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import androidx.recyclerview.widget.DiffUtil
+import com.example.bestofbehance.BR
 import com.example.bestofbehance.room.DBMain
 import com.example.bestofbehance.viewModels.BookmarkClick
 
@@ -81,8 +82,7 @@ class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String
 
         fun bind(Api: CardBinding) {
             binding.cardView = Api
-            CardBinding().setRoundedImageUrl(binding.bigImageView, Api.bigImage.toString())
-            CardBinding().setRoundedImageUrl(binding.avatarView, Api.avatar.toString())
+            binding.notifyPropertyChanged(BR._all)
         }
 
         fun decimal(numberString: String): String {
