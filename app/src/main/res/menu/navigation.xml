@@ -4,14 +4,17 @@
     <item
             android:id="@+id/best"
             android:icon="@drawable/ic_best"
-            android:title=""/>
+            android:title=""
+            android:orderInCategory="1"/>
     <item
             android:id="@+id/projects"
             android:icon="@drawable/ic_projects"
-            android:title=""/>
+            android:title=""
+            android:orderInCategory="2"/>
 
     <item
             android:id="@+id/people"
             android:icon="@drawable/ic_people"
-            android:title=""/>
+            android:title=""
+            android:orderInCategory="3"/>
 </menu>

@@ -12,11 +12,12 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
+import com.example.bestofbehance.databinding.DetailsCardBinding
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
-import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.room.DBMain
 import com.example.bestofbehance.viewModels.VMForParse
 import com.example.bestofbehance.viewModels.ViewModelFactory
+import kotlinx.android.synthetic.main.details_card.*
 import kotlinx.android.synthetic.main.fragment_details.*
 
 
@@ -103,13 +104,13 @@ class DetailsFragment : Fragment() {
 
                 if (imageItems != null && commentsItems != null) {
 
-                    comments.setOnClickListener {
-                        recycler_view1.scrollToPosition(imageItems!!.lastIndex + 1)
-                    }
-
                     val temp: List<MultiList> = imageItems.orEmpty() + commentsItems.orEmpty()
-                    recycler_view1.adapter = AdapterGeneralComments(temp)
-                    recycler_view1.layoutManager = LinearLayoutManager(activity)
+                    recycler_view_details.adapter = AdapterGeneralComments(temp)
+                    recycler_view_details.layoutManager = LinearLayoutManager(activity)
+
+                    comments.setOnClickListener {
+                        (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(imageItems!!.lastIndex + 1, 0)
+                    }
                 }
             })
     }
