@@ -53,10 +53,10 @@ class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String
 
         if (viewMode == "tile") {
             holder.itemView.avatarView.visibility = GONE
-            val tValue = TypedValue()
+            /*val tValue = TypedValue()
             context.resources.getValue(com.example.bestofbehance.R.dimen.height_of_grid, tValue, true)
             val floatResources = tValue.float
-            holder.itemView.bigImageView.layoutParams.height = floatResources.toInt()
+            holder.itemView.bigImageView.layoutParams.height = floatResources.toInt()*/
         }
 
         val copyList = list[holder.adapterPosition].copy()

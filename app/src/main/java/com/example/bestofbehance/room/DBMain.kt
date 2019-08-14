@@ -5,8 +5,15 @@ import android.content.ContentValues
 import android.content.Context
 import android.util.Log
 import com.example.bestofbehance.binding.CardBinding
+import com.example.bestofbehance.room.DBHelper.Companion.KEY_APPRECIATIONS
+import com.example.bestofbehance.room.DBHelper.Companion.KEY_AVATAR
+import com.example.bestofbehance.room.DBHelper.Companion.KEY_BIGIMAGE
+import com.example.bestofbehance.room.DBHelper.Companion.KEY_COMMENTS
 import com.example.bestofbehance.room.DBHelper.Companion.KEY_DATE
 import com.example.bestofbehance.room.DBHelper.Companion.KEY_ID
+import com.example.bestofbehance.room.DBHelper.Companion.KEY_NAME
+import com.example.bestofbehance.room.DBHelper.Companion.KEY_POST
+import com.example.bestofbehance.room.DBHelper.Companion.KEY_VIEWS
 import com.example.bestofbehance.room.DBHelper.Companion.TABLE_CARDS
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -17,7 +24,7 @@ object DBMain {
 
     val values = ContentValues()
 
-    fun add(binding: CardBinding, context: Context){
+    fun add(context: Context, binding: CardBinding) {
         val database = DBHelper(context).writableDatabase
         values.put(DBHelper.KEY_ID, binding.id)
         values.put(DBHelper.KEY_BIGIMAGE, binding.bigImage)
@@ -30,11 +37,13 @@ object DBMain {
         values.put(DBHelper.KEY_DATE, getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss"))
 
         database.insert(TABLE_CARDS, null, values)
+
+        Log.d("Increase", "Successful added: ID =  ${binding.id}")
         database.close()
     }
 
     @SuppressLint("Recycle")
-    fun read(context: Context, myCallBack: (result: MutableList<CardBinding>) -> Unit){
+    fun read(context: Context, myCallBack: (result: MutableList<CardBinding>) -> Unit) {
         val database = DBHelper(context).writableDatabase
         val list: MutableList<CardBinding> = mutableListOf()
         val cursor = database.rawQuery("SELECT * FROM $TABLE_CARDS ORDER BY $KEY_DATE DESC", null)
@@ -50,7 +59,7 @@ object DBMain {
             val dateIndex = cursor.getColumnIndex(DBHelper.KEY_DATE)
             do {
                 Log.d(
-                    "mLog", "ID = " + cursor.getInt(idIndex) +
+                    "Read", "ID = " + cursor.getInt(idIndex) +
                             ", bigImage = " + cursor.getString(bigImageIndex) +
                             ", avatar = " + cursor.getString(avatarIndex) +
                             ", name = " + cursor.getString(nameIndex) +
@@ -58,9 +67,9 @@ object DBMain {
                             ", views = " + cursor.getString(viewsIndex) +
                             ", appreciations = " + cursor.getString(appreciationsIndex) +
                             ", comments = " + cursor.getString(commentsIndex) +
-                    ", date = " + cursor.getString(dateIndex)
+                            ", date = " + cursor.getString(dateIndex)
                 )
-                list.add (
+                list.add(
                     CardBinding(
                         cursor.getInt(idIndex),
                         cursor.getString(bigImageIndex),
@@ -75,23 +84,22 @@ object DBMain {
 
             } while (cursor.moveToNext())
         } else
-            Log.d("mLog", "0 rows")
+            Log.d("Read", "0 rows")
         cursor.close()
         database.close()
         myCallBack.invoke(list)
     }
 
-    fun clear(context: Context){
+    fun clear(context: Context) {
         val database = DBHelper(context).writableDatabase
         database.delete(TABLE_CARDS, null, null)
         database.close()
     }
 
-    fun delete(context: Context, id: Int){
+    fun delete(context: Context, id: Int) {
         val database = DBHelper(context).writableDatabase
         database.execSQL("DELETE FROM $TABLE_CARDS WHERE $KEY_ID= '$id'")
-        Log.d("mLog", "Row deleted with ID = $id")
-        //database.delete(TABLE_CARDS, "$KEY_ID=?", arrayOf(id.toString())).toLong()
+        Log.d("Delete", "Row deleted: ID = $id")
         database.close()
     }
 
@@ -102,14 +110,14 @@ object DBMain {
         if (cursor.moveToFirst()) {
             val idIndex = cursor.getColumnIndex(KEY_ID)
             do {
-                if (cursor.getInt(idIndex) == id){
+                if (cursor.getInt(idIndex) == id) {
                     check = cursor.getInt(idIndex)
-                    Log.d("mLog", "Found a match: ID = " + cursor.getInt(idIndex))
+                    Log.d("Found", "Found a match: ID = $check")
                 }
 
             } while (cursor.moveToNext() && check == null)
         } else
-            Log.d("mLog", "No matches found")
+            Log.d("Found", "No matches found")
 
         cursor.close()
         database.close()
@@ -127,6 +135,23 @@ object DBMain {
 
     fun getCurrentDateTime(): Date {
         return Calendar.getInstance().time
+    }
+
+    fun update(context: Context, binding: CardBinding) {
+        val database = DBHelper(context).writableDatabase
+        val id = binding.id
+        val avatar = binding.avatar
+        val bigImage = binding.bigImage
+        val name = binding.name
+        val post = binding.post
+        val views = binding.views
+        val appreciations = binding.appreciations
+        val comments = binding.comments
+
+        database.execSQL("UPDATE $TABLE_CARDS SET $KEY_BIGIMAGE= '$bigImage', $KEY_AVATAR= '$avatar', $KEY_NAME= '$name', $KEY_POST= '$post', $KEY_VIEWS= '$views', $KEY_APPRECIATIONS= '$appreciations', $KEY_COMMENTS= '$comments' WHERE $KEY_ID= '$id'")
+        Log.d("Update", "Row update: ID = $id")
+
+        database.close()
     }
 
 }

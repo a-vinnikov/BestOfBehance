@@ -45,7 +45,7 @@ class DetailsFragment : Fragment() {
         when (item.itemId) {
             R.id.menu_bookmark -> {
                 if (DBMain.find(context!!, args.cardBindingArg.id) == null) {
-                    DBMain.add(args.cardBindingArg, context!!)
+                    DBMain.add(context!!, args.cardBindingArg)
                     item.setIcon(R.drawable.ic_bookmarks_pressed)
                 } else {
                     DBMain.delete(context!!, args.cardBindingArg.id)

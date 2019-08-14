@@ -38,9 +38,13 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.one_button_toolbar, menu)
 
-        when(currentViewMode){
-            "list" -> {menu.findItem(R.id.menu_switcher)?.setIcon(R.drawable.list)}
-            "tile" -> {menu.findItem(R.id.menu_switcher)?.setIcon(R.drawable.tile)}
+        when (currentViewMode) {
+            "list" -> {
+                menu.findItem(R.id.menu_switcher)?.setIcon(R.drawable.list)
+            }
+            "tile" -> {
+                menu.findItem(R.id.menu_switcher)?.setIcon(R.drawable.tile)
+            }
         }
 
         super.onCreateOptionsMenu(menu, inflater)
@@ -56,7 +60,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     createRecyclerView(VIEW_MODE_LISTVIEW)
                     editor?.putString("currentViewMode", VIEW_MODE_LISTVIEW)
                     editor?.apply()
-                } else if (currentViewMode == "list"){
+                } else if (currentViewMode == "list") {
                     item.setIcon(R.drawable.tile)
                     createRecyclerView(VIEW_MODE_GRIDVIEW)
                     editor?.putString("currentViewMode", VIEW_MODE_GRIDVIEW)
@@ -150,22 +154,30 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
             //CardDataBase.getDatabase(context!!)
 
-            if (currentViewMode == "list") {
-                adapterBest = adapterFun(it, "list")
-            } else if (currentViewMode == "tile"){
-                adapterBest = adapterFun(it, "tile")
+            when (currentViewMode) {
+                "list" -> {
+                    adapterBest = adapterFun(it, "list")
+                }
+                "tile" -> {
+                    adapterBest = adapterFun(it, "tile")
+                }
             }
             recycler_view.adapter = adapterBest
+
+            for(i in 0 until it.size){
+                if(DBMain.find(context!!, it[i].id) != null){
+                    DBMain.update(context!!, it[i])
+                }
+            }
         }
         jsonModel.mainContentList.observe(this, observerGSON)
 
-
-        if (currentViewMode == "list") {
-            recycler_view.layoutManager = LinearLayoutManager(activity)
-        } else if(currentViewMode == "tile"){
-            recycler_view.layoutManager = GridLayoutManager(activity, 2)
+        when (currentViewMode) {
+            "list" -> { recycler_view.layoutManager = LinearLayoutManager(activity) }
+            "tile" -> { recycler_view.layoutManager = GridLayoutManager(activity, 2) }
         }
-        //recycler_view.layoutManager?.scrollToPosition(position)
+
+
     }
 
     fun sharedCurrentViewMode() {
@@ -188,7 +200,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
                 if (DBMain.find(context!!, list[position].id) == null) {
-                    DBMain.add(list[position], context!!)
+                    DBMain.add(context!!, list[position])
                 } else {
                     DBMain.delete(context!!, list[position].id)
                 }
