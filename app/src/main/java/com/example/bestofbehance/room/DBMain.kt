@@ -16,7 +16,6 @@ import com.example.bestofbehance.room.DBHelper.Companion.KEY_POST
 import com.example.bestofbehance.room.DBHelper.Companion.KEY_VIEWS
 import com.example.bestofbehance.room.DBHelper.Companion.TABLE_CARDS
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.util.*
 
 
@@ -78,7 +77,9 @@ object DBMain {
                         cursor.getString(postIndex),
                         cursor.getString(viewsIndex),
                         cursor.getString(appreciationsIndex),
-                        cursor.getString(commentsIndex)
+                        cursor.getString(commentsIndex),
+                        null
+
                     )
                 )
 

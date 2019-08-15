@@ -3,7 +3,6 @@ package com.example.bestofbehance.layout
 import android.content.Context
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.ViewGroup
@@ -13,10 +12,11 @@ import com.example.bestofbehance.databinding.ListItemBinding
 import com.example.bestofbehance.viewModels.InClick
 import java.math.RoundingMode
 import java.text.DecimalFormat
-import androidx.recyclerview.widget.DiffUtil
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.room.DBMain
+import com.example.bestofbehance.room.SharedPreferenceForFragments
 import com.example.bestofbehance.viewModels.BookmarkClick
+import com.example.bestofbehance.viewModels.NaviController
 
 
 class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick) :
@@ -38,14 +38,18 @@ class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
-        Log.d("mLog", this.position.toString())
+
+        holder.itemView.avatarView.setOnClickListener {
+            SharedPreferenceForFragments.editorSharedPreference(context, "position", holder.adapterPosition.toString())
+            NaviController(context).toProfileFromBest(list[holder.adapterPosition])
+            Log.d("Check", holder.adapterPosition.toString())
+        }
 
         holder.itemView.bookmark.isChecked = DBMain.find(context, list[holder.adapterPosition].id) != null
 
         holder.itemView.bookmark.setOnClickListener {
             bookmarkClick.setPosition(position)
         }
-
 
         holder.itemView.constLayout.setOnClickListener {
             inClick.onItemClick(list[holder.adapterPosition])
@@ -100,7 +104,7 @@ class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String
     }
 
 
-    companion object {
+    /*companion object {
 
         private val diffCallback = object : DiffUtil.ItemCallback<CardBinding>() {
             override fun areItemsTheSame(oldItem: CardBinding, newItem: CardBinding): Boolean =
@@ -109,6 +113,6 @@ class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String
             override fun areContentsTheSame(oldItem: CardBinding, newItem: CardBinding): Boolean =
                 oldItem == newItem
         }
-    }
+    }*/
 
 }

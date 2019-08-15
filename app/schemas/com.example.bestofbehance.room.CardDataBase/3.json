@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "23cc9aee21808ec6982692b79eda4e2f",
+    "identityHash": "4d9fb73c3925cb7e7b04ed271a4a7af7",
     "entities": [
       {
         "tableName": "CardData",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `bigImage` TEXT, `avatar` TEXT, `name` TEXT, `post` TEXT, `views` TEXT, `appreciations` TEXT, `comments` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `bigImage` TEXT, `avatar` TEXT, `name` TEXT, `post` TEXT, `views` TEXT, `appreciations` TEXT, `comments` TEXT, `username` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -55,6 +55,12 @@
             "columnName": "comments",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -70,7 +76,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '23cc9aee21808ec6982692b79eda4e2f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4d9fb73c3925cb7e7b04ed271a4a7af7')"
     ]
   }
 }

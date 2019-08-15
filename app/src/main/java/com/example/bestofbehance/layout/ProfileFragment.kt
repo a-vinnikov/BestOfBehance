@@ -3,15 +3,41 @@ package com.example.bestofbehance.layout
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.navigation.fragment.navArgs
 import com.example.bestofbehance.R
+import com.example.bestofbehance.room.DBMain
 
 
 class ProfileFragment : Fragment() {
+
+    private val args: ProfileFragmentArgs by navArgs()
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.two_buttons_toolbar, menu)
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+
+            R.id.menu_bookmark -> {Toast.makeText(activity, "Work in progress", Toast.LENGTH_SHORT).show()}
+
+            R.id.menu_share -> {Toast.makeText(activity, "Work in progress", Toast.LENGTH_SHORT).show() }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setHasOptionsMenu(true)
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

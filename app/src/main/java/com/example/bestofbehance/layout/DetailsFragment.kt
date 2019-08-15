@@ -12,9 +12,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
-import com.example.bestofbehance.databinding.DetailsCardBinding
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
 import com.example.bestofbehance.room.DBMain
+import com.example.bestofbehance.viewModels.NaviController
 import com.example.bestofbehance.viewModels.VMForParse
 import com.example.bestofbehance.viewModels.ViewModelFactory
 import kotlinx.android.synthetic.main.details_card.*
@@ -43,6 +43,7 @@ class DetailsFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+
             R.id.menu_bookmark -> {
                 if (DBMain.find(context!!, args.cardBindingArg.id) == null) {
                     DBMain.add(context!!, args.cardBindingArg)
@@ -113,6 +114,8 @@ class DetailsFragment : Fragment() {
                     }
                 }
             })
+
+        avatarViewDetails.setOnClickListener { NaviController(context!!).toProfileFromDetails(args.cardBindingArg) }
     }
 
 

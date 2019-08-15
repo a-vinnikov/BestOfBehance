@@ -30,26 +30,27 @@ class ParseForVM {
                 val jsonArray = response.getJSONArray("projects")
                 for (i in 0 until jsonArray.length()) {
 
-                    val Arts = response_gson.projects?.get(i)?.covers?.original
-                    val Names = response_gson.projects?.get(i)?.owners?.get(0)?.displayName
-                    val Avatars = response_gson.projects?.get(i)?.owners?.get(0)?.images?.jsonMember138
-                    val Appreciations = response_gson.projects?.get(i)?.stats?.appreciations
-                    val Views = response_gson.projects?.get(i)?.stats?.views
-                    val Comments = response_gson.projects?.get(i)?.stats?.comments
-                    val Posts = response_gson.projects?.get(i)?.fields?.get(0)
-                    val Id = response_gson.projects?.get(i)?.id
+                    val arts = response_gson.projects?.get(i)?.covers?.original
+                    val names = response_gson.projects?.get(i)?.owners?.get(0)?.displayName
+                    val avatars = response_gson.projects?.get(i)?.owners?.get(0)?.images?.jsonMember138
+                    val appreciations = response_gson.projects?.get(i)?.stats?.appreciations
+                    val views = response_gson.projects?.get(i)?.stats?.views
+                    val comments = response_gson.projects?.get(i)?.stats?.comments
+                    val posts = response_gson.projects?.get(i)?.fields?.get(0)
+                    val id = response_gson.projects?.get(i)?.id
+                    val username = response_gson.projects?.get(i)?.owners?.get(0)?.username
 
-                    //mAPIList.add(APIList(Arts, Avatars, Names, Posts, Views, Appreciations, Comments, id))
                     recList.add(
                         CardBinding(
-                            Id!!,
-                            Arts,
-                            Avatars,
-                            Names,
-                            Posts,
-                            Views.toString(),
-                            Appreciations.toString(),
-                            Comments.toString()
+                            id!!,
+                            arts,
+                            avatars,
+                            names,
+                            posts,
+                            views.toString(),
+                            appreciations.toString(),
+                            comments.toString(),
+                            username
 
                         )
                     )

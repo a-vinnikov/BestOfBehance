@@ -7,6 +7,7 @@
               android:label="@string/best_title"
               tools:layout="@layout/fragment_best">
         <action android:id="@+id/action_best_to_details" app:destination="@id/details"/>
+        <action android:id="@+id/action_best_to_profile" app:destination="@id/profile"/>
     </fragment>
     <fragment android:id="@+id/people"
               android:name="com.example.bestofbehance.layout.PeopleFragment"
@@ -36,5 +37,10 @@
               android:label="Profile"
               tools:layout="@layout/fragment_profile">
         <action android:id="@+id/action_profile_to_details" app:destination="@id/details"/>
+
+        <argument
+                android:name="cardBindingProfile"
+                app:argType="com.example.bestofbehance.binding.CardBinding" />
+
     </fragment>
 </navigation>

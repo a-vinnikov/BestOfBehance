@@ -5,13 +5,13 @@ import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.fragment.app.Fragment
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.room.DBMain
+import com.example.bestofbehance.room.SharedPreferenceForFragments
 import com.example.bestofbehance.viewModels.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_projects.*
@@ -39,20 +39,17 @@ class ProjectsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        sharedCurrentViewMode()
-        val editor = activity?.getSharedPreferences("projectsViewMode", AppCompatActivity.MODE_PRIVATE)?.edit()
+        currentViewMode = SharedPreferenceForFragments.sharedCurrentViewMode(context!!, "currentViewModeProjects", currentViewMode)
         when (item.itemId) {
             R.id.menu_switcher -> {
                 if (currentViewMode == "tile") {
                     item.setIcon(R.drawable.list)
                     createRecyclerView(VIEW_MODE_LISTVIEW)
-                    editor?.putString("currentViewMode", VIEW_MODE_LISTVIEW)
-                    editor?.apply()
+                    SharedPreferenceForFragments.editorSharedPreference(context!!, "currentViewModeProjects", VIEW_MODE_LISTVIEW)
                 } else if (currentViewMode == "list") {
                     item.setIcon(R.drawable.tile)
                     createRecyclerView(VIEW_MODE_GRIDVIEW)
-                    editor?.putString("currentViewMode", VIEW_MODE_GRIDVIEW)
-                    editor?.apply()
+                    SharedPreferenceForFragments.editorSharedPreference(context!!, "currentViewModeProjects", VIEW_MODE_GRIDVIEW)
                 }
             }
         }
@@ -73,7 +70,7 @@ class ProjectsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         jsonModel = ViewModelProviders.of(this, ViewModelFactory()).get(VMForParse::class.java)
-        sharedCurrentViewMode()
+        currentViewMode = SharedPreferenceForFragments.sharedCurrentViewMode(context!!, "currentViewModeProjects", currentViewMode)
 
         if (recycler_view_projects.adapter == null) {
             createRecyclerView(currentViewMode)
@@ -120,16 +117,11 @@ class ProjectsFragment : Fragment() {
         }
     }
 
-    fun sharedCurrentViewMode() {
-        val sharedPreference = activity?.getSharedPreferences("projectsViewMode", AppCompatActivity.MODE_PRIVATE)
-        currentViewMode = sharedPreference!!.getString("currentViewMode", currentViewMode)!!
-    }
-
     private fun adapterFun(list: MutableList<CardBinding>, viewMode: String): AdapterViewHolder {
 
         return AdapterViewHolder(list, viewMode, object : InClick {
             override fun onItemClick(item: CardBinding) {
-                NaviController(activity).toDetailsFromProjects(item)
+                NaviController(context!!).toDetailsFromProjects(item)
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
