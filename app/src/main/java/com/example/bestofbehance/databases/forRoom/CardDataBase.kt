@@ -1,4 +1,4 @@
-package com.example.bestofbehance.room
+package com.example.bestofbehance.databases.forRoom
 
 import android.content.Context
 import androidx.room.*
@@ -39,8 +39,12 @@ abstract class CardDataBase : RoomDatabase() {
                     if (INSTANCE == null) {
                         INSTANCE = Room.databaseBuilder(
                             context.applicationContext,
-                            CardDataBase::class.java, DB_NAME
-                        ).allowMainThreadQueries().addMigrations(migration_1_2, migration_2_3).allowMainThreadQueries()
+                            CardDataBase::class.java,
+                            DB_NAME
+                        ).allowMainThreadQueries().addMigrations(
+                            migration_1_2,
+                            migration_2_3
+                        ).allowMainThreadQueries()
                             .addCallback(callback)
                             .build()
                     }
@@ -56,7 +60,8 @@ abstract class CardDataBase : RoomDatabase() {
                     /*for (i in 0 until database!!.size) {
                     INSTANCE?.cardDao()?.insert(database!![i])
                     println(INSTANCE?.cardDao()?.all?.value?.get(i)?.id)
-                }*/ }
+                }*/
+                }
 
             }
         }

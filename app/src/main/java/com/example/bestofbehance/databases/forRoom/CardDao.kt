@@ -1,4 +1,4 @@
-package com.example.bestofbehance.room
+package com.example.bestofbehance.databases.forRoom
 
 import androidx.lifecycle.LiveData
 import androidx.room.*

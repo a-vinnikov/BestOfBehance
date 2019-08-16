@@ -1,9 +1,6 @@
 package com.example.bestofbehance.viewModels
 
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.VolleyLog
-import com.android.volley.toolbox.JsonObjectRequest
+import com.example.bestofbehance.Retrofit.BehanceApiInterface
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.binding.CommentsBinding
 import com.example.bestofbehance.binding.CountBinding
@@ -11,9 +8,11 @@ import com.example.bestofbehance.binding.ImageBinding
 import com.example.bestofbehance.binding.TextBinding
 import com.example.bestofbehance.gson.*
 import com.example.bestofbehance.layout.MultiList
-import com.google.gson.Gson
-import org.json.JSONObject
 import org.jsoup.Jsoup
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class ParseForVM {
 
@@ -22,23 +21,35 @@ class ParseForVM {
     private val iListCom: MutableList<MultiList> = mutableListOf()
     private val apiKey = "0QmPh684DRz1SpWHDikkyFCzLShGiHPi"
 
-    fun parseGeneral(page: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit) {
-        val url = "https://api.behance.net/v2/projects?sort=appreciations&page=$page&api_key=$apiKey"
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener<JSONObject> { response ->
-                val response_gson = Gson().fromJson(response.toString(), Responce::class.java)
-                val jsonArray = response.getJSONArray("projects")
-                for (i in 0 until jsonArray.length()) {
+    fun generalRetrofit(page: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit){
+        val client = Retrofit.Builder()
+            .baseUrl("https://api.behance.net/v2/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-                    val arts = response_gson.projects?.get(i)?.covers?.original
-                    val names = response_gson.projects?.get(i)?.owners?.get(0)?.displayName
-                    val avatars = response_gson.projects?.get(i)?.owners?.get(0)?.images?.jsonMember138
-                    val appreciations = response_gson.projects?.get(i)?.stats?.appreciations
-                    val views = response_gson.projects?.get(i)?.stats?.views
-                    val comments = response_gson.projects?.get(i)?.stats?.comments
-                    val posts = response_gson.projects?.get(i)?.fields?.get(0)
-                    val id = response_gson.projects?.get(i)?.id
-                    val username = response_gson.projects?.get(i)?.owners?.get(0)?.username
+        val service = client.create(BehanceApiInterface::class.java)
+        val call = service.getGeneral("appreciations", page, apiKey)
+
+        call.enqueue(object : Callback<GeneralResponse> {
+            override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
+
+            }
+
+            override fun onResponse(call: Call<GeneralResponse>, response: retrofit2.Response<GeneralResponse>) {
+                val listResponse = response.body()?.projects
+
+
+                for (i in 0 until listResponse!!.size) {
+
+                    val arts = listResponse[i]?.covers?.original
+                    val names = listResponse[i]?.owners?.get(0)?.displayName
+                    val avatars = listResponse[i]?.owners?.get(0)?.images?.jsonMember138
+                    val appreciations = listResponse[i]?.stats?.appreciations
+                    val views = listResponse[i]?.stats?.views
+                    val comments = listResponse[i]?.stats?.comments
+                    val posts = listResponse[i]?.fields?.get(0)
+                    val id = listResponse[i]?.id
+                    val username = listResponse[i]?.owners?.get(0)?.username
 
                     recList.add(
                         CardBinding(
@@ -56,80 +67,94 @@ class ParseForVM {
                     )
                     i + 1
                 }
-                //callback mainContentList
                 myCallBack.invoke(recList)
-
-            }, Response.ErrorListener {
-                VolleyLog.e(VolleyLog.TAG, "ERROR")
             }
-        )
-        VolleySingleton.requestQueue.add(request)
-        VolleySingleton.requestQueue.start()
+
+        })
     }
 
-    fun parseProject(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit) {
-        val url = "https://www.behance.net/v2/projects/$projectId?api_key=$apiKey"
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener<JSONObject> { response ->
-                val response_gson = Gson().fromJson(response.toString(), ImageResponce::class.java)
-                for (i in 0 until response_gson.project?.modules!!.size) {
 
-                    when (response_gson.project.modules[i]!!.type) {
-                        "image" -> {val image = response_gson.project.modules[i]?.src
+    fun projectRetrofit(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit){
+
+        val client = Retrofit.Builder()
+            .baseUrl("https://api.behance.net/v2/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = client.create(BehanceApiInterface::class.java)
+        val call = service.getProject(projectId.toString(), apiKey)
+
+        call.enqueue(object : Callback<ImageResponse> {
+            override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
+
+            }
+
+            override fun onResponse(call: Call<ImageResponse>, response: retrofit2.Response<ImageResponse>) {
+
+                val listResponse = response.body()?.project?.modules
+
+                for (i in 0 until listResponse!!.size) {
+
+                    when (listResponse[i]!!.type) {
+                        "image" -> {val image = listResponse[i]?.src
                             iListCon.add(MultiList.ImageList(ImageBinding(image)))}
-                        "text" -> {val text = response_gson.project.modules[i]?.text.toString()
+                        "text" -> {val text = listResponse[i]?.text.toString()
                             val text1 = Jsoup.parse(text).text()
                             iListCon.add(MultiList.TextList(TextBinding(text1)))}
                         "media_collection" -> {
-                            for (j in 0 until response_gson.project.modules[i]?.components!!.size){
-                                val collectionItem = response_gson.project.modules[i]?.components!![j]?.src
+                            for (j in 0 until listResponse[i]?.components!!.size){
+                                val collectionItem = listResponse[i]?.components!![j]?.src
                                 iListCon.add(MultiList.ImageList(ImageBinding(collectionItem)))} } }
                     i + 1
                 }
                 myCallBack.invoke(iListCon)
-
-            }, Response.ErrorListener {
-                VolleyLog.e(VolleyLog.TAG, "ERROR")
             }
-        )
-        VolleySingleton.requestQueue.add(request)
-        VolleySingleton.requestQueue.start()
+        })
     }
 
-    fun parseComments(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit) {
-        val url = "https://www.behance.net/v2/projects/$projectId/comments?api_key=$apiKey"
-        val request = JsonObjectRequest(Request.Method.GET, url, null,
-            Response.Listener<JSONObject> { response ->
-                val response_gson = Gson().fromJson(response.toString(), CommentsMain::class.java)
-                val jsonArray = response.getJSONArray("comments")
-                val numberOfComments = jsonArray.length()
-                if(jsonArray.length() == 0){
-                    val temp = numberOfComments
-                    iListCom.add(MultiList.CountList(CountBinding(temp)))
-                }
-                for (i in 0 until jsonArray.length()) {
+    fun commentsRetrofit(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit){
 
-                    val commentsAvatarView = response_gson.comments?.get(i)?.user?.images?.jsonMember138
-                    val commentsName = response_gson.comments?.get(i)?.user?.displayName
-                    val comment = response_gson.comments?.get(i)?.comment
-                    val date = response_gson.comments?.get(i)?.createdOn.toString()
+        val client = Retrofit.Builder()
+            .baseUrl("https://api.behance.net/v2/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = client.create(BehanceApiInterface::class.java)
+        val call = service.getComments(projectId.toString(), apiKey)
+
+        call.enqueue(object : Callback<CommentsMain> {
+            override fun onFailure(call: Call<CommentsMain>, t: Throwable) {
+
+            }
+
+            override fun onResponse(call: Call<CommentsMain>, response: retrofit2.Response<CommentsMain>) {
+
+                val listResponse = response.body()?.comments
+                val numberOfComments = response.body()?.comments?.size
+
+                if(numberOfComments == 0){
+                    iListCom.add(MultiList.CountList(CountBinding(numberOfComments.toInt())))
+                }
+                for (i in 0 until numberOfComments!!) {
+
+                    val commentsAvatarView = listResponse?.get(i)?.user?.images?.jsonMember138
+                    val commentsName = listResponse?.get(i)?.user?.displayName
+                    val comment = listResponse?.get(i)?.comment
+                    val date = listResponse?.get(i)?.createdOn.toString()
 
 
                     //mAPIList.add(APIList(Arts, Avatars, Names, Posts, Views, Appreciations, Comments, id))
                     if (i == 0) {
-                        val temp = numberOfComments
-                        iListCom.add(MultiList.CountList(CountBinding(temp)))
+                        iListCom.add(MultiList.CountList(CountBinding(numberOfComments)))
                     }
                     iListCom.add(MultiList.CommentsList(CommentsBinding(commentsAvatarView, commentsName, comment, date)))
                     i + 1
                 }
                 myCallBack.invoke(iListCom)
-
-            }, Response.ErrorListener {
-                VolleyLog.e(VolleyLog.TAG, "ERROR")
             }
-        )
-        VolleySingleton.requestQueue.add(request)
-        VolleySingleton.requestQueue.start()
+
+        })
+
     }
+
 }

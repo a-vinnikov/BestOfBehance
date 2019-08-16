@@ -13,10 +13,11 @@ import com.example.bestofbehance.viewModels.InClick
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import com.example.bestofbehance.BR
-import com.example.bestofbehance.room.DBMain
-import com.example.bestofbehance.room.SharedPreferenceForFragments
+import com.example.bestofbehance.databases.DBMain
+import com.example.bestofbehance.databases.SharedPreferenceForFragments
 import com.example.bestofbehance.viewModels.BookmarkClick
 import com.example.bestofbehance.viewModels.NaviController
+import timber.log.Timber
 
 
 class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick) :
@@ -26,6 +27,10 @@ class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String
     private var isLoading = false
     private val isLastPage = false
     var position = 0
+
+    init{
+        Timber.plant(Timber.DebugTree())
+    }
 
     //PagedListAdapter<CardBinding, AdapterViewHolder.ViewHolder>(diffCallback) {
 
@@ -42,7 +47,7 @@ class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String
         holder.itemView.avatarView.setOnClickListener {
             SharedPreferenceForFragments.editorSharedPreference(context, "position", holder.adapterPosition.toString())
             NaviController(context).toProfileFromBest(list[holder.adapterPosition])
-            Log.d("Check", holder.adapterPosition.toString())
+            Timber.d(holder.adapterPosition.toString())
         }
 
         holder.itemView.bookmark.isChecked = DBMain.find(context, list[holder.adapterPosition].id) != null

@@ -1,20 +1,21 @@
-package com.example.bestofbehance.room
+package com.example.bestofbehance.databases
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.util.Log
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.room.DBHelper.Companion.KEY_APPRECIATIONS
-import com.example.bestofbehance.room.DBHelper.Companion.KEY_AVATAR
-import com.example.bestofbehance.room.DBHelper.Companion.KEY_BIGIMAGE
-import com.example.bestofbehance.room.DBHelper.Companion.KEY_COMMENTS
-import com.example.bestofbehance.room.DBHelper.Companion.KEY_DATE
-import com.example.bestofbehance.room.DBHelper.Companion.KEY_ID
-import com.example.bestofbehance.room.DBHelper.Companion.KEY_NAME
-import com.example.bestofbehance.room.DBHelper.Companion.KEY_POST
-import com.example.bestofbehance.room.DBHelper.Companion.KEY_VIEWS
-import com.example.bestofbehance.room.DBHelper.Companion.TABLE_CARDS
+import com.example.bestofbehance.databases.DBHelper.Companion.KEY_APPRECIATIONS
+import com.example.bestofbehance.databases.DBHelper.Companion.KEY_AVATAR
+import com.example.bestofbehance.databases.DBHelper.Companion.KEY_BIGIMAGE
+import com.example.bestofbehance.databases.DBHelper.Companion.KEY_COMMENTS
+import com.example.bestofbehance.databases.DBHelper.Companion.KEY_DATE
+import com.example.bestofbehance.databases.DBHelper.Companion.KEY_ID
+import com.example.bestofbehance.databases.DBHelper.Companion.KEY_NAME
+import com.example.bestofbehance.databases.DBHelper.Companion.KEY_POST
+import com.example.bestofbehance.databases.DBHelper.Companion.KEY_VIEWS
+import com.example.bestofbehance.databases.DBHelper.Companion.TABLE_CARDS
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -22,43 +23,45 @@ import java.util.*
 object DBMain {
 
     val values = ContentValues()
+    init {
+        Timber.plant(Timber.DebugTree())
+    }
 
     fun add(context: Context, binding: CardBinding) {
         val database = DBHelper(context).writableDatabase
-        values.put(DBHelper.KEY_ID, binding.id)
-        values.put(DBHelper.KEY_BIGIMAGE, binding.bigImage)
-        values.put(DBHelper.KEY_AVATAR, binding.avatar)
-        values.put(DBHelper.KEY_NAME, binding.name)
-        values.put(DBHelper.KEY_POST, binding.post)
-        values.put(DBHelper.KEY_VIEWS, binding.views)
-        values.put(DBHelper.KEY_APPRECIATIONS, binding.appreciations)
-        values.put(DBHelper.KEY_COMMENTS, binding.comments)
-        values.put(DBHelper.KEY_DATE, getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss"))
+        values.put(KEY_ID, binding.id)
+        values.put(KEY_BIGIMAGE, binding.bigImage)
+        values.put(KEY_AVATAR, binding.avatar)
+        values.put(KEY_NAME, binding.name)
+        values.put(KEY_POST, binding.post)
+        values.put(KEY_VIEWS, binding.views)
+        values.put(KEY_APPRECIATIONS, binding.appreciations)
+        values.put(KEY_COMMENTS, binding.comments)
+        values.put(KEY_DATE, getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss"))
 
         database.insert(TABLE_CARDS, null, values)
-
-        Log.d("Increase", "Successful added: ID =  ${binding.id}")
+        Timber.d( "Successful added: ID =  ${binding.id}")
         database.close()
     }
 
-    @SuppressLint("Recycle")
+    @SuppressLint("Recycle", "BinaryOperationInTimber")
     fun read(context: Context, myCallBack: (result: MutableList<CardBinding>) -> Unit) {
         val database = DBHelper(context).writableDatabase
         val list: MutableList<CardBinding> = mutableListOf()
         val cursor = database.rawQuery("SELECT * FROM $TABLE_CARDS ORDER BY $KEY_DATE DESC", null)
         if (cursor.moveToFirst()) {
-            val idIndex = cursor.getColumnIndex(DBHelper.KEY_ID)
-            val bigImageIndex = cursor.getColumnIndex(DBHelper.KEY_BIGIMAGE)
-            val avatarIndex = cursor.getColumnIndex(DBHelper.KEY_AVATAR)
-            val nameIndex = cursor.getColumnIndex(DBHelper.KEY_NAME)
-            val postIndex = cursor.getColumnIndex(DBHelper.KEY_POST)
-            val viewsIndex = cursor.getColumnIndex(DBHelper.KEY_VIEWS)
-            val appreciationsIndex = cursor.getColumnIndex(DBHelper.KEY_APPRECIATIONS)
-            val commentsIndex = cursor.getColumnIndex(DBHelper.KEY_COMMENTS)
-            val dateIndex = cursor.getColumnIndex(DBHelper.KEY_DATE)
+            val idIndex = cursor.getColumnIndex(KEY_ID)
+            val bigImageIndex = cursor.getColumnIndex(KEY_BIGIMAGE)
+            val avatarIndex = cursor.getColumnIndex(KEY_AVATAR)
+            val nameIndex = cursor.getColumnIndex(KEY_NAME)
+            val postIndex = cursor.getColumnIndex(KEY_POST)
+            val viewsIndex = cursor.getColumnIndex(KEY_VIEWS)
+            val appreciationsIndex = cursor.getColumnIndex(KEY_APPRECIATIONS)
+            val commentsIndex = cursor.getColumnIndex(KEY_COMMENTS)
+            val dateIndex = cursor.getColumnIndex(KEY_DATE)
             do {
-                Log.d(
-                    "Read", "ID = " + cursor.getInt(idIndex) +
+                Timber.d(
+                    "ID = " + cursor.getInt(idIndex) +
                             ", bigImage = " + cursor.getString(bigImageIndex) +
                             ", avatar = " + cursor.getString(avatarIndex) +
                             ", name = " + cursor.getString(nameIndex) +
@@ -85,7 +88,7 @@ object DBMain {
 
             } while (cursor.moveToNext())
         } else
-            Log.d("Read", "0 rows")
+            Timber.d( "0 rows")
         cursor.close()
         database.close()
         myCallBack.invoke(list)
@@ -100,7 +103,7 @@ object DBMain {
     fun delete(context: Context, id: Int) {
         val database = DBHelper(context).writableDatabase
         database.execSQL("DELETE FROM $TABLE_CARDS WHERE $KEY_ID= '$id'")
-        Log.d("Delete", "Row deleted: ID = $id")
+        Timber.d( "Row deleted: ID = $id")
         database.close()
     }
 
@@ -113,12 +116,12 @@ object DBMain {
             do {
                 if (cursor.getInt(idIndex) == id) {
                     check = cursor.getInt(idIndex)
-                    Log.d("Found", "Found a match: ID = $check")
+                    Timber.d( "Found a match: ID = $check")
                 }
 
             } while (cursor.moveToNext() && check == null)
         } else
-            Log.d("Found", "No matches found")
+            Timber.d("No matches found")
 
         cursor.close()
         database.close()
@@ -150,7 +153,7 @@ object DBMain {
         val comments = binding.comments
 
         database.execSQL("UPDATE $TABLE_CARDS SET $KEY_BIGIMAGE= '$bigImage', $KEY_AVATAR= '$avatar', $KEY_NAME= '$name', $KEY_POST= '$post', $KEY_VIEWS= '$views', $KEY_APPRECIATIONS= '$appreciations', $KEY_COMMENTS= '$comments' WHERE $KEY_ID= '$id'")
-        Log.d("Update", "Row update: ID = $id")
+        Timber.d("Row update: ID = $id")
 
         database.close()
     }

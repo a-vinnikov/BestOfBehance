@@ -15,10 +15,11 @@ import android.view.MenuInflater
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.paging.PaginationScrollListener
-import com.example.bestofbehance.room.DBMain
-import com.example.bestofbehance.room.SharedPreferenceForFragments.editorSharedPreference
-import com.example.bestofbehance.room.SharedPreferenceForFragments.sharedCurrentViewMode
+import com.example.bestofbehance.databases.DBMain
+import com.example.bestofbehance.databases.SharedPreferenceForFragments.editorSharedPreference
+import com.example.bestofbehance.databases.SharedPreferenceForFragments.sharedCurrentViewMode
 import com.example.bestofbehance.viewModels.*
+import timber.log.Timber
 
 
 const val VIEW_MODE_LISTVIEW = "list"
@@ -29,13 +30,15 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     lateinit var jsonModel: VMForParse
 
     private var currentViewMode = "list"
-    private var position = "0"
     var page = 1
     lateinit var adapterBest: AdapterViewHolder
 
     private var isLoading = false
     private val isLastPage = false
 
+    init {
+        Timber.plant(Timber.DebugTree())
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.one_button_toolbar, menu)
@@ -111,7 +114,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     val observerGSON0 = Observer<MutableList<CardBinding>> {
                         adapterBest.addData(it)
                         isLoading = false
-                        Log.d("mLog", "Loaded page $page")
+                        Timber.d("Loaded page $page")
                     }
                     jsonModel.pagingResponseList.observe(this@Best, observerGSON0)
                 }

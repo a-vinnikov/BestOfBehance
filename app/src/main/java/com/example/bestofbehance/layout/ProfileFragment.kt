@@ -1,15 +1,11 @@
 package com.example.bestofbehance.layout
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.navArgs
 import com.example.bestofbehance.R
-import com.example.bestofbehance.room.DBMain
 
 
 class ProfileFragment : Fragment() {

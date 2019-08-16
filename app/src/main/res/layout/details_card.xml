@@ -30,7 +30,7 @@
                 android:layout_marginStart="16dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/line1"
+                app:layout_constraintBottom_toTopOf="@+id/lineDetails"
                 app:layout_constraintEnd_toStartOf="@+id/nameDetails"
                 app:loadingCircleImage="@{cardViewDetails.avatar}"
                 tools:ignore="ContentDescription"/>
@@ -55,10 +55,10 @@
                 android:text="@{cardViewDetails.post}"
                 android:textSize="14sp"
                 app:layout_constraintTop_toBottomOf="@id/nameDetails"
-                app:layout_constraintBottom_toTopOf="@id/line1"
+                app:layout_constraintBottom_toTopOf="@id/lineDetails"
                 app:layout_constraintStart_toEndOf="@id/avatarViewDetails"/>
 
-        <View android:id="@+id/line1"
+        <View android:id="@+id/lineDetails"
               android:layout_width="0dp"
               android:layout_height="1dp"
               android:layout_marginTop="3dp"
@@ -80,7 +80,7 @@
                 android:layout_marginBottom="10dp"
                 android:src="@drawable/ic_views"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/line1"
+                app:layout_constraintTop_toBottomOf="@id/lineDetails"
                 app:layout_constraintEnd_toStartOf="@id/view_text_details"
                 tools:ignore="ContentDescription"/>
 
@@ -93,7 +93,7 @@
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="2dp"
                 app:layout_constraintStart_toEndOf="@id/view_image_details"
-                app:layout_constraintTop_toBottomOf="@id/line1"
+                app:layout_constraintTop_toBottomOf="@id/lineDetails"
                 app:layout_constraintEnd_toStartOf="@id/appreciation_image_details"/>
 
         <ImageView
@@ -105,7 +105,7 @@
                 android:layout_marginEnd="1dp"
                 android:src="@drawable/ic_appreciation"
                 app:layout_constraintStart_toEndOf="@id/view_text_details"
-                app:layout_constraintTop_toBottomOf="@id/line1"
+                app:layout_constraintTop_toBottomOf="@id/lineDetails"
                 app:layout_constraintEnd_toStartOf="@id/appreciation_text_details"
                 tools:ignore="ContentDescription"/>
 
@@ -118,7 +118,7 @@
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="2dp"
                 app:layout_constraintStart_toEndOf="@id/appreciation_image_details"
-                app:layout_constraintTop_toBottomOf="@id/line1"
+                app:layout_constraintTop_toBottomOf="@id/lineDetails"
                 app:layout_constraintEnd_toStartOf="@id/comments_image_details"
         />
 
@@ -131,7 +131,7 @@
                 android:layout_marginEnd="1dp"
                 android:src="@drawable/ic_comments"
                 app:layout_constraintStart_toEndOf="@id/appreciation_text_details"
-                app:layout_constraintTop_toBottomOf="@id/line1"
+                app:layout_constraintTop_toBottomOf="@id/lineDetails"
                 app:layout_constraintEnd_toStartOf="@id/comments_text_details"
                 tools:ignore="ContentDescription"/>
 
@@ -143,7 +143,7 @@
                 android:textSize="14sp"
                 android:layout_marginStart="3dp"
                 app:layout_constraintStart_toEndOf="@id/comments_image_details"
-                app:layout_constraintTop_toBottomOf="@id/line1"
+                app:layout_constraintTop_toBottomOf="@id/lineDetails"
         />
 
         <TextView
@@ -156,7 +156,7 @@
                 android:textStyle="bold"
                 android:layout_marginEnd="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/line1"
+                app:layout_constraintTop_toBottomOf="@id/lineDetails"
                 android:clickable="true"
                 android:focusable="true"/>
 

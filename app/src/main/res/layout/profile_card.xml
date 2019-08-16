@@ -1,34 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                   xmlns:tools="http://schemas.android.com/tools"
-                                                   android:layout_width="match_parent"
-                                                   android:layout_height="wrap_content">
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <ImageView android:id="@+id/bigAvatar"
-               android:layout_width="95dp"
-               android:layout_height="95dp"
-               app:layout_constraintStart_toStartOf="parent"
-               app:layout_constraintEnd_toEndOf="parent"
-               app:layout_constraintTop_toTopOf="parent"
-               android:layout_marginTop="16dp"
-               tools:ignore="ContentDescription"/>
+    <ImageView
+            android:id="@+id/bigAvatar"
+            android:layout_width="95dp"
+            android:layout_height="95dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="16dp"
+            tools:ignore="ContentDescription"/>
 
-    <TextView android:id="@+id/nameProfile"
-              android:textSize="16sp"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintTop_toBottomOf="@id/bigAvatar"
+    <TextView
+            android:id="@+id/nameProfile"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/bigAvatar"
     />
 
-    <TextView android:id="@+id/cityCountry"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintEnd_toEndOf="parent"
-              app:layout_constraintTop_toBottomOf="@id/nameProfile"
+    <TextView
+            android:id="@+id/cityCountry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nameProfile"
     />
 
     <ImageView
@@ -94,7 +98,8 @@
             android:src="@drawable/ic_followers"
             app:layout_constraintStart_toEndOf="@+id/appreciation_text"
             app:layout_constraintEnd_toStartOf="@+id/followers_text"
-            app:layout_constraintTop_toBottomOf="@id/cityCountry"/>
+            app:layout_constraintTop_toBottomOf="@id/cityCountry"
+            tools:ignore="ContentDescription"/>
 
     <TextView
             android:id="@+id/followers_text"
@@ -119,7 +124,8 @@
             android:src="@drawable/ic_following"
             app:layout_constraintStart_toEndOf="@+id/followers_text"
             app:layout_constraintEnd_toStartOf="@+id/following_text"
-            app:layout_constraintTop_toBottomOf="@id/cityCountry"/>
+            app:layout_constraintTop_toBottomOf="@id/cityCountry"
+            tools:ignore="ContentDescription"/>
 
     <TextView
             android:id="@+id/following_text"
@@ -160,7 +166,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/instagram_image"
             app:layout_constraintTop_toBottomOf="@id/postProfile"
-            tools:ignore="ContentDescription"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="ContentDescription"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="16dp"/>
 
     <ImageView
             android:id="@+id/instagram_image"
@@ -171,7 +180,10 @@
             app:layout_constraintStart_toEndOf="@id/pinterest_image"
             app:layout_constraintEnd_toStartOf="@+id/facebook_image"
             app:layout_constraintTop_toBottomOf="@id/postProfile"
-            tools:ignore="ContentDescription"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="ContentDescription"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="16dp"/>
 
     <ImageView
             android:id="@+id/facebook_image"
@@ -182,7 +194,10 @@
             app:layout_constraintStart_toEndOf="@id/instagram_image"
             app:layout_constraintEnd_toStartOf="@+id/be_image"
             app:layout_constraintTop_toBottomOf="@id/postProfile"
-            tools:ignore="ContentDescription"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="ContentDescription"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="16dp"/>
 
     <ImageView
             android:id="@+id/be_image"
@@ -193,7 +208,10 @@
             app:layout_constraintStart_toEndOf="@id/facebook_image"
             app:layout_constraintEnd_toStartOf="@+id/dribbble_image"
             app:layout_constraintTop_toBottomOf="@id/postProfile"
-            tools:ignore="ContentDescription"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="ContentDescription"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="16dp"/>
 
     <ImageView
             android:id="@+id/dribbble_image"
@@ -204,7 +222,10 @@
             app:layout_constraintStart_toEndOf="@id/be_image"
             app:layout_constraintEnd_toStartOf="@+id/twitter_image"
             app:layout_constraintTop_toBottomOf="@id/postProfile"
-            tools:ignore="ContentDescription"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="ContentDescription"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="16dp"/>
 
     <ImageView
             android:id="@+id/twitter_image"
@@ -215,7 +236,10 @@
             app:layout_constraintStart_toEndOf="@id/dribbble_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/postProfile"
-            tools:ignore="ContentDescription"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="ContentDescription"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="16dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

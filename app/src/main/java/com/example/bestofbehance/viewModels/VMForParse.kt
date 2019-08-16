@@ -14,23 +14,23 @@ class VMForParse : AndroidViewModel(Application()) {
     val listForComments: MutableLiveData<MutableList<MultiList>> by lazy { MutableLiveData<MutableList<MultiList>>() }
 
     fun setGeneral(page: Int): MutableLiveData<MutableList<CardBinding>> {
-        ParseForVM().parseGeneral(page) { result -> mainContentList.postValue(result)}
+        ParseForVM().generalRetrofit(page) { result -> mainContentList.postValue(result)}
         return mainContentList
     }
 
     fun setNextPage(page: Int): MutableLiveData<MutableList<CardBinding>> {
         pagingResponseList.value?.clear()
-        ParseForVM().parseGeneral(page) { result -> pagingResponseList.postValue(result)}
+        ParseForVM().generalRetrofit(page) { result -> pagingResponseList.postValue(result)}
         return pagingResponseList
     }
 
     fun setContent(id: Int): MutableLiveData<MutableList<MultiList>> {
-        ParseForVM().parseProject(id) { result -> listForContents.postValue(result) }
+        ParseForVM().projectRetrofit(id) { result -> listForContents.postValue(result) }
         return listForContents
     }
 
     fun setComments(id: Int): MutableLiveData<MutableList<MultiList>> {
-        ParseForVM().parseComments(id) { result -> listForComments.postValue(result) }
+        ParseForVM().commentsRetrofit(id) { result -> listForComments.postValue(result) }
         return listForComments
     }
 

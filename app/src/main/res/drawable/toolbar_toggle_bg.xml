@@ -3,6 +3,6 @@
     <item android:id="@+id/background"
           android:drawable="@android:color/transparent" />
 
-    <item android:id="@+id/bookmark"
-          android:drawable="@drawable/toolbar_drawer_toggle" />
+    <item android:id="@+id/profileViewSwitch"
+          android:drawable="@drawable/toolbar_drawer_toggle"/>
 </layer-list>

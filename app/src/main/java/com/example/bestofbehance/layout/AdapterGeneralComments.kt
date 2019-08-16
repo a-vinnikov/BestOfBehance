@@ -1,6 +1,5 @@
 package com.example.bestofbehance.layout
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -13,8 +12,6 @@ import com.example.bestofbehance.binding.TextBinding
 import com.example.bestofbehance.databinding.CountItemBinding
 import com.example.bestofbehance.databinding.ListImageBinding
 import com.example.bestofbehance.databinding.ListTextBinding
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 class AdapterGeneralComments(private val list: List<MultiList>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -30,17 +27,14 @@ class AdapterGeneralComments(private val list: List<MultiList>) : RecyclerView.A
         TYPE_IMAGE -> {
             val inflater = LayoutInflater.from(parent.context)
             ImageViewHolder(ListImageBinding.inflate(inflater, parent, false))
-            //ImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_image, parent, false))
         }
         TYPE_TEXT -> {
             val inflater = LayoutInflater.from(parent.context)
             TextViewHolder(ListTextBinding.inflate(inflater, parent, false))
-            //ImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_image, parent, false))
         }
         TYPE_COUNT -> {
             val inflater = LayoutInflater.from(parent.context)
             CountViewHolder(CountItemBinding.inflate(inflater, parent, false))
-            //ImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_image, parent, false))
         }
         TYPE_COMMENTS -> {
             val inflater = LayoutInflater.from(parent.context)
@@ -98,7 +92,6 @@ class AdapterGeneralComments(private val list: List<MultiList>) : RecyclerView.A
         fun onBindComments(comment: CommentsBinding) {
             binding.commentsView = comment
             binding.notifyPropertyChanged(BR._all)
-            //binding.dateText.text = getDateTime(comment.date.toString())
         }
 
     }

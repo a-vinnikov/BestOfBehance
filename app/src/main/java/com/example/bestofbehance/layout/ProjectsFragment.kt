@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.room.DBMain
-import com.example.bestofbehance.room.SharedPreferenceForFragments
+import com.example.bestofbehance.databases.DBMain
+import com.example.bestofbehance.databases.SharedPreferenceForFragments
 import com.example.bestofbehance.viewModels.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_projects.*
