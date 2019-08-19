@@ -120,9 +120,10 @@ class ProjectsFragment : Fragment() {
     private fun adapterFun(list: MutableList<CardBinding>, viewMode: String): AdapterViewHolder {
 
         return AdapterViewHolder(list, viewMode, object : InClick {
-            override fun onItemClick(item: CardBinding) {
+            override fun onItemClick(item: CardBinding, position: Int) {
                 NaviController(context!!).toDetailsFromProjects(item)
             }
+
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
                 if (DBMain.find(context!!, list[position].id) != null) {
@@ -136,7 +137,7 @@ class ProjectsFragment : Fragment() {
                     }
                 }
             }
-        })
+        }, "Projects")
     }
 
 }

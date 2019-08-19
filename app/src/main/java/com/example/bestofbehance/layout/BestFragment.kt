@@ -16,9 +16,13 @@ import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.paging.PaginationScrollListener
 import com.example.bestofbehance.databases.DBMain
+import com.example.bestofbehance.databases.SharedPreferenceForFragments
 import com.example.bestofbehance.databases.SharedPreferenceForFragments.editorSharedPreference
 import com.example.bestofbehance.databases.SharedPreferenceForFragments.sharedCurrentViewMode
 import com.example.bestofbehance.viewModels.*
+import kotlinx.android.synthetic.main.list_item.*
+import kotlinx.android.synthetic.main.list_item.view.*
+import kotlinx.android.synthetic.main.list_item.view.avatarView
 import timber.log.Timber
 
 
@@ -107,6 +111,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             }
 
             override fun isLastPage(): Boolean {
+
                 if (adapterBest.position == (adapterBest.list.size - 1)) {
                     isLoading = true
                     page += 1
@@ -151,10 +156,10 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             .setPageSize(10)
             .build()*/
 
+
+
         val observerGSON = Observer<MutableList<CardBinding>> { list ->
             // val pagedList = PagedList.Builder<Any, Any>(dataSource, config).setBackgroundThreadExecutor(Executors.newSingleThreadExecutor()).setMainThreadExecutor(MainThreadExecutor()).build()
-
-            //CardDataBase.getDatabase(context!!)
 
             when (currentViewMode) {
                 "list" -> {
@@ -184,7 +189,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private fun adapterFun(list: MutableList<CardBinding>, viewMode: String): AdapterViewHolder {
 
         return AdapterViewHolder(list, viewMode, object : InClick {
-            override fun onItemClick(item: CardBinding) {
+            override fun onItemClick(item: CardBinding, position: Int) {
                 NaviController(context!!).toDetailsFromBest(item)
             }
         }, object : BookmarkClick {
@@ -195,7 +200,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     DBMain.delete(context!!, list[position].id)
                 }
             }
-        })
+        }, "Best")
     }
 
 }

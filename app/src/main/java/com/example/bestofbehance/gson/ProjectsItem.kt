@@ -22,7 +22,12 @@ data class ProjectsItem(
 	@field:SerializedName("fields")
 	val fields: List<String?>? = null,
 
-	@field:SerializedName("covers")
-	val covers: Covers? = null
+	@field:SerializedName("slug")
+	val slug: String? = null,
 
+	@field:SerializedName("covers")
+	val covers: Covers? = null,
+
+	@field:SerializedName("featured_on")
+	val featuredOn: Int? = null
 )

@@ -8,12 +8,12 @@ data class ProfileBinding(
     var appreciations: String? = "0",
     var followers: String? = "0",
     var following: String? = "0",
-    var description: String? = null,
-    var post: String? = "Post",
-    var pinterest: String? = null,
+    var occupation: String? = null,
+    var post: String? = "Post"
+    /*var pinterest: String? = null,
     var instagram: String? = null,
     var facebook: String? = null,
     var behance: String? = null,
     var dribbble: String? = null,
-    var twitter: String? = null
+    var twitter: String? = null*/
 )

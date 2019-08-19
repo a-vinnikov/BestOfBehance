@@ -13,6 +13,7 @@ import com.example.bestofbehance.databases.DBHelper.Companion.KEY_DATE
 import com.example.bestofbehance.databases.DBHelper.Companion.KEY_ID
 import com.example.bestofbehance.databases.DBHelper.Companion.KEY_NAME
 import com.example.bestofbehance.databases.DBHelper.Companion.KEY_POST
+import com.example.bestofbehance.databases.DBHelper.Companion.KEY_USERNAME
 import com.example.bestofbehance.databases.DBHelper.Companion.KEY_VIEWS
 import com.example.bestofbehance.databases.DBHelper.Companion.TABLE_CARDS
 import timber.log.Timber
@@ -37,6 +38,7 @@ object DBMain {
         values.put(KEY_VIEWS, binding.views)
         values.put(KEY_APPRECIATIONS, binding.appreciations)
         values.put(KEY_COMMENTS, binding.comments)
+        values.put(KEY_USERNAME, binding.username)
         values.put(KEY_DATE, getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss"))
 
         database.insert(TABLE_CARDS, null, values)
@@ -59,6 +61,7 @@ object DBMain {
             val appreciationsIndex = cursor.getColumnIndex(KEY_APPRECIATIONS)
             val commentsIndex = cursor.getColumnIndex(KEY_COMMENTS)
             val dateIndex = cursor.getColumnIndex(KEY_DATE)
+            val usernameIndex = cursor.getColumnIndex(KEY_USERNAME)
             do {
                 Timber.d(
                     "ID = " + cursor.getInt(idIndex) +
@@ -69,6 +72,7 @@ object DBMain {
                             ", views = " + cursor.getString(viewsIndex) +
                             ", appreciations = " + cursor.getString(appreciationsIndex) +
                             ", comments = " + cursor.getString(commentsIndex) +
+                            ", username = " + cursor.getString(usernameIndex) +
                             ", date = " + cursor.getString(dateIndex)
                 )
                 list.add(
@@ -81,7 +85,7 @@ object DBMain {
                         cursor.getString(viewsIndex),
                         cursor.getString(appreciationsIndex),
                         cursor.getString(commentsIndex),
-                        null
+                        cursor.getString(usernameIndex)
 
                     )
                 )
@@ -151,8 +155,9 @@ object DBMain {
         val views = binding.views
         val appreciations = binding.appreciations
         val comments = binding.comments
+        val username = binding.username
 
-        database.execSQL("UPDATE $TABLE_CARDS SET $KEY_BIGIMAGE= '$bigImage', $KEY_AVATAR= '$avatar', $KEY_NAME= '$name', $KEY_POST= '$post', $KEY_VIEWS= '$views', $KEY_APPRECIATIONS= '$appreciations', $KEY_COMMENTS= '$comments' WHERE $KEY_ID= '$id'")
+        database.execSQL("UPDATE $TABLE_CARDS SET $KEY_BIGIMAGE= '$bigImage', $KEY_AVATAR= '$avatar', $KEY_NAME= '$name', $KEY_POST= '$post', $KEY_VIEWS= '$views', $KEY_APPRECIATIONS= '$appreciations', $KEY_COMMENTS= '$comments', $KEY_USERNAME= '$username' WHERE $KEY_ID= '$id'")
         Timber.d("Row update: ID = $id")
 
         database.close()

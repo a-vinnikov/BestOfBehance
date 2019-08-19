@@ -25,12 +25,16 @@ class NaviController(internal val activity: Context) {
         controller.navigate(ProjectsFragmentDirections.actionProjectsToDetails(item))
     }
 
-    fun toProfileFromDetails(item: CardBinding) {
+    fun toProfileFromDetails(item: String) {
         controller.navigate(DetailsFragmentDirections.actionDetailsToProfile(item))
     }
 
-    fun toProfileFromBest(item: CardBinding) {
+    fun toProfileFromBest(item: String) {
         controller.navigate(BestDirections.actionBestToProfile(item))
+    }
+
+    fun toProfileFromProjects(item: String) {
+        controller.navigate(ProjectsFragmentDirections.actionProjectsToProfile(item))
     }
 
 }

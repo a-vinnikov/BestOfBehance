@@ -115,7 +115,7 @@ class DetailsFragment : Fragment() {
                 }
             })
 
-        avatarViewDetails.setOnClickListener { NaviController(context!!).toProfileFromDetails(args.cardBindingArg) }
+        avatarViewDetails.setOnClickListener { NaviController(context!!).toProfileFromDetails(args.cardBindingArg.username!!) }
     }
 
 

@@ -20,7 +20,7 @@ import com.example.bestofbehance.viewModels.NaviController
 import timber.log.Timber
 
 
-class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick) :
+class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick, val layout: String) :
     RecyclerView.Adapter<AdapterViewHolder.ViewHolder>() {
 
     lateinit var context: Context
@@ -45,8 +45,11 @@ class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String
         this.position = holder.adapterPosition
 
         holder.itemView.avatarView.setOnClickListener {
+            when (layout){
+                "Best" -> {NaviController(context).toProfileFromBest(list[holder.adapterPosition].username!!)}
+                "Projects" -> {NaviController(context).toProfileFromProjects(list[holder.adapterPosition].username!!)}
+            }
             SharedPreferenceForFragments.editorSharedPreference(context, "position", holder.adapterPosition.toString())
-            NaviController(context).toProfileFromBest(list[holder.adapterPosition])
             Timber.d(holder.adapterPosition.toString())
         }
 
@@ -57,7 +60,7 @@ class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String
         }
 
         holder.itemView.constLayout.setOnClickListener {
-            inClick.onItemClick(list[holder.adapterPosition])
+            inClick.onItemClick(list[holder.adapterPosition], holder.adapterPosition)
         }
 
         if (viewMode == "tile") {

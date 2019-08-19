@@ -1,11 +1,7 @@
 package com.example.bestofbehance.viewModels
 
 import com.example.bestofbehance.Retrofit.BehanceApiInterface
-import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.binding.CommentsBinding
-import com.example.bestofbehance.binding.CountBinding
-import com.example.bestofbehance.binding.ImageBinding
-import com.example.bestofbehance.binding.TextBinding
+import com.example.bestofbehance.binding.*
 import com.example.bestofbehance.gson.*
 import com.example.bestofbehance.layout.MultiList
 import org.jsoup.Jsoup
@@ -19,6 +15,7 @@ class ParseForVM {
     private val recList: MutableList<CardBinding> = mutableListOf()
     private val iListCon: MutableList<MultiList> = mutableListOf()
     private val iListCom: MutableList<MultiList> = mutableListOf()
+    private val userList: MutableList<ProfileBinding> = mutableListOf()
     private val apiKey = "0QmPh684DRz1SpWHDikkyFCzLShGiHPi"
 
     fun generalRetrofit(page: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit){
@@ -47,7 +44,7 @@ class ParseForVM {
                     val appreciations = listResponse[i]?.stats?.appreciations
                     val views = listResponse[i]?.stats?.views
                     val comments = listResponse[i]?.stats?.comments
-                    val posts = listResponse[i]?.fields?.get(0)
+                    val posts = listResponse[i]?.slug?.replace("-", " ")
                     val id = listResponse[i]?.id
                     val username = listResponse[i]?.owners?.get(0)?.username
 
@@ -156,5 +153,44 @@ class ParseForVM {
         })
 
     }
+
+    fun userRetrofit(username: String, myCallBack: (result: MutableList<ProfileBinding>) -> Unit){
+
+        val client = Retrofit.Builder()
+            .baseUrl("https://api.behance.net/v2/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = client.create(BehanceApiInterface::class.java)
+        val call = service.getUser(username, apiKey)
+
+        call.enqueue(object : Callback<UserResponse> {
+            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
+
+            }
+
+            override fun onResponse(call: Call<UserResponse>, response: retrofit2.Response<UserResponse>) {
+                val listResponse = response.body()?.user
+
+                val avatar = listResponse?.images?.jsonMember276
+                val name = listResponse?.displayName
+                val cityCountry = listResponse?.city + ", " + listResponse?.country
+                val views = listResponse?.stats?.views
+                val appreciations = listResponse?.stats?.appreciations
+                val followers = listResponse?.stats?.followers
+                val following = listResponse?.stats?.following
+                var occupation = listResponse?.sections?.aboutMe
+                val post = listResponse?.fields?.get(0)
+
+                if (occupation == null) occupation = "No information"
+
+                userList.add(ProfileBinding(avatar, name, cityCountry, views.toString(), appreciations.toString(), followers.toString(), following.toString(), occupation, post))
+
+                myCallBack.invoke(userList)
+            }
+        })
+
+    }
+
 
 }

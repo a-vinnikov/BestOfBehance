@@ -6,4 +6,5 @@
     <color name="colorMain">#FFFFFF</color>
     <color name="nav_active">#fdfdfe</color>
     <color name="nav_inactive">#a5ccf9</color>
+    <color name="colorBlack">#000000</color>
 </resources>

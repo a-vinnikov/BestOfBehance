@@ -3,6 +3,7 @@ package com.example.bestofbehance.Retrofit
 import com.example.bestofbehance.gson.CommentsMain
 import com.example.bestofbehance.gson.GeneralResponse
 import com.example.bestofbehance.gson.ImageResponse
+import com.example.bestofbehance.gson.UserResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -19,5 +20,8 @@ interface BehanceApiInterface {
 
     @GET("projects")
     fun getGeneral(@Query("sort") sort: String, @Query("page") page: Int, @Query("api_key") api_key: String): Call<GeneralResponse>
+
+    @GET("users/{user}")
+    fun getUser(@Path("user") user: String, @Query("api_key") api_key: String): Call<UserResponse>
 
 }
