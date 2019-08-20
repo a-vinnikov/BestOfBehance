@@ -3,7 +3,6 @@ package com.example.bestofbehance.layout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,15 +13,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuInflater
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
+import com.example.bestofbehance.databases.CacheDBMain
 import com.example.bestofbehance.paging.PaginationScrollListener
 import com.example.bestofbehance.databases.DBMain
-import com.example.bestofbehance.databases.SharedPreferenceForFragments
 import com.example.bestofbehance.databases.SharedPreferenceForFragments.editorSharedPreference
 import com.example.bestofbehance.databases.SharedPreferenceForFragments.sharedCurrentViewMode
 import com.example.bestofbehance.viewModels.*
-import kotlinx.android.synthetic.main.list_item.*
-import kotlinx.android.synthetic.main.list_item.view.*
-import kotlinx.android.synthetic.main.list_item.view.avatarView
 import timber.log.Timber
 
 
@@ -85,6 +81,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onRefresh() {
         DBMain.close(context!!)
+        CacheDBMain.clear(context!!)
         currentViewMode = sharedCurrentViewMode(context!!, "currentViewMode", currentViewMode)
         createRecyclerView(currentViewMode)
         swipe.isRefreshing = false
@@ -115,13 +112,13 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 if (adapterBest.position == (adapterBest.list.size - 1)) {
                     isLoading = true
                     page += 1
-                    jsonModel.setNextPage(page)
-                    val observerGSON0 = Observer<MutableList<CardBinding>> {
+                    jsonModel.setNextPage(context!!, page)
+                    val observerGSONPaging = Observer<MutableList<CardBinding>> {
                         adapterBest.addData(it)
                         isLoading = false
                         Timber.d("Loaded page $page")
                     }
-                    jsonModel.pagingResponseList.observe(this@Best, observerGSON0)
+                    jsonModel.pagingResponseList.observe(this@Best, observerGSONPaging)
                 }
                 return isLastPage
             }
@@ -148,7 +145,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private fun createRecyclerView(currentViewMode: String) {
         if (jsonModel.mainContentList.value == null || swipe.isRefreshing) {
-            jsonModel.setGeneral(page)
+            jsonModel.setGeneral(context!!, page)
         }
 
         /*val config = PagedList.Config.Builder()

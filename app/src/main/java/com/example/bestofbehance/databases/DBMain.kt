@@ -3,7 +3,6 @@ package com.example.bestofbehance.databases
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
-import android.util.Log
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.databases.DBHelper.Companion.KEY_APPRECIATIONS
 import com.example.bestofbehance.databases.DBHelper.Companion.KEY_AVATAR
@@ -11,8 +10,8 @@ import com.example.bestofbehance.databases.DBHelper.Companion.KEY_BIGIMAGE
 import com.example.bestofbehance.databases.DBHelper.Companion.KEY_COMMENTS
 import com.example.bestofbehance.databases.DBHelper.Companion.KEY_DATE
 import com.example.bestofbehance.databases.DBHelper.Companion.KEY_ID
-import com.example.bestofbehance.databases.DBHelper.Companion.KEY_NAME
-import com.example.bestofbehance.databases.DBHelper.Companion.KEY_POST
+import com.example.bestofbehance.databases.DBHelper.Companion.KEY_ARTISTNAME
+import com.example.bestofbehance.databases.DBHelper.Companion.KEY_ARTNAME
 import com.example.bestofbehance.databases.DBHelper.Companion.KEY_USERNAME
 import com.example.bestofbehance.databases.DBHelper.Companion.KEY_VIEWS
 import com.example.bestofbehance.databases.DBHelper.Companion.TABLE_CARDS
@@ -33,8 +32,8 @@ object DBMain {
         values.put(KEY_ID, binding.id)
         values.put(KEY_BIGIMAGE, binding.bigImage)
         values.put(KEY_AVATAR, binding.avatar)
-        values.put(KEY_NAME, binding.name)
-        values.put(KEY_POST, binding.post)
+        values.put(KEY_ARTISTNAME, binding.artistName)
+        values.put(KEY_ARTNAME, binding.artName)
         values.put(KEY_VIEWS, binding.views)
         values.put(KEY_APPRECIATIONS, binding.appreciations)
         values.put(KEY_COMMENTS, binding.comments)
@@ -55,8 +54,8 @@ object DBMain {
             val idIndex = cursor.getColumnIndex(KEY_ID)
             val bigImageIndex = cursor.getColumnIndex(KEY_BIGIMAGE)
             val avatarIndex = cursor.getColumnIndex(KEY_AVATAR)
-            val nameIndex = cursor.getColumnIndex(KEY_NAME)
-            val postIndex = cursor.getColumnIndex(KEY_POST)
+            val artistIndex = cursor.getColumnIndex(KEY_ARTISTNAME)
+            val artIndex = cursor.getColumnIndex(KEY_ARTNAME)
             val viewsIndex = cursor.getColumnIndex(KEY_VIEWS)
             val appreciationsIndex = cursor.getColumnIndex(KEY_APPRECIATIONS)
             val commentsIndex = cursor.getColumnIndex(KEY_COMMENTS)
@@ -67,8 +66,8 @@ object DBMain {
                     "ID = " + cursor.getInt(idIndex) +
                             ", bigImage = " + cursor.getString(bigImageIndex) +
                             ", avatar = " + cursor.getString(avatarIndex) +
-                            ", name = " + cursor.getString(nameIndex) +
-                            ", post = " + cursor.getString(postIndex) +
+                            ", artistName = " + cursor.getString(artistIndex) +
+                            ", artName = " + cursor.getString(artIndex) +
                             ", views = " + cursor.getString(viewsIndex) +
                             ", appreciations = " + cursor.getString(appreciationsIndex) +
                             ", comments = " + cursor.getString(commentsIndex) +
@@ -80,8 +79,8 @@ object DBMain {
                         cursor.getInt(idIndex),
                         cursor.getString(bigImageIndex),
                         cursor.getString(avatarIndex),
-                        cursor.getString(nameIndex),
-                        cursor.getString(postIndex),
+                        cursor.getString(artistIndex),
+                        cursor.getString(artIndex),
                         cursor.getString(viewsIndex),
                         cursor.getString(appreciationsIndex),
                         cursor.getString(commentsIndex),
@@ -124,8 +123,7 @@ object DBMain {
                 }
 
             } while (cursor.moveToNext() && check == null)
-        } else
-            Timber.d("No matches found")
+        }
 
         cursor.close()
         database.close()
@@ -150,14 +148,14 @@ object DBMain {
         val id = binding.id
         val avatar = binding.avatar
         val bigImage = binding.bigImage
-        val name = binding.name
-        val post = binding.post
+        val artistName = binding.artistName
+        val artName = binding.artName
         val views = binding.views
         val appreciations = binding.appreciations
         val comments = binding.comments
         val username = binding.username
 
-        database.execSQL("UPDATE $TABLE_CARDS SET $KEY_BIGIMAGE= '$bigImage', $KEY_AVATAR= '$avatar', $KEY_NAME= '$name', $KEY_POST= '$post', $KEY_VIEWS= '$views', $KEY_APPRECIATIONS= '$appreciations', $KEY_COMMENTS= '$comments', $KEY_USERNAME= '$username' WHERE $KEY_ID= '$id'")
+        database.execSQL("UPDATE $TABLE_CARDS SET $KEY_BIGIMAGE= '$bigImage', $KEY_AVATAR= '$avatar', $KEY_ARTISTNAME= '$artistName', $KEY_ARTNAME= '$artName', $KEY_VIEWS= '$views', $KEY_APPRECIATIONS= '$appreciations', $KEY_COMMENTS= '$comments', $KEY_USERNAME= '$username' WHERE $KEY_ID= '$id'")
         Timber.d("Row update: ID = $id")
 
         database.close()

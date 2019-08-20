@@ -62,10 +62,10 @@
                     app:loadingCircleImage="@{cardView.avatar}"/>
 
             <TextView
-                    android:id="@+id/list_name"
+                    android:id="@+id/artistName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{cardView.name}"
+                    android:text="@{cardView.artistName}"
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:layout_marginTop="4dp"
@@ -75,17 +75,17 @@
                     tools:ignore="PrivateResource"
                     app:layout_constraintTop_toTopOf="@+id/constLayoutBottom"
                     app:layout_constraintStart_toEndOf="@id/avatarView"
-                    app:layout_constraintBottom_toTopOf="@id/list_post"/>
+                    app:layout_constraintBottom_toTopOf="@id/artName"/>
             <TextView
-                    android:id="@+id/list_post"
+                    android:id="@+id/artName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{cardView.post}"
+                    android:text="@{cardView.artName}"
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:textSize="14sp"
                     app:layout_constraintStart_toEndOf="@+id/avatarView"
-                    app:layout_constraintTop_toBottomOf="@+id/list_name"/>
+                    app:layout_constraintTop_toBottomOf="@+id/artistName"/>
 
             <View android:id="@+id/line"
                   android:layout_width="0dp"
@@ -94,7 +94,7 @@
                   android:layout_marginBottom="6dp"
                   android:background="@color/colorPrimary"
                   app:layout_constraintStart_toStartOf="parent"
-                  app:layout_constraintTop_toBottomOf="@id/list_post"/>
+                  app:layout_constraintTop_toBottomOf="@id/artName"/>
 
             <ImageView
                     android:id="@+id/view_image"

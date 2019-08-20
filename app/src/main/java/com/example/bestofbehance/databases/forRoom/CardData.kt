@@ -11,8 +11,8 @@ data class CardData(
     @SerializedName("id") var id: Int = 0,
     @SerializedName("original") var bigImage: String? = null,
     @SerializedName("138") var avatar: String? = null,
-    @SerializedName("display_name") var name: String? = "Name",
-    @SerializedName("fields") var post: String? = "Post",
+    @SerializedName("display_name") var artistName: String? = "Name",
+    @SerializedName("fields") var artName: String? = "Post",
     @SerializedName("views") var views: Int = 0,
     @SerializedName("appreciations") var appreciations: Int = 0,
     @SerializedName("comments") var comments: Int = 0

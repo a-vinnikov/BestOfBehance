@@ -38,23 +38,23 @@ class ParseForVM {
 
                 for (i in 0 until listResponse!!.size) {
 
-                    val arts = listResponse[i]?.covers?.original
-                    val names = listResponse[i]?.owners?.get(0)?.displayName
-                    val avatars = listResponse[i]?.owners?.get(0)?.images?.jsonMember138
+                    val art = listResponse[i]?.covers?.original
+                    val artistName = listResponse[i]?.owners?.get(0)?.displayName
+                    val avatar = listResponse[i]?.owners?.get(0)?.images?.jsonMember138
                     val appreciations = listResponse[i]?.stats?.appreciations
                     val views = listResponse[i]?.stats?.views
                     val comments = listResponse[i]?.stats?.comments
-                    val posts = listResponse[i]?.slug?.replace("-", " ")
+                    val artName = listResponse[i]?.name
                     val id = listResponse[i]?.id
                     val username = listResponse[i]?.owners?.get(0)?.username
 
                     recList.add(
                         CardBinding(
                             id!!,
-                            arts,
-                            avatars,
-                            names,
-                            posts,
+                            art,
+                            avatar,
+                            artistName,
+                            artName,
                             views.toString(),
                             appreciations.toString(),
                             comments.toString(),
@@ -135,7 +135,7 @@ class ParseForVM {
                 for (i in 0 until numberOfComments!!) {
 
                     val commentsAvatarView = listResponse?.get(i)?.user?.images?.jsonMember138
-                    val commentsName = listResponse?.get(i)?.user?.displayName
+                    val commentatorName = listResponse?.get(i)?.user?.displayName
                     val comment = listResponse?.get(i)?.comment
                     val date = listResponse?.get(i)?.createdOn.toString()
 
@@ -144,7 +144,7 @@ class ParseForVM {
                     if (i == 0) {
                         iListCom.add(MultiList.CountList(CountBinding(numberOfComments)))
                     }
-                    iListCom.add(MultiList.CommentsList(CommentsBinding(commentsAvatarView, commentsName, comment, date)))
+                    iListCom.add(MultiList.CommentsList(CommentsBinding(commentsAvatarView, commentatorName, comment, date)))
                     i + 1
                 }
                 myCallBack.invoke(iListCom)
@@ -172,24 +172,76 @@ class ParseForVM {
             override fun onResponse(call: Call<UserResponse>, response: retrofit2.Response<UserResponse>) {
                 val listResponse = response.body()?.user
 
+                val id = listResponse?.id
                 val avatar = listResponse?.images?.jsonMember276
-                val name = listResponse?.displayName
+                val artistName = listResponse?.displayName
                 val cityCountry = listResponse?.city + ", " + listResponse?.country
                 val views = listResponse?.stats?.views
                 val appreciations = listResponse?.stats?.appreciations
                 val followers = listResponse?.stats?.followers
                 val following = listResponse?.stats?.following
-                var occupation = listResponse?.sections?.aboutMe
+                var aboutArtist = listResponse?.sections?.aboutMe
                 val post = listResponse?.fields?.get(0)
 
-                if (occupation == null) occupation = "No information"
+                if (aboutArtist == null) aboutArtist = "No information"
 
-                userList.add(ProfileBinding(avatar, name, cityCountry, views.toString(), appreciations.toString(), followers.toString(), following.toString(), occupation, post))
+                userList.add(ProfileBinding(id!!, avatar, artistName, cityCountry, views.toString(), appreciations.toString(), followers.toString(), following.toString(), aboutArtist, post))
 
                 myCallBack.invoke(userList)
             }
         })
 
+    }
+
+    fun userProjectsRetrofit(username: String, page: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit){
+        val client = Retrofit.Builder()
+            .baseUrl("https://api.behance.net/v2/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = client.create(BehanceApiInterface::class.java)
+        val call = service.getUserProjects(username, page, apiKey)
+
+        call.enqueue(object : Callback<GeneralResponse> {
+            override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
+
+            }
+
+            override fun onResponse(call: Call<GeneralResponse>, response: retrofit2.Response<GeneralResponse>) {
+                val listResponse = response.body()?.projects
+
+
+                for (i in 0 until listResponse!!.size) {
+
+                    val art = listResponse[i]?.covers?.original
+                    val artistName = listResponse[i]?.owners?.get(0)?.displayName
+                    val avatar = listResponse[i]?.owners?.get(0)?.images?.jsonMember138
+                    val appreciations = listResponse[i]?.stats?.appreciations
+                    val views = listResponse[i]?.stats?.views
+                    val comments = listResponse[i]?.stats?.comments
+                    val artName = listResponse[i]?.name
+                    val id = listResponse[i]?.id
+
+                    recList.add(
+                        CardBinding(
+                            id!!,
+                            art,
+                            avatar,
+                            artistName,
+                            artName,
+                            views.toString(),
+                            appreciations.toString(),
+                            comments.toString(),
+                            username
+
+                        )
+                    )
+                    i + 1
+                }
+                myCallBack.invoke(recList)
+            }
+
+        })
     }
 
 

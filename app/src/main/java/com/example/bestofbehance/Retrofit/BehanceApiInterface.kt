@@ -24,4 +24,7 @@ interface BehanceApiInterface {
     @GET("users/{user}")
     fun getUser(@Path("user") user: String, @Query("api_key") api_key: String): Call<UserResponse>
 
+    @GET("users/{user}/projects")
+    fun getUserProjects(@Path("user") user: String, @Query("page") page: Int, @Query("api_key") api_key: String): Call<GeneralResponse>
+
 }

@@ -46,11 +46,10 @@ class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String
 
         holder.itemView.avatarView.setOnClickListener {
             when (layout){
-                "Best" -> {NaviController(context).toProfileFromBest(list[holder.adapterPosition].username!!)}
-                "Projects" -> {NaviController(context).toProfileFromProjects(list[holder.adapterPosition].username!!)}
+                "Best" -> {NaviController(context).toProfileFromBest(list[holder.adapterPosition])}
+                "Projects" -> {NaviController(context).toProfileFromProjects(list[holder.adapterPosition])}
             }
             SharedPreferenceForFragments.editorSharedPreference(context, "position", holder.adapterPosition.toString())
-            Timber.d(holder.adapterPosition.toString())
         }
 
         holder.itemView.bookmark.isChecked = DBMain.find(context, list[holder.adapterPosition].id) != null
@@ -61,6 +60,11 @@ class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String
 
         holder.itemView.constLayout.setOnClickListener {
             inClick.onItemClick(list[holder.adapterPosition], holder.adapterPosition)
+        }
+
+        if (layout == "Profile"){
+            holder.itemView.avatarView.visibility = GONE
+            holder.itemView.artistName.visibility = GONE
         }
 
         if (viewMode == "tile") {

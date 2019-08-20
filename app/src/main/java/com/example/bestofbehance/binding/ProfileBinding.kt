@@ -1,6 +1,7 @@
 package com.example.bestofbehance.binding
 
 data class ProfileBinding(
+    var id: Int = 0,
     var avatar: String? = null,
     var name: String? = "Name",
     var cityCountry: String? = null,

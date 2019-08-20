@@ -11,7 +11,6 @@
 
 
 <androidx.constraintlayout.widget.ConstraintLayout
-
         android:id="@id/constLayoutImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +19,7 @@
         app:layout_constraintBottom_toTopOf="@id/recycler_view_details"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_scrollFlags="scroll|enterAlways">
+        app:layout_scrollFlags="scroll|snap">
 
         <ImageView
                 android:id="@+id/avatarViewDetails"
@@ -39,7 +38,7 @@
                 android:id="@+id/nameDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{cardViewDetails.name}"
+                android:text="@{cardViewDetails.artistName}"
                 android:layout_marginTop="4dp"
                 android:textSize="15sp"
                 android:textStyle="bold"
@@ -52,7 +51,7 @@
                 android:id="@+id/postDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{cardViewDetails.post}"
+                android:text="@{cardViewDetails.artName}"
                 android:textSize="14sp"
                 app:layout_constraintTop_toBottomOf="@id/nameDetails"
                 app:layout_constraintBottom_toTopOf="@id/lineDetails"

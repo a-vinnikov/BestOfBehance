@@ -27,7 +27,7 @@ interface RedditApi {
         @Query("limit") limit: Int): Call<ListingResponse>
 
     // for after/before param, either get from RedditDataResponse.after/before,
-    // or pass RedditNewsDataResponse.name (though this is technically incorrect)
+    // or pass RedditNewsDataResponse.artistName (though this is technically incorrect)
 
     @GET("/r/{subreddit}/hot.json")
     fun getTopAfter(

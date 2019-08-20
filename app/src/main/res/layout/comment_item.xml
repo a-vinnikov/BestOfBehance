@@ -34,15 +34,15 @@
                     android:layout_marginTop="6dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/commentLine"
-                    app:layout_constraintEnd_toStartOf="@id/comment_name"
+                    app:layout_constraintEnd_toStartOf="@id/commentatorName"
                     app:loadingCircleImage="@{commentsView.commentAvatarView}"
                     tools:ignore="ContentDescription"/>
 
             <TextView
-                    android:id="@+id/comment_name"
+                    android:id="@+id/commentatorName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@{commentsView.commentName}"
+                    android:text="@{commentsView.commentatorName}"
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:layout_marginTop="12dp"
@@ -61,7 +61,7 @@
                     android:text="@{commentsView.comment}"
                     android:textSize="14sp"
                     app:layout_constraintStart_toEndOf="@+id/commentAvatarView"
-                    app:layout_constraintTop_toBottomOf="@+id/comment_name"
+                    app:layout_constraintTop_toBottomOf="@+id/commentatorName"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="8dp"/>

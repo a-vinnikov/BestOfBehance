@@ -18,72 +18,64 @@
                 android:id="@+id/profile_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorMain"
-                app:layout_scrollFlags="scroll|snap">
+                android:background="@color/colorMain">
             <include
                     layout="@layout/profile_card"
                     app:cardViewProfile="@{cardViewProfile}"
             />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constSecondToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <View android:id="@+id/line_top"
+                      android:layout_width="0dp"
+                      android:layout_height="1dp"
+                      android:background="@color/colorPrimary"
+                      app:layout_constraintStart_toStartOf="parent"
+                      app:layout_constraintEnd_toEndOf="parent"
+                      app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                        android:id="@+id/textProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/projects"
+                        android:textSize="16sp"
+                        android:layout_marginStart="16dp"
+                        android:textColor="@color/colorPrimaryDark"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/line_top"
+                        app:layout_constraintBottom_toTopOf="@+id/line_bottom"/>
+
+                <ToggleButton
+                        android:id="@+id/viewModeProfile"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        style="@style/toggleButton"
+                        android:background="@drawable/toolbar_toggle_bg"
+                        android:layout_marginEnd="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/line_top"
+                        app:layout_constraintBottom_toTopOf="@id/line_bottom"/>
+
+                <View android:id="@+id/line_bottom"
+                      android:layout_width="0dp"
+                      android:layout_height="1dp"
+                      android:background="@color/colorPrimary"
+                      app:layout_constraintStart_toStartOf="parent"
+                      app:layout_constraintEnd_toEndOf="parent"
+                      app:layout_constraintTop_toBottomOf="@id/textProfile"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_profile"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <View android:id="@+id/line_top"
-                  android:layout_width="0dp"
-                  android:layout_height="1dp"
-                  android:background="@color/colorPrimary"
-                  app:layout_constraintStart_toStartOf="parent"
-                  app:layout_constraintEnd_toEndOf="parent"
-                  app:layout_constraintTop_toTopOf="parent"/>
-
-            <TextView
-                    android:id="@+id/textProfile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/projects"
-                    android:textSize="16sp"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginBottom="13dp"
-                    android:textColor="@color/colorPrimaryDark"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/line_top"
-                    app:layout_constraintBottom_toTopOf="@+id/line_bottom"/>
-
-            <ToggleButton
-                    android:id="@+id/viewModeProfile"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    style="@style/toggleButton"
-                    android:background="@drawable/toolbar_toggle_bg"
-                    android:layout_marginEnd="16dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/line_top"
-                    app:layout_constraintBottom_toTopOf="@id/line_bottom"/>
-
-            <View android:id="@+id/line_bottom"
-                  android:layout_width="0dp"
-                  android:layout_height="1dp"
-                  android:background="@color/colorPrimary"
-                  app:layout_constraintStart_toStartOf="parent"
-                  app:layout_constraintEnd_toEndOf="parent"
-                  app:layout_constraintTop_toBottomOf="@id/textProfile"
-                  app:layout_constraintBottom_toTopOf="@id/recycler_view_profile"/>
-
-
-            <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view_profile"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_constraintTop_toBottomOf="@id/line_bottom"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-            />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

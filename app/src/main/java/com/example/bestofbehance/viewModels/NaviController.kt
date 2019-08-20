@@ -8,6 +8,7 @@ import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.layout.BestDirections
 import com.example.bestofbehance.layout.DetailsFragmentDirections
+import com.example.bestofbehance.layout.ProfileFragmentDirections
 import com.example.bestofbehance.layout.ProjectsFragmentDirections
 
 
@@ -25,16 +26,20 @@ class NaviController(internal val activity: Context) {
         controller.navigate(ProjectsFragmentDirections.actionProjectsToDetails(item))
     }
 
-    fun toProfileFromDetails(item: String) {
+    fun toProfileFromDetails(item: CardBinding) {
         controller.navigate(DetailsFragmentDirections.actionDetailsToProfile(item))
     }
 
-    fun toProfileFromBest(item: String) {
+    fun toProfileFromBest(item: CardBinding) {
         controller.navigate(BestDirections.actionBestToProfile(item))
     }
 
-    fun toProfileFromProjects(item: String) {
+    fun toProfileFromProjects(item: CardBinding) {
         controller.navigate(ProjectsFragmentDirections.actionProjectsToProfile(item))
+    }
+
+    fun toDetailsFromProfile(item: CardBinding){
+        controller.navigate(ProfileFragmentDirections.actionProfileToDetails(item))
     }
 
 }
