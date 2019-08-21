@@ -20,36 +20,37 @@ class VMForParse : AndroidViewModel(Application()) {
     val listForUserProjects: MutableLiveData<MutableList<CardBinding>> by lazy { MutableLiveData<MutableList<CardBinding>>() }
 
     fun setGeneral(context: Context, page: Int): MutableLiveData<MutableList<CardBinding>> {
+        CacheDBMain.read(context) { list ->
+            if (list.size == 0) {
                 ParseForVM().generalRetrofit(page) { result ->
-                        for (i in 0 until result.size) {
-                            CacheDBMain.add(context, result[i])
-                        }
-
-                    mainContentList.postValue(result)
-
                     for (i in 0 until result.size) {
-                        if (DBMain.find(context, result[i].id) != null) {
-                            DBMain.update(context, result[i])
-                        }
+                        CacheDBMain.add(context, result[i])
                     }
+                }
+            }
+            CacheDBMain.read(context) { mainContentList.postValue(it) }
         }
-
+        CacheDBMain.close(context)
         return mainContentList
     }
 
-    fun setNextPage(context: Context, page: Int): MutableLiveData<MutableList<CardBinding>> {
+    fun setNextPage(page: Int): MutableLiveData<MutableList<CardBinding>> {
         pagingResponseList.value?.clear()
         ParseForVM().generalRetrofit(page) { result ->
-            pagingResponseList.postValue(result)
-            for (i in 0 until result.size) {
-                CacheDBMain.add(context, result[i])
-            }}
+            val abc = result.sortedByDescending { it.appreciations }
+            pagingResponseList.postValue(abc as MutableList<CardBinding>)
+        }
         return pagingResponseList
     }
 
-    fun setNextPageForUser(username: String, page: Int): MutableLiveData<MutableList<CardBinding>> {
+    fun setNextPageForUser(
+        username: String,
+        page: Int
+    ): MutableLiveData<MutableList<CardBinding>> {
         pagingResponseList.value?.clear()
-        ParseForVM().userProjectsRetrofit(username, page) { result -> pagingResponseList.postValue(result) }
+        ParseForVM().userProjectsRetrofit(username, page) { result ->
+            pagingResponseList.postValue(result)
+        }
         return pagingResponseList
     }
 
@@ -68,8 +69,15 @@ class VMForParse : AndroidViewModel(Application()) {
         return listForUser
     }
 
-    fun setUserProjects(username: String, page: Int): MutableLiveData<MutableList<CardBinding>> {
-        ParseForVM().userProjectsRetrofit(username, page) { result -> listForUserProjects.postValue(result) }
+    fun setUserProjects(
+        username: String,
+        page: Int
+    ): MutableLiveData<MutableList<CardBinding>> {
+        ParseForVM().userProjectsRetrofit(username, page) { result ->
+            listForUserProjects.postValue(
+                result
+            )
+        }
         return listForUserProjects
     }
 

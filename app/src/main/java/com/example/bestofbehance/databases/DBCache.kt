@@ -1,12 +1,10 @@
 package com.example.bestofbehance.databases
 
-import android.annotation.SuppressLint
-import android.content.ContentValues
+
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.bestofbehance.binding.CardBinding
-import timber.log.Timber
+import com.example.bestofbehance.databases.DBHelper.Companion.KEY_DATE
 
 class DBCache(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -23,7 +21,7 @@ class DBCache(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null,
     }
 
     companion object {
-        val DATABASE_VERSION = 1
+        val DATABASE_VERSION = 5
         val DATABASE_NAME = "cacheDB"
         val TABLE_CACHE = "cache"
 

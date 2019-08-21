@@ -4,6 +4,16 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import com.example.bestofbehance.binding.CardBinding
+import com.example.bestofbehance.databases.DBCache.Companion.KEY_APPRECIATIONS
+import com.example.bestofbehance.databases.DBCache.Companion.KEY_ARTISTNAME
+import com.example.bestofbehance.databases.DBCache.Companion.KEY_ARTNAME
+import com.example.bestofbehance.databases.DBCache.Companion.KEY_AVATAR
+import com.example.bestofbehance.databases.DBCache.Companion.KEY_BIGIMAGE
+import com.example.bestofbehance.databases.DBCache.Companion.KEY_COMMENTS
+import com.example.bestofbehance.databases.DBCache.Companion.KEY_ID
+import com.example.bestofbehance.databases.DBCache.Companion.KEY_USERNAME
+import com.example.bestofbehance.databases.DBCache.Companion.KEY_VIEWS
+import com.example.bestofbehance.databases.DBCache.Companion.TABLE_CACHE
 import timber.log.Timber
 
 object CacheDBMain {
@@ -12,39 +22,40 @@ object CacheDBMain {
     init {
         Timber.plant(Timber.DebugTree())
     }
+    var check = 0
 
     fun add(context: Context, binding: CardBinding) {
         val database = DBCache(context).writableDatabase
-        values.put(DBCache.KEY_ID, binding.id)
-        values.put(DBCache.KEY_BIGIMAGE, binding.bigImage)
-        values.put(DBCache.KEY_AVATAR, binding.avatar)
-        values.put(DBCache.KEY_ARTISTNAME, binding.artistName)
-        values.put(DBCache.KEY_ARTNAME, binding.artName)
-        values.put(DBCache.KEY_VIEWS, binding.views)
-        values.put(DBCache.KEY_APPRECIATIONS, binding.appreciations)
-        values.put(DBCache.KEY_COMMENTS, binding.comments)
-        values.put(DBCache.KEY_USERNAME, binding.username)
+        values.put(KEY_ID, binding.id)
+        values.put(KEY_BIGIMAGE, binding.bigImage)
+        values.put(KEY_AVATAR, binding.avatar)
+        values.put(KEY_ARTISTNAME, binding.artistName)
+        values.put(KEY_ARTNAME, binding.artName)
+        values.put(KEY_VIEWS, binding.views)
+        values.put(KEY_APPRECIATIONS, binding.appreciations)
+        values.put(KEY_COMMENTS, binding.comments)
+        values.put(KEY_USERNAME, binding.username)
 
-        database.insert(DBCache.TABLE_CACHE, null, values)
+        database.insert(TABLE_CACHE, null, values)
         Timber.d( "Successful added: ID =  ${binding.id}")
         database.close()
     }
 
-    @SuppressLint("Recycle", "BinaryOperationInTimber")
+    @SuppressLint("BinaryOperationInTimber")
     fun read(context: Context, myCallBack: (result: MutableList<CardBinding>) -> Unit) {
         val database = DBCache(context).writableDatabase
         val list: MutableList<CardBinding> = mutableListOf()
-        val cursor = database.rawQuery("SELECT * FROM ${DBCache.TABLE_CACHE}", null)
+        val cursor = database.rawQuery("SELECT * FROM $TABLE_CACHE ORDER BY CAST($KEY_APPRECIATIONS as INTEGER) DESC", null)
         if (cursor.moveToFirst()) {
-            val idIndex = cursor.getColumnIndex(DBCache.KEY_ID)
-            val bigImageIndex = cursor.getColumnIndex(DBCache.KEY_BIGIMAGE)
-            val avatarIndex = cursor.getColumnIndex(DBCache.KEY_AVATAR)
-            val artistIndex = cursor.getColumnIndex(DBCache.KEY_ARTISTNAME)
-            val artIndex = cursor.getColumnIndex(DBCache.KEY_ARTNAME)
-            val viewsIndex = cursor.getColumnIndex(DBCache.KEY_VIEWS)
-            val appreciationsIndex = cursor.getColumnIndex(DBCache.KEY_APPRECIATIONS)
-            val commentsIndex = cursor.getColumnIndex(DBCache.KEY_COMMENTS)
-            val usernameIndex = cursor.getColumnIndex(DBCache.KEY_USERNAME)
+            val idIndex = cursor.getColumnIndex(KEY_ID)
+            val bigImageIndex = cursor.getColumnIndex(KEY_BIGIMAGE)
+            val avatarIndex = cursor.getColumnIndex(KEY_AVATAR)
+            val artistIndex = cursor.getColumnIndex(KEY_ARTISTNAME)
+            val artIndex = cursor.getColumnIndex(KEY_ARTNAME)
+            val viewsIndex = cursor.getColumnIndex(KEY_VIEWS)
+            val appreciationsIndex = cursor.getColumnIndex(KEY_APPRECIATIONS)
+            val commentsIndex = cursor.getColumnIndex(KEY_COMMENTS)
+            val usernameIndex = cursor.getColumnIndex(KEY_USERNAME)
             do {
                 Timber.d(
                     "ID = " + cursor.getInt(idIndex) +
@@ -68,7 +79,6 @@ object CacheDBMain {
                         cursor.getString(appreciationsIndex),
                         cursor.getString(commentsIndex),
                         cursor.getString(usernameIndex)
-
                     )
                 )
 
@@ -82,15 +92,15 @@ object CacheDBMain {
 
     fun clear(context: Context) {
         val database = DBCache(context).writableDatabase
-        database.delete(DBCache.TABLE_CACHE, null, null)
-        /*database.execSQL("DELETE FROM ${DBCache.TABLE_CACHE}")
-        database.execSQL("VACUUM")*/
+        //database.delete(TABLE_CACHE, null, null)
+        database.execSQL("DELETE FROM $TABLE_CACHE")
+        database.execSQL("VACUUM")
         database.close()
     }
 
     fun delete(context: Context, id: Int) {
         val database = DBCache(context).writableDatabase
-        database.execSQL("DELETE FROM ${DBCache.TABLE_CACHE} WHERE ${DBCache.KEY_ID}= '$id'")
+        database.execSQL("DELETE FROM $TABLE_CACHE WHERE $KEY_ID= '$id'")
         Timber.d( "Row deleted: ID = $id")
         database.close()
     }
@@ -98,9 +108,9 @@ object CacheDBMain {
     fun find(context: Context, id: Int): Int? {
         val database = DBCache(context).writableDatabase
         var check: Int? = null
-        val cursor = database.query(DBCache.TABLE_CACHE, arrayOf(DBCache.KEY_ID), null, null, null, null, null)
+        val cursor = database.query(TABLE_CACHE, arrayOf(KEY_ID), null, null, null, null, null)
         if (cursor.moveToFirst()) {
-            val idIndex = cursor.getColumnIndex(DBCache.KEY_ID)
+            val idIndex = cursor.getColumnIndex(KEY_ID)
             do {
                 if (cursor.getInt(idIndex) == id) {
                     check = cursor.getInt(idIndex)
@@ -131,7 +141,7 @@ object CacheDBMain {
         val comments = binding.comments
         val username = binding.username
 
-        database.execSQL("UPDATE ${DBCache.TABLE_CACHE} SET ${DBCache.KEY_BIGIMAGE}= '$bigImage', ${DBCache.KEY_AVATAR}= '$avatar', ${DBCache.KEY_ARTISTNAME}= '$artistName', ${DBCache.KEY_ARTNAME}= '$artName', ${DBCache.KEY_VIEWS}= '$views', ${DBCache.KEY_APPRECIATIONS}= '$appreciations', ${DBCache.KEY_COMMENTS}= '$comments', ${DBCache.KEY_USERNAME}= '$username' WHERE ${DBCache.KEY_ID}= '$id'")
+        database.execSQL("UPDATE $TABLE_CACHE SET $KEY_BIGIMAGE= '$bigImage', $KEY_AVATAR= '$avatar', $KEY_ARTISTNAME= '$artistName', $KEY_ARTNAME= '$artName', $KEY_VIEWS= '$views', $KEY_APPRECIATIONS= '$appreciations', $KEY_COMMENTS= '$comments', $KEY_USERNAME= '$username' WHERE $KEY_ID= '$id'")
         Timber.d("Row update: ID = $id")
 
         database.close()

@@ -14,6 +14,7 @@ import android.view.MenuInflater
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.databases.CacheDBMain
+import com.example.bestofbehance.databases.DBCache
 import com.example.bestofbehance.paging.PaginationScrollListener
 import com.example.bestofbehance.databases.DBMain
 import com.example.bestofbehance.databases.SharedPreferenceForFragments.editorSharedPreference
@@ -28,11 +29,9 @@ const val VIEW_MODE_GRIDVIEW = "tile"
 class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     lateinit var jsonModel: VMForParse
-
     private var currentViewMode = "list"
     var page = 1
     lateinit var adapterBest: AdapterViewHolder
-
     private var isLoading = false
     private val isLastPage = false
 
@@ -66,7 +65,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 } else if (currentViewMode == "list") {
                     item.setIcon(R.drawable.tile)
                     createRecyclerView(VIEW_MODE_GRIDVIEW)
-                    editorSharedPreference(context!!,"currentViewMode", VIEW_MODE_GRIDVIEW)
+                    editorSharedPreference(context!!, "currentViewMode", VIEW_MODE_GRIDVIEW)
                 }
             }
         }
@@ -81,13 +80,16 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onRefresh() {
         DBMain.close(context!!)
-        CacheDBMain.clear(context!!)
         currentViewMode = sharedCurrentViewMode(context!!, "currentViewMode", currentViewMode)
         createRecyclerView(currentViewMode)
         swipe.isRefreshing = false
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_best, container, false)
     }
 
@@ -101,7 +103,8 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             createRecyclerView(currentViewMode)
         }
 
-        recycler_view.addOnScrollListener(object : PaginationScrollListener(LinearLayoutManager(context)) {
+        recycler_view.addOnScrollListener(object :
+            PaginationScrollListener(LinearLayoutManager(context)) {
             override fun getTotalPageCount(): Int {
                 //return TOTAL_PAGES
                 return 0
@@ -112,7 +115,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 if (adapterBest.position == (adapterBest.list.size - 1)) {
                     isLoading = true
                     page += 1
-                    jsonModel.setNextPage(context!!, page)
+                    jsonModel.setNextPage(page)
                     val observerGSONPaging = Observer<MutableList<CardBinding>> {
                         adapterBest.addData(it)
                         isLoading = false
@@ -144,9 +147,12 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun createRecyclerView(currentViewMode: String) {
-        if (jsonModel.mainContentList.value == null || swipe.isRefreshing) {
-            jsonModel.setGeneral(context!!, page)
+        CacheDBMain.read(context!!) {
+            if (it.size == 0 || swipe.isRefreshing || jsonModel.mainContentList.value == null) {
+                jsonModel.setGeneral(context!!, page)
+            }
         }
+
 
         /*val config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
@@ -154,10 +160,9 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             .build()*/
 
 
-
         val observerGSON = Observer<MutableList<CardBinding>> { list ->
             // val pagedList = PagedList.Builder<Any, Any>(dataSource, config).setBackgroundThreadExecutor(Executors.newSingleThreadExecutor()).setMainThreadExecutor(MainThreadExecutor()).build()
-
+            //CacheDBMain.read(context!!) { list ->
             when (currentViewMode) {
                 "list" -> {
                     adapterBest = adapterFun(list, "list")
@@ -168,17 +173,28 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             }
             recycler_view.adapter = adapterBest
 
-            for(i in 0 until list.size){
-                if(DBMain.find(context!!, list[i].id) != null){
-                    DBMain.update(context!!, list[i])
-                }
+            CacheDBMain.clear(context!!)
+            for (i in 0 until list.size) {
+                CacheDBMain.add(context!!, list[i])
             }
         }
+
+
+        /* for(i in 0 until list.size){
+             if(DBMain.find(context!!, list[i].id) != null){
+                 DBMain.update(context!!, list[i])
+             }
+         }*/
+
         jsonModel.mainContentList.observe(this, observerGSON)
 
         when (currentViewMode) {
-            "list" -> { recycler_view.layoutManager = LinearLayoutManager(activity) }
-            "tile" -> { recycler_view.layoutManager = GridLayoutManager(activity, 2) }
+            "list" -> {
+                recycler_view.layoutManager = LinearLayoutManager(activity)
+            }
+            "tile" -> {
+                recycler_view.layoutManager = GridLayoutManager(activity, 2)
+            }
         }
 
     }
