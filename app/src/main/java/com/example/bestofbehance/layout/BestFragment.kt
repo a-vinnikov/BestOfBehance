@@ -1,5 +1,8 @@
 package com.example.bestofbehance.layout
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -11,14 +14,15 @@ import android.view.*
 import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuInflater
+import android.widget.Toast
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.databases.CacheDBMain
-import com.example.bestofbehance.databases.DBCache
+import com.example.bestofbehance.databases.DBBestCacheDao
 import com.example.bestofbehance.paging.PaginationScrollListener
-import com.example.bestofbehance.databases.DBMain
-import com.example.bestofbehance.databases.SharedPreferenceForFragments.editorSharedPreference
-import com.example.bestofbehance.databases.SharedPreferenceForFragments.sharedCurrentViewMode
+import com.example.bestofbehance.databases.DBProjectsDao
+import com.example.bestofbehance.databases.SharedPreferenceObject.editorSharedPreference
+import com.example.bestofbehance.databases.SharedPreferenceObject.sharedCurrentViewMode
+import com.example.bestofbehance.databases.forRoom.CardDataBase
 import com.example.bestofbehance.viewModels.*
 import timber.log.Timber
 
@@ -79,7 +83,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
-        DBMain.close(context!!)
+        DBProjectsDao.close(context!!)
         currentViewMode = sharedCurrentViewMode(context!!, "currentViewMode", currentViewMode)
         createRecyclerView(currentViewMode)
         swipe.isRefreshing = false
@@ -143,14 +147,16 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        DBMain.close(context!!)
+        DBProjectsDao.close(context!!)
     }
 
     private fun createRecyclerView(currentViewMode: String) {
-        CacheDBMain.read(context!!) {
-            if (it.size == 0 || swipe.isRefreshing || jsonModel.mainContentList.value == null) {
-                jsonModel.setGeneral(context!!, page)
-            }
+        if (isOnline(context!!) == true && isOnline(context!!) != null) {
+            jsonModel.setGeneral(page)
+        } else if (isOnline(context!!) == null || isOnline(context!!) == false) {
+            Toast.makeText(context!!, "No internet connection", Toast.LENGTH_LONG).show()
+            //DBBestCacheDao.read(context!!) { jsonModel.mainContentList.postValue(it) }
+            jsonModel.mainContentList.postValue(CardDataBase.getDatabase(context!!)?.getCardDao()?.all)
         }
 
 
@@ -173,9 +179,13 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             }
             recycler_view.adapter = adapterBest
 
-            CacheDBMain.clear(context!!)
+            /*DBBestCacheDao.clear(context!!)
             for (i in 0 until list.size) {
-                CacheDBMain.add(context!!, list[i])
+                DBBestCacheDao.add(context!!, list[i])
+            }*/
+            CardDataBase.getDatabase(context!!)?.getCardDao()?.deleteAll()
+            for (i in 0 until list.size) {
+                CardDataBase.getDatabase(context!!)?.getCardDao()?.insert(list[i])
             }
         }
 
@@ -207,13 +217,20 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
-                if (DBMain.find(context!!, list[position].id) == null) {
-                    DBMain.add(context!!, list[position])
+                if (DBProjectsDao.find(context!!, list[position].id) == null) {
+                    DBProjectsDao.add(context!!, list[position])
                 } else {
-                    DBMain.delete(context!!, list[position].id)
+                    DBProjectsDao.delete(context!!, list[position].id)
                 }
             }
         }, "Best")
+    }
+
+    fun isOnline(context: Context): Boolean? {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
+        return activeNetwork?.isConnected
     }
 
 }

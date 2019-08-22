@@ -1,12 +1,9 @@
 package com.example.bestofbehance.viewModels
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.*
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.binding.ProfileBinding
-import com.example.bestofbehance.databases.CacheDBMain
-import com.example.bestofbehance.databases.DBMain
 import com.example.bestofbehance.layout.MultiList
 
 
@@ -19,27 +16,20 @@ class VMForParse : AndroidViewModel(Application()) {
     val listForUser: MutableLiveData<MutableList<ProfileBinding>> by lazy { MutableLiveData<MutableList<ProfileBinding>>() }
     val listForUserProjects: MutableLiveData<MutableList<CardBinding>> by lazy { MutableLiveData<MutableList<CardBinding>>() }
 
-    fun setGeneral(context: Context, page: Int): MutableLiveData<MutableList<CardBinding>> {
-        CacheDBMain.read(context) { list ->
-            if (list.size == 0) {
-                ParseForVM().generalRetrofit(page) { result ->
-                    for (i in 0 until result.size) {
-                        CacheDBMain.add(context, result[i])
-                    }
-                }
-            }
-            CacheDBMain.read(context) { mainContentList.postValue(it) }
-        }
-        CacheDBMain.close(context)
+    fun setGeneral(page: Int): MutableLiveData<MutableList<CardBinding>> {
+        ParseForVM().generalRetrofit(page) { result ->
+            val abc = result.sortedByDescending { it.published }
+            mainContentList.postValue(abc as MutableList<CardBinding>) }
         return mainContentList
     }
 
     fun setNextPage(page: Int): MutableLiveData<MutableList<CardBinding>> {
-        pagingResponseList.value?.clear()
-        ParseForVM().generalRetrofit(page) { result ->
-            val abc = result.sortedByDescending { it.appreciations }
-            pagingResponseList.postValue(abc as MutableList<CardBinding>)
+        if(pagingResponseList.value?.size != 0){
+            pagingResponseList.value?.toMutableList()?.clear()
         }
+        ParseForVM().generalRetrofit(page) { result ->
+            val abc = result.sortedByDescending { it.published }
+            pagingResponseList.postValue(abc as MutableList<CardBinding>)}
         return pagingResponseList
     }
 
@@ -80,5 +70,4 @@ class VMForParse : AndroidViewModel(Application()) {
         }
         return listForUserProjects
     }
-
 }

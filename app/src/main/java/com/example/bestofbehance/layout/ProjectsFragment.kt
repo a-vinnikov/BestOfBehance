@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.databases.DBMain
-import com.example.bestofbehance.databases.SharedPreferenceForFragments
+import com.example.bestofbehance.databases.DBProjectsDao
+import com.example.bestofbehance.databases.SharedPreferenceObject
 import com.example.bestofbehance.viewModels.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_projects.*
@@ -39,17 +39,17 @@ class ProjectsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        currentViewMode = SharedPreferenceForFragments.sharedCurrentViewMode(context!!, "currentViewModeProjects", currentViewMode)
+        currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context!!, "currentViewModeProjects", currentViewMode)
         when (item.itemId) {
             R.id.menu_switcher -> {
                 if (currentViewMode == "tile") {
                     item.setIcon(R.drawable.list)
                     createRecyclerView(VIEW_MODE_LISTVIEW)
-                    SharedPreferenceForFragments.editorSharedPreference(context!!, "currentViewModeProjects", VIEW_MODE_LISTVIEW)
+                    SharedPreferenceObject.editorSharedPreference(context!!, "currentViewModeProjects", VIEW_MODE_LISTVIEW)
                 } else if (currentViewMode == "list") {
                     item.setIcon(R.drawable.tile)
                     createRecyclerView(VIEW_MODE_GRIDVIEW)
-                    SharedPreferenceForFragments.editorSharedPreference(context!!, "currentViewModeProjects", VIEW_MODE_GRIDVIEW)
+                    SharedPreferenceObject.editorSharedPreference(context!!, "currentViewModeProjects", VIEW_MODE_GRIDVIEW)
                 }
             }
         }
@@ -70,7 +70,7 @@ class ProjectsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         jsonModel = ViewModelProviders.of(this, ViewModelFactory()).get(VMForParse::class.java)
-        currentViewMode = SharedPreferenceForFragments.sharedCurrentViewMode(context!!, "currentViewModeProjects", currentViewMode)
+        currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context!!, "currentViewModeProjects", currentViewMode)
 
         if (recycler_view_projects.adapter == null) {
             createRecyclerView(currentViewMode)
@@ -79,7 +79,7 @@ class ProjectsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        DBMain.read(context!!) { result ->
+        DBProjectsDao.read(context!!) { result ->
             if (result.size != 0) {
                 text_projects.visibility = GONE
             } else {
@@ -91,17 +91,17 @@ class ProjectsFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        DBMain.close(context!!)
+        DBProjectsDao.close(context!!)
     }
 
     private fun createRecyclerView(currentViewMode: String) {
 
         when (currentViewMode) {
             "list" -> {
-                DBMain.read(context!!) { result -> adapterProjects = adapterFun(result, "list") }
+                DBProjectsDao.read(context!!) { result -> adapterProjects = adapterFun(result, "list") }
             }
             "tile" -> {
-                DBMain.read(context!!) { result -> adapterProjects = adapterFun(result, "tile") }
+                DBProjectsDao.read(context!!) { result -> adapterProjects = adapterFun(result, "tile") }
             }
         }
 
@@ -126,11 +126,11 @@ class ProjectsFragment : Fragment() {
 
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
-                if (DBMain.find(context!!, list[position].id) != null) {
-                    DBMain.delete(context!!, list[position].id)
+                if (DBProjectsDao.find(context!!, list[position].id) != null) {
+                    DBProjectsDao.delete(context!!, list[position].id)
                     adapterProjects.list.removeAt(position)
                     adapterProjects.notifyDataSetChanged()
-                    DBMain.read(context!!) { result ->
+                    DBProjectsDao.read(context!!) { result ->
                         if (result.size == 0) {
                             text_projects.visibility = VISIBLE
                         }

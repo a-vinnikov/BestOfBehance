@@ -13,13 +13,12 @@ import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.binding.ProfileBinding
-import com.example.bestofbehance.databases.DBMain
-import com.example.bestofbehance.databases.SharedPreferenceForFragments
-import com.example.bestofbehance.databases.SharedPreferenceForFragments.editorSharedPreference
+import com.example.bestofbehance.databases.DBProjectsDao
+import com.example.bestofbehance.databases.SharedPreferenceObject
+import com.example.bestofbehance.databases.SharedPreferenceObject.editorSharedPreference
 import com.example.bestofbehance.databinding.FragmentProfileBinding
 import com.example.bestofbehance.paging.PaginationScrollListener
 import com.example.bestofbehance.viewModels.*
-import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import timber.log.Timber
 
@@ -98,7 +97,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        currentViewMode = SharedPreferenceForFragments.sharedCurrentViewMode(context!!, "currentViewModeProfile", currentViewMode)
+        currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context!!, "currentViewModeProfile", currentViewMode)
         when (currentViewMode){
             "list" -> viewModeProfile.isChecked = false
             "tile" -> viewModeProfile.isChecked = true
@@ -152,7 +151,7 @@ class ProfileFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        DBMain.close(context!!)
+        DBProjectsDao.close(context!!)
     }
 
     private fun createRecyclerView(currentViewMode: String) {
@@ -173,8 +172,8 @@ class ProfileFragment : Fragment() {
             recycler_view_profile.adapter = adapterProfile
 
             for(i in 0 until list.size){
-                if(DBMain.find(context!!, list[i].id) != null){
-                    DBMain.update(context!!, list[i])
+                if(DBProjectsDao.find(context!!, list[i].id) != null){
+                    DBProjectsDao.update(context!!, list[i])
                 }
             }
         }
@@ -195,10 +194,10 @@ class ProfileFragment : Fragment() {
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
-                if (DBMain.find(context!!, list[position].id) == null) {
-                    DBMain.add(context!!, list[position])
+                if (DBProjectsDao.find(context!!, list[position].id) == null) {
+                    DBProjectsDao.add(context!!, list[position])
                 } else {
-                    DBMain.delete(context!!, list[position].id)
+                    DBProjectsDao.delete(context!!, list[position].id)
                 }
             }
         }, "Profile")

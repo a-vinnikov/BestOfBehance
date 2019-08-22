@@ -3,7 +3,7 @@ package com.example.bestofbehance.databases
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 
-object SharedPreferenceForFragments {
+object SharedPreferenceObject {
 
     fun sharedCurrentViewMode(context: Context, destination: String, currentViewMode: String): String {
         val sharedPreference = context.getSharedPreferences("viewMode", AppCompatActivity.MODE_PRIVATE)

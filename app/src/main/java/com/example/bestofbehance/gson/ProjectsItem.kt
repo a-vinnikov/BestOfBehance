@@ -29,5 +29,8 @@ data class ProjectsItem(
 	val covers: Covers? = null,
 
 	@field:SerializedName("featured_on")
-	val featuredOn: Int? = null
+	val featuredOn: Int? = null,
+
+	@field:SerializedName("published_on")
+	val publishedOn: Int? = null
 )

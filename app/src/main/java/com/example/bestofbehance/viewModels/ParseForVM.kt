@@ -9,6 +9,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ParseForVM {
 
@@ -47,6 +49,7 @@ class ParseForVM {
                     val artName = listResponse[i]?.name
                     val id = listResponse[i]?.id
                     val username = listResponse[i]?.owners?.get(0)?.username
+                    val published = listResponse[i]?.publishedOn
 
                     recList.add(
                         CardBinding(
@@ -58,8 +61,8 @@ class ParseForVM {
                             views.toString(),
                             appreciations.toString(),
                             comments.toString(),
-                            username
-
+                            username,
+                            published
                         )
                     )
                     i + 1
@@ -221,6 +224,7 @@ class ParseForVM {
                     val comments = listResponse[i]?.stats?.comments
                     val artName = listResponse[i]?.name
                     val id = listResponse[i]?.id
+                    val published = listResponse[i]?.publishedOn
 
                     recList.add(
                         CardBinding(
@@ -232,8 +236,8 @@ class ParseForVM {
                             views.toString(),
                             appreciations.toString(),
                             comments.toString(),
-                            username
-
+                            username,
+                            published
                         )
                     )
                     i + 1
@@ -243,6 +247,5 @@ class ParseForVM {
 
         })
     }
-
 
 }

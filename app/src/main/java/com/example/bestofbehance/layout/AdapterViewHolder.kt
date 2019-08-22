@@ -1,7 +1,6 @@
 package com.example.bestofbehance.layout
 
 import android.content.Context
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View.GONE
@@ -13,8 +12,8 @@ import com.example.bestofbehance.viewModels.InClick
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import com.example.bestofbehance.BR
-import com.example.bestofbehance.databases.DBMain
-import com.example.bestofbehance.databases.SharedPreferenceForFragments
+import com.example.bestofbehance.databases.DBProjectsDao
+import com.example.bestofbehance.databases.SharedPreferenceObject
 import com.example.bestofbehance.viewModels.BookmarkClick
 import com.example.bestofbehance.viewModels.NaviController
 import timber.log.Timber
@@ -49,10 +48,10 @@ class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String
                 "Best" -> {NaviController(context).toProfileFromBest(list[holder.adapterPosition])}
                 "Projects" -> {NaviController(context).toProfileFromProjects(list[holder.adapterPosition])}
             }
-            SharedPreferenceForFragments.editorSharedPreference(context, "position", holder.adapterPosition.toString())
+            SharedPreferenceObject.editorSharedPreference(context, "position", holder.adapterPosition.toString())
         }
 
-        holder.itemView.bookmark.isChecked = DBMain.find(context, list[holder.adapterPosition].id) != null
+        holder.itemView.bookmark.isChecked = DBProjectsDao.find(context, list[holder.adapterPosition].id) != null
 
         holder.itemView.bookmark.setOnClickListener {
             bookmarkClick.setPosition(position)
@@ -87,7 +86,8 @@ class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String
     }
 
     fun addData(listData: MutableList<CardBinding>) {
-        list.addAll(listData)
+        val abc = list + listData
+        list = abc as MutableList<CardBinding>
         notifyDataSetChanged()
     }
 

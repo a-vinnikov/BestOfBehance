@@ -20,7 +20,7 @@ object BindingAdapters{
     @JvmStatic
     @BindingAdapter("loadingRoundedImage")
     fun setRoundedImageUrl(view: ImageView, url: String?) {
-        Glide.with(view.context).load(url).apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(15, 0) as Transformation<Bitmap>)).into(view)
+        Glide.with(view.context).load(url).override(900,300).apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(15, 0) as Transformation<Bitmap>)).into(view)
     }
 
     @JvmStatic

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
-import com.example.bestofbehance.databases.DBMain
+import com.example.bestofbehance.databases.DBProjectsDao
 import com.example.bestofbehance.viewModels.NaviController
 import com.example.bestofbehance.viewModels.VMForParse
 import com.example.bestofbehance.viewModels.ViewModelFactory
@@ -30,7 +30,7 @@ class DetailsFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.two_buttons_toolbar, menu)
 
-        if (DBMain.find(context!!, args.cardBindingArg.id) == null) {
+        if (DBProjectsDao.find(context!!, args.cardBindingArg.id) == null) {
             menu.findItem(R.id.menu_bookmark)
                 ?.setIcon(R.drawable.ic_bookmarks_normal)
         } else {
@@ -45,11 +45,11 @@ class DetailsFragment : Fragment() {
         when (item.itemId) {
 
             R.id.menu_bookmark -> {
-                if (DBMain.find(context!!, args.cardBindingArg.id) == null) {
-                    DBMain.add(context!!, args.cardBindingArg)
+                if (DBProjectsDao.find(context!!, args.cardBindingArg.id) == null) {
+                    DBProjectsDao.add(context!!, args.cardBindingArg)
                     item.setIcon(R.drawable.ic_bookmarks_pressed)
                 } else {
-                    DBMain.delete(context!!, args.cardBindingArg.id)
+                    DBProjectsDao.delete(context!!, args.cardBindingArg.id)
                     item.setIcon(R.drawable.ic_bookmarks_normal)
                 }
             }

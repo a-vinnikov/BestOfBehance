@@ -4,28 +4,31 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.databases.DBCache.Companion.KEY_APPRECIATIONS
-import com.example.bestofbehance.databases.DBCache.Companion.KEY_ARTISTNAME
-import com.example.bestofbehance.databases.DBCache.Companion.KEY_ARTNAME
-import com.example.bestofbehance.databases.DBCache.Companion.KEY_AVATAR
-import com.example.bestofbehance.databases.DBCache.Companion.KEY_BIGIMAGE
-import com.example.bestofbehance.databases.DBCache.Companion.KEY_COMMENTS
-import com.example.bestofbehance.databases.DBCache.Companion.KEY_ID
-import com.example.bestofbehance.databases.DBCache.Companion.KEY_USERNAME
-import com.example.bestofbehance.databases.DBCache.Companion.KEY_VIEWS
-import com.example.bestofbehance.databases.DBCache.Companion.TABLE_CACHE
+import com.example.bestofbehance.databases.DBProjects.Companion.KEY_APPRECIATIONS
+import com.example.bestofbehance.databases.DBProjects.Companion.KEY_AVATAR
+import com.example.bestofbehance.databases.DBProjects.Companion.KEY_BIGIMAGE
+import com.example.bestofbehance.databases.DBProjects.Companion.KEY_COMMENTS
+import com.example.bestofbehance.databases.DBProjects.Companion.KEY_DATE
+import com.example.bestofbehance.databases.DBProjects.Companion.KEY_ID
+import com.example.bestofbehance.databases.DBProjects.Companion.KEY_ARTISTNAME
+import com.example.bestofbehance.databases.DBProjects.Companion.KEY_ARTNAME
+import com.example.bestofbehance.databases.DBProjects.Companion.KEY_USERNAME
+import com.example.bestofbehance.databases.DBProjects.Companion.KEY_VIEWS
+import com.example.bestofbehance.databases.DBProjects.Companion.TABLE_CARDS
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 
-object CacheDBMain {
+
+object DBProjectsDao {
 
     val values = ContentValues()
     init {
         Timber.plant(Timber.DebugTree())
     }
-    var check = 0
 
     fun add(context: Context, binding: CardBinding) {
-        val database = DBCache(context).writableDatabase
+        val database = DBProjects(context).writableDatabase
         values.put(KEY_ID, binding.id)
         values.put(KEY_BIGIMAGE, binding.bigImage)
         values.put(KEY_AVATAR, binding.avatar)
@@ -35,17 +38,18 @@ object CacheDBMain {
         values.put(KEY_APPRECIATIONS, binding.appreciations)
         values.put(KEY_COMMENTS, binding.comments)
         values.put(KEY_USERNAME, binding.username)
+        values.put(KEY_DATE, getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss"))
 
-        database.insert(TABLE_CACHE, null, values)
+        database.insert(TABLE_CARDS, null, values)
         Timber.d( "Successful added: ID =  ${binding.id}")
         database.close()
     }
 
-    @SuppressLint("BinaryOperationInTimber")
+    @SuppressLint("Recycle", "BinaryOperationInTimber")
     fun read(context: Context, myCallBack: (result: MutableList<CardBinding>) -> Unit) {
-        val database = DBCache(context).writableDatabase
+        val database = DBProjects(context).writableDatabase
         val list: MutableList<CardBinding> = mutableListOf()
-        val cursor = database.rawQuery("SELECT * FROM $TABLE_CACHE ORDER BY CAST($KEY_APPRECIATIONS as INTEGER) DESC", null)
+        val cursor = database.rawQuery("SELECT * FROM $TABLE_CARDS ORDER BY $KEY_DATE DESC", null)
         if (cursor.moveToFirst()) {
             val idIndex = cursor.getColumnIndex(KEY_ID)
             val bigImageIndex = cursor.getColumnIndex(KEY_BIGIMAGE)
@@ -55,6 +59,7 @@ object CacheDBMain {
             val viewsIndex = cursor.getColumnIndex(KEY_VIEWS)
             val appreciationsIndex = cursor.getColumnIndex(KEY_APPRECIATIONS)
             val commentsIndex = cursor.getColumnIndex(KEY_COMMENTS)
+            val dateIndex = cursor.getColumnIndex(KEY_DATE)
             val usernameIndex = cursor.getColumnIndex(KEY_USERNAME)
             do {
                 Timber.d(
@@ -66,7 +71,8 @@ object CacheDBMain {
                             ", views = " + cursor.getString(viewsIndex) +
                             ", appreciations = " + cursor.getString(appreciationsIndex) +
                             ", comments = " + cursor.getString(commentsIndex) +
-                            ", username = " + cursor.getString(usernameIndex)
+                            ", username = " + cursor.getString(usernameIndex) +
+                            ", date = " + cursor.getString(dateIndex)
                 )
                 list.add(
                     CardBinding(
@@ -78,7 +84,9 @@ object CacheDBMain {
                         cursor.getString(viewsIndex),
                         cursor.getString(appreciationsIndex),
                         cursor.getString(commentsIndex),
-                        cursor.getString(usernameIndex)
+                        cursor.getString(usernameIndex),
+                        null
+
                     )
                 )
 
@@ -91,24 +99,22 @@ object CacheDBMain {
     }
 
     fun clear(context: Context) {
-        val database = DBCache(context).writableDatabase
-        //database.delete(TABLE_CACHE, null, null)
-        database.execSQL("DELETE FROM $TABLE_CACHE")
-        database.execSQL("VACUUM")
+        val database = DBProjects(context).writableDatabase
+        database.delete(TABLE_CARDS, null, null)
         database.close()
     }
 
     fun delete(context: Context, id: Int) {
-        val database = DBCache(context).writableDatabase
-        database.execSQL("DELETE FROM $TABLE_CACHE WHERE $KEY_ID= '$id'")
+        val database = DBProjects(context).writableDatabase
+        database.execSQL("DELETE FROM $TABLE_CARDS WHERE $KEY_ID= '$id'")
         Timber.d( "Row deleted: ID = $id")
         database.close()
     }
 
     fun find(context: Context, id: Int): Int? {
-        val database = DBCache(context).writableDatabase
+        val database = DBProjects(context).writableDatabase
         var check: Int? = null
-        val cursor = database.query(TABLE_CACHE, arrayOf(KEY_ID), null, null, null, null, null)
+        val cursor = database.query(TABLE_CARDS, arrayOf(KEY_ID), null, null, null, null, null)
         if (cursor.moveToFirst()) {
             val idIndex = cursor.getColumnIndex(KEY_ID)
             do {
@@ -126,11 +132,20 @@ object CacheDBMain {
     }
 
     fun close(context: Context) {
-        DBCache(context).writableDatabase?.close()
+        DBProjects(context).writableDatabase?.close()
+    }
+
+    fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
+        val formatter = SimpleDateFormat(format, locale)
+        return formatter.format(this)
+    }
+
+    fun getCurrentDateTime(): Date {
+        return Calendar.getInstance().time
     }
 
     fun update(context: Context, binding: CardBinding) {
-        val database = DBCache(context).writableDatabase
+        val database = DBProjects(context).writableDatabase
         val id = binding.id
         val avatar = binding.avatar
         val bigImage = binding.bigImage
@@ -141,7 +156,7 @@ object CacheDBMain {
         val comments = binding.comments
         val username = binding.username
 
-        database.execSQL("UPDATE $TABLE_CACHE SET $KEY_BIGIMAGE= '$bigImage', $KEY_AVATAR= '$avatar', $KEY_ARTISTNAME= '$artistName', $KEY_ARTNAME= '$artName', $KEY_VIEWS= '$views', $KEY_APPRECIATIONS= '$appreciations', $KEY_COMMENTS= '$comments', $KEY_USERNAME= '$username' WHERE $KEY_ID= '$id'")
+        database.execSQL("UPDATE $TABLE_CARDS SET $KEY_BIGIMAGE= '$bigImage', $KEY_AVATAR= '$avatar', $KEY_ARTISTNAME= '$artistName', $KEY_ARTNAME= '$artName', $KEY_VIEWS= '$views', $KEY_APPRECIATIONS= '$appreciations', $KEY_COMMENTS= '$comments', $KEY_USERNAME= '$username' WHERE $KEY_ID= '$id'")
         Timber.d("Row update: ID = $id")
 
         database.close()
