@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.navArgs
+import androidx.paging.PagedList
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.BR
@@ -16,11 +18,18 @@ import com.example.bestofbehance.binding.ProfileBinding
 import com.example.bestofbehance.databases.DBProjectsDao
 import com.example.bestofbehance.databases.SharedPreferenceObject
 import com.example.bestofbehance.databases.SharedPreferenceObject.editorSharedPreference
+import com.example.bestofbehance.databases.forRoom.CardDataBase
 import com.example.bestofbehance.databinding.FragmentProfileBinding
-import com.example.bestofbehance.paging.PaginationScrollListener
+import com.example.bestofbehance.paging.ItemSourceFactory
 import com.example.bestofbehance.viewModels.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 
 class ProfileFragment : Fragment() {
@@ -30,7 +39,7 @@ class ProfileFragment : Fragment() {
 
     private var currentViewMode = "list"
     var page = 1
-    lateinit var adapterProfile: AdapterViewHolder
+    lateinit var pagingAdapterProfile: PagingAdapterViewHolder
     var userId = 0
     private var isLoading = false
     private val isLastPage = false
@@ -117,7 +126,7 @@ class ProfileFragment : Fragment() {
             createRecyclerView(currentViewMode)
         }
 
-        recycler_view_profile.addOnScrollListener(object : PaginationScrollListener(LinearLayoutManager(context)) {
+        /*recycler_view_profile.addOnScrollListener(object : PaginationScrollListener(LinearLayoutManager(context)) {
             override fun getTotalPageCount(): Int {
                 //return TOTAL_PAGES
                 return 0
@@ -145,7 +154,7 @@ class ProfileFragment : Fragment() {
 
             override fun loadMoreItems() {
             }
-        })
+        })*/
 
     }
 
@@ -162,14 +171,10 @@ class ProfileFragment : Fragment() {
         val observerGSON = Observer<MutableList<CardBinding>> { list ->
 
             when (currentViewMode) {
-                "list" -> {
-                    adapterProfile = adapterFun(list, "list")
-                }
-                "tile" -> {
-                    adapterProfile = adapterFun(list, "tile")
-                }
+                "list" -> { runBlocking { abc(list, "list") } }
+                "tile" -> { runBlocking { abc(list, "tile") } }
             }
-            recycler_view_profile.adapter = adapterProfile
+            recycler_view_profile.adapter = pagingAdapterProfile
 
             for(i in 0 until list.size){
                 if(DBProjectsDao.find(context!!, list[i].id) != null){
@@ -186,11 +191,11 @@ class ProfileFragment : Fragment() {
 
     }
 
-    private fun adapterFun(list: MutableList<CardBinding>, viewMode: String): AdapterViewHolder {
+    private fun adapterFun(list: MutableList<CardBinding>, viewMode: String): PagedListAdapter<CardBinding, PagingAdapterViewHolder.ViewHolder> {
 
-        return AdapterViewHolder(list, viewMode, object : InClick {
+        return PagingAdapterViewHolder(viewMode, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                NaviController(context!!).toDetailsFromProfile(item)
+                NaviController(context!!).toDetailsFromBest(item)
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
@@ -200,7 +205,26 @@ class ProfileFragment : Fragment() {
                     DBProjectsDao.delete(context!!, list[position].id)
                 }
             }
-        }, "Profile")
+        }, "Best")
     }
+
+    private fun updateAdapter(
+        asyncList: Deferred<MutableList<CardBinding>>,
+        config: PagedList.Config,
+        pagedListPagingAdapter: PagedListAdapter<CardBinding, PagingAdapterViewHolder.ViewHolder>
+    ) {
+        val turnoverDataSourceFactory = ItemSourceFactory(asyncList) {}
+
+        val items = PagedList.Builder<Int, CardBinding>(turnoverDataSourceFactory.create(), config)
+            .setNotifyExecutor(Executor { view!!.post(it) })
+            .setFetchExecutor(Executors.newSingleThreadExecutor())
+            .build()
+
+        pagedListPagingAdapter.submitList(items)
+    }
+
+    suspend fun abc(list: MutableList<CardBinding>, viewMode: String) = coroutineScope {
+        val cba = async { CardDataBase.getDatabase(context!!)?.getCardDao()?.all!! }
+        updateAdapter(cba, ItemSourceFactory.providePagingConfig(), adapterFun(list, viewMode))}
 
 }

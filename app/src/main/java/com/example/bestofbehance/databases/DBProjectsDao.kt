@@ -15,6 +15,7 @@ import com.example.bestofbehance.databases.DBProjects.Companion.KEY_ARTNAME
 import com.example.bestofbehance.databases.DBProjects.Companion.KEY_USERNAME
 import com.example.bestofbehance.databases.DBProjects.Companion.KEY_VIEWS
 import com.example.bestofbehance.databases.DBProjects.Companion.TABLE_CARDS
+import com.example.bestofbehance.testFolder.TimberLogImplementation
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,7 +25,7 @@ object DBProjectsDao {
 
     val values = ContentValues()
     init {
-        Timber.plant(Timber.DebugTree())
+        TimberLogImplementation.initLogging()
     }
 
     fun add(context: Context, binding: CardBinding) {

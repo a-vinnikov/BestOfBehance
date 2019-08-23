@@ -19,8 +19,8 @@ import com.example.bestofbehance.viewModels.NaviController
 import timber.log.Timber
 
 
-class AdapterViewHolder(var list: MutableList<CardBinding>, val viewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick, val layout: String) :
-    RecyclerView.Adapter<AdapterViewHolder.ViewHolder>() {
+class AdapterCopy(var list: MutableList<CardBinding>, val viewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick, val layout: String) :
+    RecyclerView.Adapter<AdapterCopy.ViewHolder>() {
 
     lateinit var context: Context
     private var isLoading = false

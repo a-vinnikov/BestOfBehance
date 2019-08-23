@@ -15,16 +15,22 @@ import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuInflater
 import android.widget.Toast
-import com.example.bestofbehance.R
+import androidx.paging.PagedList
+import androidx.paging.PagedListAdapter
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.databases.DBBestCacheDao
-import com.example.bestofbehance.paging.PaginationScrollListener
 import com.example.bestofbehance.databases.DBProjectsDao
 import com.example.bestofbehance.databases.SharedPreferenceObject.editorSharedPreference
 import com.example.bestofbehance.databases.SharedPreferenceObject.sharedCurrentViewMode
 import com.example.bestofbehance.databases.forRoom.CardDataBase
+import com.example.bestofbehance.paging.ItemSourceFactory
 import com.example.bestofbehance.viewModels.*
+import kotlinx.coroutines.Deferred
 import timber.log.Timber
+import java.util.concurrent.Executors
+import com.example.bestofbehance.paging.ItemSourceFactory.Companion.providePagingConfig
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
 
 
 const val VIEW_MODE_LISTVIEW = "list"
@@ -35,7 +41,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     lateinit var jsonModel: VMForParse
     private var currentViewMode = "list"
     var page = 1
-    lateinit var adapterBest: AdapterViewHolder
+    lateinit var adapterBest: PagingAdapterViewHolder
     private var isLoading = false
     private val isLastPage = false
 
@@ -44,14 +50,14 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.one_button_toolbar, menu)
+        inflater.inflate(com.example.bestofbehance.R.menu.one_button_toolbar, menu)
 
         when (currentViewMode) {
             "list" -> {
-                menu.findItem(R.id.menu_switcher)?.setIcon(R.drawable.list)
+                menu.findItem(com.example.bestofbehance.R.id.menu_switcher)?.setIcon(com.example.bestofbehance.R.drawable.list)
             }
             "tile" -> {
-                menu.findItem(R.id.menu_switcher)?.setIcon(R.drawable.tile)
+                menu.findItem(com.example.bestofbehance.R.id.menu_switcher)?.setIcon(com.example.bestofbehance.R.drawable.tile)
             }
         }
 
@@ -61,13 +67,13 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         currentViewMode = sharedCurrentViewMode(context!!, "currentViewMode", currentViewMode)
         when (item.itemId) {
-            R.id.menu_switcher -> {
+            com.example.bestofbehance.R.id.menu_switcher -> {
                 if (currentViewMode == "tile") {
-                    item.setIcon(R.drawable.list)
+                    item.setIcon(com.example.bestofbehance.R.drawable.list)
                     createRecyclerView(VIEW_MODE_LISTVIEW)
                     editorSharedPreference(context!!, "currentViewMode", VIEW_MODE_LISTVIEW)
                 } else if (currentViewMode == "list") {
-                    item.setIcon(R.drawable.tile)
+                    item.setIcon(com.example.bestofbehance.R.drawable.tile)
                     createRecyclerView(VIEW_MODE_GRIDVIEW)
                     editorSharedPreference(context!!, "currentViewMode", VIEW_MODE_GRIDVIEW)
                 }
@@ -94,7 +100,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_best, container, false)
+        return inflater.inflate(com.example.bestofbehance.R.layout.fragment_best, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -107,7 +113,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             createRecyclerView(currentViewMode)
         }
 
-        recycler_view.addOnScrollListener(object :
+        /*recycler_view.addOnScrollListener(object :
             PaginationScrollListener(LinearLayoutManager(context)) {
             override fun getTotalPageCount(): Int {
                 //return TOTAL_PAGES
@@ -136,13 +142,13 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
             override fun loadMoreItems() {
             }
-        })
+        })*/
 
     }
 
     override fun onResume() {
         super.onResume()
-        activity?.navigation?.menu?.findItem(R.id.best)?.isChecked = true
+        activity?.navigation?.menu?.findItem(com.example.bestofbehance.R.id.best)?.isChecked = true
     }
 
     override fun onDestroy() {
@@ -159,59 +165,70 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             jsonModel.mainContentList.postValue(CardDataBase.getDatabase(context!!)?.getCardDao()?.all)
         }
 
-
-        /*val config = PagedList.Config.Builder()
-            .setEnablePlaceholders(false)
-            .setPageSize(10)
-            .build()*/
-
-
         val observerGSON = Observer<MutableList<CardBinding>> { list ->
             // val pagedList = PagedList.Builder<Any, Any>(dataSource, config).setBackgroundThreadExecutor(Executors.newSingleThreadExecutor()).setMainThreadExecutor(MainThreadExecutor()).build()
             //CacheDBMain.read(context!!) { list ->
-            when (currentViewMode) {
-                "list" -> {
-                    adapterBest = adapterFun(list, "list")
-                }
-                "tile" -> {
-                    adapterBest = adapterFun(list, "tile")
-                }
-            }
-            recycler_view.adapter = adapterBest
 
-            /*DBBestCacheDao.clear(context!!)
-            for (i in 0 until list.size) {
-                DBBestCacheDao.add(context!!, list[i])
-            }*/
             CardDataBase.getDatabase(context!!)?.getCardDao()?.deleteAll()
             for (i in 0 until list.size) {
                 CardDataBase.getDatabase(context!!)?.getCardDao()?.insert(list[i])
             }
-        }
+
+            when (currentViewMode) {
+                "list" -> {
+                    runBlocking {
+                        abc(list, "list")
+                        //recycler_view.adapter = adapterFun(list, "list")
+                    }
+                }
+                "tile" -> {
+                    runBlocking {
+                        abc(list, "tile")
+                        //recycler_view.adapter = adapterFun(list, "tile")
+
+                    }
+                }
+            }
 
 
-        /* for(i in 0 until list.size){
+            when (currentViewMode) {
+                "list" -> {
+                    adapterBest = adapterFun(list, "list") as PagingAdapterViewHolder
+                }
+                "tile" -> {
+                    adapterBest = adapterFun(list, "tile") as PagingAdapterViewHolder
+                }
+            }
+            recycler_view.adapter = adapterBest
+
+
+            when (currentViewMode) {
+                "list" -> {
+                    recycler_view.layoutManager = LinearLayoutManager(activity)
+                }
+                "tile" -> {
+                    recycler_view.layoutManager = GridLayoutManager(activity, 2)
+                }
+                /*DBBestCacheDao.clear(context!!)
+            for (i in 0 until list.size) {
+                DBBestCacheDao.add(context!!, list[i])
+            }*/
+            }
+
+
+            /* for(i in 0 until list.size){
              if(DBMain.find(context!!, list[i].id) != null){
                  DBMain.update(context!!, list[i])
              }
          }*/
-
-        jsonModel.mainContentList.observe(this, observerGSON)
-
-        when (currentViewMode) {
-            "list" -> {
-                recycler_view.layoutManager = LinearLayoutManager(activity)
-            }
-            "tile" -> {
-                recycler_view.layoutManager = GridLayoutManager(activity, 2)
-            }
         }
+        jsonModel.mainContentList.observe(this, observerGSON)
 
     }
 
-    private fun adapterFun(list: MutableList<CardBinding>, viewMode: String): AdapterViewHolder {
+    private fun adapterFun(list: MutableList<CardBinding>, viewMode: String): PagedListAdapter<CardBinding, PagingAdapterViewHolder.ViewHolder> {
 
-        return AdapterViewHolder(list, viewMode, object : InClick {
+        return PagingAdapterViewHolder(viewMode, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
                 NaviController(context!!).toDetailsFromBest(item)
             }
@@ -233,4 +250,20 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         return activeNetwork?.isConnected
     }
 
+    private fun updateAdapter(asyncList: Deferred<MutableList<CardBinding>>, config: PagedList.Config, pagedListPagingAdapter: PagedListAdapter<CardBinding, PagingAdapterViewHolder.ViewHolder>) {
+        val turnoverDataSourceFactory = ItemSourceFactory(asyncList) {}
+
+        val items = PagedList.Builder<Int, CardBinding>(turnoverDataSourceFactory.create(), config)
+            .setNotifyExecutor { Executors.newSingleThreadExecutor() }
+            .setFetchExecutor(Executors.newSingleThreadExecutor())
+            .build()
+
+        //view!!.post(it)
+
+        pagedListPagingAdapter.submitList(items)
+    }
+
+    suspend fun abc(list: MutableList<CardBinding>, viewMode: String) = coroutineScope {
+        val cba = async { list }
+        updateAdapter(cba, providePagingConfig(), adapterFun(list, viewMode))}
 }

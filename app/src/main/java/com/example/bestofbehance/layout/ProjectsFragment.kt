@@ -21,7 +21,7 @@ class ProjectsFragment : Fragment() {
     private var currentViewMode = "list"
 
     lateinit var jsonModel: VMForParse
-    lateinit var adapterProjects: AdapterViewHolder
+    lateinit var adapterProjects: AdapterCopy
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -117,9 +117,9 @@ class ProjectsFragment : Fragment() {
         }
     }
 
-    private fun adapterFun(list: MutableList<CardBinding>, viewMode: String): AdapterViewHolder {
+    fun adapterFun(list: MutableList<CardBinding>, viewMode: String): AdapterCopy {
 
-        return AdapterViewHolder(list, viewMode, object : InClick {
+        return AdapterCopy(list, viewMode, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
                 NaviController(context!!).toDetailsFromProjects(item)
             }
