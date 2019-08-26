@@ -38,7 +38,7 @@ class ParseForVM {
                 val listResponse = response.body()?.projects
 
 
-                for (i in 0 until listResponse!!.size) {
+                for (i in listResponse!!.indices) {
 
                     val art = listResponse[i]?.covers?.original
                     val artistName = listResponse[i]?.owners?.get(0)?.displayName
@@ -93,7 +93,7 @@ class ParseForVM {
 
                 val listResponse = response.body()?.project?.modules
 
-                for (i in 0 until listResponse!!.size) {
+                for (i in listResponse!!.indices) {
 
                     when (listResponse[i]!!.type) {
                         "image" -> {val image = listResponse[i]?.src
@@ -214,7 +214,7 @@ class ParseForVM {
                 val listResponse = response.body()?.projects
 
 
-                for (i in 0 until listResponse!!.size) {
+                for (i in listResponse!!.indices) {
 
                     val art = listResponse[i]?.covers?.original
                     val artistName = listResponse[i]?.owners?.get(0)?.displayName

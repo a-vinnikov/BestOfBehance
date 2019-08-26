@@ -18,18 +18,10 @@ import com.example.bestofbehance.binding.ProfileBinding
 import com.example.bestofbehance.databases.DBProjectsDao
 import com.example.bestofbehance.databases.SharedPreferenceObject
 import com.example.bestofbehance.databases.SharedPreferenceObject.editorSharedPreference
-import com.example.bestofbehance.databases.forRoom.CardDataBase
 import com.example.bestofbehance.databinding.FragmentProfileBinding
-import com.example.bestofbehance.paging.ItemSourceFactory
 import com.example.bestofbehance.viewModels.*
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.runBlocking
 import timber.log.Timber
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
 
 
 class ProfileFragment : Fragment() {
@@ -39,7 +31,7 @@ class ProfileFragment : Fragment() {
 
     private var currentViewMode = "list"
     var page = 1
-    lateinit var pagingAdapterProfile: PagingAdapterViewHolder
+    lateinit var adapterProfile: PagingAdapterViewHolder
     var userId = 0
     private var isLoading = false
     private val isLastPage = false
@@ -164,29 +156,29 @@ class ProfileFragment : Fragment() {
     }
 
     private fun createRecyclerView(currentViewMode: String) {
-        if (jsonModel.listForUserProjects.value == null) {
-            jsonModel.setUserProjects(args.cardBindingProfile.username!!, page)
+        if (jsonModel.profilePagedList?.value == null) {
+            jsonModel.setUserProjects(args.cardBindingProfile.username!!)
         }
-
-        val observerGSON = Observer<MutableList<CardBinding>> { list ->
-
-            when (currentViewMode) {
-                "list" -> { runBlocking { abc(list, "list") } }
-                "tile" -> { runBlocking { abc(list, "tile") } }
-            }
-            recycler_view_profile.adapter = pagingAdapterProfile
-
-            for(i in 0 until list.size){
-                if(DBProjectsDao.find(context!!, list[i].id) != null){
-                    DBProjectsDao.update(context!!, list[i])
-                }
-            }
-        }
-        jsonModel.listForUserProjects.observe(this, observerGSON)
 
         when (currentViewMode) {
-            "list" -> { recycler_view_profile.layoutManager = LinearLayoutManager(activity) }
-            "tile" -> { recycler_view_profile.layoutManager = GridLayoutManager(activity, 2) }
+            "list" -> {
+                recycler_view_profile.layoutManager = LinearLayoutManager(activity)
+                jsonModel.profilePagedList?.observe(this,
+                    Observer<PagedList<CardBinding>> {
+                        adapterProfile = adapterFun(it, "list") as PagingAdapterViewHolder
+                        adapterProfile.submitList(it)
+                        recycler_view_profile.adapter = adapterProfile
+                    })
+            }
+            "tile" -> {
+                recycler_view_profile.layoutManager = GridLayoutManager(activity, 2)
+                jsonModel.profilePagedList?.observe(this,
+                    Observer<PagedList<CardBinding>> {
+                        adapterProfile = adapterFun(it, "tile") as PagingAdapterViewHolder
+                        adapterProfile.submitList(it)
+                        recycler_view_profile.adapter = adapterProfile
+                    })
+            }
         }
 
     }
@@ -195,7 +187,7 @@ class ProfileFragment : Fragment() {
 
         return PagingAdapterViewHolder(viewMode, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                NaviController(context!!).toDetailsFromBest(item)
+                NaviController(context!!).toDetailsFromProfile(item)
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
@@ -205,26 +197,6 @@ class ProfileFragment : Fragment() {
                     DBProjectsDao.delete(context!!, list[position].id)
                 }
             }
-        }, "Best")
+        }, "Profile")
     }
-
-    private fun updateAdapter(
-        asyncList: Deferred<MutableList<CardBinding>>,
-        config: PagedList.Config,
-        pagedListPagingAdapter: PagedListAdapter<CardBinding, PagingAdapterViewHolder.ViewHolder>
-    ) {
-        val turnoverDataSourceFactory = ItemSourceFactory(asyncList) {}
-
-        val items = PagedList.Builder<Int, CardBinding>(turnoverDataSourceFactory.create(), config)
-            .setNotifyExecutor(Executor { view!!.post(it) })
-            .setFetchExecutor(Executors.newSingleThreadExecutor())
-            .build()
-
-        pagedListPagingAdapter.submitList(items)
-    }
-
-    suspend fun abc(list: MutableList<CardBinding>, viewMode: String) = coroutineScope {
-        val cba = async { CardDataBase.getDatabase(context!!)?.getCardDao()?.all!! }
-        updateAdapter(cba, ItemSourceFactory.providePagingConfig(), adapterFun(list, viewMode))}
-
 }

@@ -2,9 +2,15 @@ package com.example.bestofbehance.viewModels
 
 import android.app.Application
 import androidx.lifecycle.*
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.binding.ProfileBinding
 import com.example.bestofbehance.layout.MultiList
+import com.example.bestofbehance.paging.ProfileDataSource
+import com.example.bestofbehance.paging.TestDataSource
+import com.example.bestofbehance.paging.TestDataSource.Companion.PAGE_SIZE
+import com.example.bestofbehance.paging.TestDataSourceFactory
 
 
 class VMForParse : AndroidViewModel(Application()) {
@@ -16,32 +22,29 @@ class VMForParse : AndroidViewModel(Application()) {
     val listForUser: MutableLiveData<MutableList<ProfileBinding>> by lazy { MutableLiveData<MutableList<ProfileBinding>>() }
     val listForUserProjects: MutableLiveData<MutableList<CardBinding>> by lazy { MutableLiveData<MutableList<CardBinding>>() }
 
-    fun setGeneral(page: Int): MutableLiveData<MutableList<CardBinding>> {
-        ParseForVM().generalRetrofit(page) { result ->
+    var itemPagedList: LiveData<PagedList<CardBinding>>? = null
+    var profilePagedList: LiveData<PagedList<CardBinding>>? = null
+
+/*    init {
+        val itemDataSourceFactory = TestDataSourceFactory(TestDataSource())
+        val config =
+            PagedList.Config.Builder().setEnablePlaceholders(true).setPageSize(PAGE_SIZE).build()
+
+        itemPagedList = LivePagedListBuilder(itemDataSourceFactory, config).build()
+    }*/
+
+
+
+    fun setGeneral(){
+        /*ParseForVM().generalRetrofit(page) { result ->
             val abc = result.sortedByDescending { it.published }
             mainContentList.postValue(abc as MutableList<CardBinding>) }
-        return mainContentList
-    }
+        return mainContentList*/
+        val itemDataSourceFactory = TestDataSourceFactory(TestDataSource())
+        val config =
+            PagedList.Config.Builder().setEnablePlaceholders(true).setPageSize(PAGE_SIZE).build()
 
-    fun setNextPage(page: Int): MutableLiveData<MutableList<CardBinding>> {
-        if(pagingResponseList.value?.size != 0){
-            pagingResponseList.value?.toMutableList()?.clear()
-        }
-        ParseForVM().generalRetrofit(page) { result ->
-            val abc = result.sortedByDescending { it.published }
-            pagingResponseList.postValue(abc as MutableList<CardBinding>)}
-        return pagingResponseList
-    }
-
-    fun setNextPageForUser(
-        username: String,
-        page: Int
-    ): MutableLiveData<MutableList<CardBinding>> {
-        pagingResponseList.value?.clear()
-        ParseForVM().userProjectsRetrofit(username, page) { result ->
-            pagingResponseList.postValue(result)
-        }
-        return pagingResponseList
+        itemPagedList = LivePagedListBuilder(itemDataSourceFactory, config).build()
     }
 
     fun setContent(id: Int): MutableLiveData<MutableList<MultiList>> {
@@ -59,15 +62,13 @@ class VMForParse : AndroidViewModel(Application()) {
         return listForUser
     }
 
-    fun setUserProjects(
-        username: String,
-        page: Int
-    ): MutableLiveData<MutableList<CardBinding>> {
-        ParseForVM().userProjectsRetrofit(username, page) { result ->
-            listForUserProjects.postValue(
-                result
-            )
-        }
-        return listForUserProjects
+    fun setUserProjects(username: String){
+        /*ParseForVM().userProjectsRetrofit(username, page) { result -> listForUserProjects.postValue(result) }
+        return listForUserProjects*/
+        val itemDataSourceFactory = TestDataSourceFactory(ProfileDataSource(username))
+        val config =
+            PagedList.Config.Builder().setEnablePlaceholders(true).setPageSize(PAGE_SIZE).build()
+
+        profilePagedList = LivePagedListBuilder(itemDataSourceFactory, config).build()
     }
 }

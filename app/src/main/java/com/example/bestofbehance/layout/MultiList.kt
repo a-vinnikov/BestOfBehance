@@ -1,9 +1,6 @@
 package com.example.bestofbehance.layout
 
-import com.example.bestofbehance.binding.CommentsBinding
-import com.example.bestofbehance.binding.CountBinding
-import com.example.bestofbehance.binding.ImageBinding
-import com.example.bestofbehance.binding.TextBinding
+import com.example.bestofbehance.binding.*
 
 interface MultiList{
     class ImageList(val multiImage: ImageBinding) : MultiList
