@@ -16,7 +16,6 @@ import com.example.bestofbehance.databases.DBBestCache.Companion.KEY_PUBLISHED
 import com.example.bestofbehance.databases.DBBestCache.Companion.KEY_USERNAME
 import com.example.bestofbehance.databases.DBBestCache.Companion.KEY_VIEWS
 import com.example.bestofbehance.databases.DBBestCache.Companion.TABLE_CACHE
-import com.example.bestofbehance.testFolder.TimberLogImplementation
 import timber.log.Timber
 
 object DBBestCacheDao {

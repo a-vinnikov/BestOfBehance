@@ -6,10 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.Navigation
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.layout.BestDirections
-import com.example.bestofbehance.layout.DetailsFragmentDirections
-import com.example.bestofbehance.layout.ProfileFragmentDirections
-import com.example.bestofbehance.layout.ProjectsFragmentDirections
+import com.example.bestofbehance.fragments.*
 
 
 class NaviController(internal val activity: Context) {
@@ -26,20 +23,24 @@ class NaviController(internal val activity: Context) {
         controller.navigate(ProjectsFragmentDirections.actionProjectsToDetails(item))
     }
 
-    fun toProfileFromDetails(item: CardBinding) {
+    fun toProfileFromDetails(item: String) {
         controller.navigate(DetailsFragmentDirections.actionDetailsToProfile(item))
     }
 
-    fun toProfileFromBest(item: CardBinding) {
+    fun toProfileFromBest(item: String) {
         controller.navigate(BestDirections.actionBestToProfile(item))
     }
 
-    fun toProfileFromProjects(item: CardBinding) {
+    fun toProfileFromProjects(item: String) {
         controller.navigate(ProjectsFragmentDirections.actionProjectsToProfile(item))
     }
 
     fun toDetailsFromProfile(item: CardBinding){
         controller.navigate(ProfileFragmentDirections.actionProfileToDetails(item))
+    }
+
+    fun toProfileFromPeople(item: String){
+        controller.navigate(PeopleFragmentDirections.actionPeopleToProfile(item))
     }
 
 }

@@ -1,6 +1,6 @@
 package com.example.bestofbehance.paging
 
-import com.example.bestofbehance.Retrofit.BehanceApiInterface
+import com.example.bestofbehance.retrofit.BehanceApiInterface
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

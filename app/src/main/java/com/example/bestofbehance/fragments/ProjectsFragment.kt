@@ -1,4 +1,4 @@
-package com.example.bestofbehance.layout
+package com.example.bestofbehance.fragments
 
 import android.os.Bundle
 import android.view.*
@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.databases.DBProjectsDao
 import com.example.bestofbehance.databases.SharedPreferenceObject
+import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
 import com.example.bestofbehance.viewModels.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_projects.*
@@ -21,7 +21,7 @@ class ProjectsFragment : Fragment() {
     private var currentViewMode = "list"
 
     lateinit var jsonModel: VMForParse
-    lateinit var adapterProjects: AdapterCopy
+    lateinit var adapterProjects: AdapterNonPaging
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -79,29 +79,25 @@ class ProjectsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        DBProjectsDao.read(context!!) { result ->
-            if (result.size != 0) {
+            if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.all?.size != 0) {
                 text_projects.visibility = GONE
             } else {
                 text_projects.visibility = VISIBLE
             }
-        }
         activity?.navigation?.menu?.findItem(R.id.projects)?.isChecked = true
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        DBProjectsDao.close(context!!)
     }
 
     private fun createRecyclerView(currentViewMode: String) {
 
         when (currentViewMode) {
             "list" -> {
-                DBProjectsDao.read(context!!) { result -> adapterProjects = adapterFun(result, "list") }
+                //DBProjectsDao.read(context!!) { result -> adapterProjects = adapterFun(result, "list") }
+                convertProjectsToCard{result -> adapterProjects = adapterFun(result, "list")}
+
             }
             "tile" -> {
-                DBProjectsDao.read(context!!) { result -> adapterProjects = adapterFun(result, "tile") }
+                //DBProjectsDao.read(context!!) { result -> adapterProjects = adapterFun(result, "tile") }
+                convertProjectsToCard{result -> adapterProjects = adapterFun(result, "tile")}
             }
         }
 
@@ -117,27 +113,33 @@ class ProjectsFragment : Fragment() {
         }
     }
 
-    fun adapterFun(list: MutableList<CardBinding>, viewMode: String): AdapterCopy {
+    fun adapterFun(list: MutableList<CardBinding>, viewMode: String): AdapterNonPaging {
 
-        return AdapterCopy(list, viewMode, object : InClick {
+        return AdapterNonPaging(list, viewMode, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
                 NaviController(context!!).toDetailsFromProjects(item)
             }
 
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
-                if (DBProjectsDao.find(context!!, list[position].id) != null) {
-                    DBProjectsDao.delete(context!!, list[position].id)
+                if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(list[position].id) != null) {
+                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.deleteById(list[position].id)
                     adapterProjects.list.removeAt(position)
                     adapterProjects.notifyDataSetChanged()
-                    DBProjectsDao.read(context!!) { result ->
-                        if (result.size == 0) {
+                        if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.all?.size == 0) {
                             text_projects.visibility = VISIBLE
                         }
-                    }
                 }
             }
         }, "Projects")
     }
 
+    private fun convertProjectsToCard(myCallBack: (result: MutableList<CardBinding>) -> Unit){
+        val list = ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.all
+        val listCard: MutableList<CardBinding> = mutableListOf()
+        for (i in 0 until list!!.size){
+            listCard.add(CardBinding(list[i].id, list[i].bigImage, list[i].avatar, list[i].artistName, list[i].artName, list[i].views, list[i].appreciations, list[i].comments, list[i].username, list[i].published))
+        }
+        myCallBack.invoke(listCard)
+    }
 }

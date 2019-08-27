@@ -18,7 +18,7 @@ abstract class CardDataBase : RoomDatabase() {
 
     class Migration1To4 : Migration(1, 4) {
         override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("CREATE TABLE CardData_new (bigImage text,avatar text,artistName text,artName text,views text,appreciations text,comments text,username text,published integer, PRIMARY KEY(id))")
+            database.execSQL("CREATE TABLE CardData_new (id text, bigImage text,avatar text,artistName text,artName text,views text,appreciations text,comments text,username text,published integer, PRIMARY KEY(id))")
             database.execSQL("INSERT INTO CardData_new SELECT bigImage, avatar, artistName, artName, views, appreciations, comments, username, published, id FROM CardData")
             database.execSQL("DROP TABLE CardData")
             database.execSQL("ALTER TABLE CardData_new RENAME TO CardData")

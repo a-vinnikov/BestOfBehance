@@ -1,4 +1,4 @@
-package com.example.bestofbehance.layout
+package com.example.bestofbehance.fragments
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
@@ -14,8 +14,8 @@ import com.example.bestofbehance.viewModels.InClick
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import com.example.bestofbehance.BR
-import com.example.bestofbehance.databases.DBProjectsDao
 import com.example.bestofbehance.databases.SharedPreferenceObject
+import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
 import com.example.bestofbehance.viewModels.BookmarkClick
 import com.example.bestofbehance.viewModels.NaviController
 import timber.log.Timber
@@ -45,13 +45,13 @@ class PagingAdapterViewHolder(val viewMode: String, val inClick: InClick, val bo
 
         holder.itemView.avatarView.setOnClickListener {
             when (layout){
-                "Best" -> {NaviController(context).toProfileFromBest(getItem(holder.adapterPosition)!!)}
-                "Projects" -> {NaviController(context).toProfileFromProjects(getItem(holder.adapterPosition)!!)}
+                "Best" -> {NaviController(context).toProfileFromBest(getItem(holder.adapterPosition)?.username!!)}
+                "Projects" -> {NaviController(context).toProfileFromProjects(getItem(holder.adapterPosition)?.username!!)}
             }
             SharedPreferenceObject.editorSharedPreference(context, "position", holder.adapterPosition.toString())
         }
 
-        holder.itemView.bookmark.isChecked = DBProjectsDao.find(context, getItem(holder.adapterPosition)!!.id) != null
+        holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(getItem(position)!!.id) != null
 
         holder.itemView.bookmark.setOnClickListener {
             bookmarkClick.setPosition(position)

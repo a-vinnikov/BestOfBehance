@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 3,
-    "identityHash": "4d9fb73c3925cb7e7b04ed271a4a7af7",
+    "version": 1,
+    "identityHash": "cff2632681acce66beb3d8ce77ab1132",
     "entities": [
       {
-        "tableName": "CardData",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `bigImage` TEXT, `avatar` TEXT, `name` TEXT, `post` TEXT, `views` TEXT, `appreciations` TEXT, `comments` TEXT, `username` TEXT)",
+        "tableName": "PeopleData",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `username` TEXT, `avatar` TEXT, `name` TEXT, `post` TEXT, `views` TEXT, `appreciations` TEXT, `followers` TEXT, `following` TEXT, `added` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -15,8 +15,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "bigImage",
-            "columnName": "bigImage",
+            "fieldPath": "username",
+            "columnName": "username",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -51,14 +51,20 @@
             "notNull": false
           },
           {
-            "fieldPath": "comments",
-            "columnName": "comments",
+            "fieldPath": "followers",
+            "columnName": "followers",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "username",
-            "columnName": "username",
+            "fieldPath": "following",
+            "columnName": "following",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "added",
+            "columnName": "added",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -76,7 +82,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4d9fb73c3925cb7e7b04ed271a4a7af7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cff2632681acce66beb3d8ce77ab1132')"
     ]
   }
 }

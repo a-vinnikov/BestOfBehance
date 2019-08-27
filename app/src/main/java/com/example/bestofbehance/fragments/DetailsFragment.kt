@@ -1,4 +1,4 @@
-package com.example.bestofbehance.layout
+package com.example.bestofbehance.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,13 +12,17 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
+import com.example.bestofbehance.binding.ProjectsBinding
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
 import com.example.bestofbehance.databases.DBProjectsDao
+import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
 import com.example.bestofbehance.viewModels.NaviController
 import com.example.bestofbehance.viewModels.VMForParse
 import com.example.bestofbehance.viewModels.ViewModelFactory
 import kotlinx.android.synthetic.main.details_card.*
 import kotlinx.android.synthetic.main.fragment_details.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class DetailsFragment : Fragment() {
@@ -30,7 +34,7 @@ class DetailsFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.two_buttons_toolbar, menu)
 
-        if (DBProjectsDao.find(context!!, args.cardBindingArg.id) == null) {
+        if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(args.cardBindingArg.id) == null) {
             menu.findItem(R.id.menu_bookmark)
                 ?.setIcon(R.drawable.ic_bookmarks_normal)
         } else {
@@ -45,8 +49,15 @@ class DetailsFragment : Fragment() {
         when (item.itemId) {
 
             R.id.menu_bookmark -> {
-                if (DBProjectsDao.find(context!!, args.cardBindingArg.id) == null) {
-                    DBProjectsDao.add(context!!, args.cardBindingArg)
+                if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(args.cardBindingArg.id) == null) {
+                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.insert(
+                        ProjectsBinding(args.cardBindingArg.id, args.cardBindingArg.bigImage,
+                            args.cardBindingArg.avatar, args.cardBindingArg.artistName,
+                            args.cardBindingArg.artName, args.cardBindingArg.views,
+                            args.cardBindingArg.appreciations, args.cardBindingArg.comments,
+                            args.cardBindingArg.username, args.cardBindingArg.published,
+                            getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss"))
+                    )
                     item.setIcon(R.drawable.ic_bookmarks_pressed)
                 } else {
                     DBProjectsDao.delete(context!!, args.cardBindingArg.id)
@@ -106,7 +117,7 @@ class DetailsFragment : Fragment() {
                 if (imageItems != null && commentsItems != null) {
 
                     val temp: List<MultiList> = imageItems.orEmpty() + commentsItems.orEmpty()
-                    recycler_view_details.adapter = AdapterGeneralComments(temp)
+                    recycler_view_details.adapter = AdapterMulti(temp)
                     recycler_view_details.layoutManager = LinearLayoutManager(activity)
 
                     comments.setOnClickListener {
@@ -115,7 +126,7 @@ class DetailsFragment : Fragment() {
                 }
             })
 
-        avatarViewDetails.setOnClickListener { NaviController(context!!).toProfileFromDetails(args.cardBindingArg) }
+        avatarViewDetails.setOnClickListener { NaviController(context!!).toProfileFromDetails(args.cardBindingArg.username!!) }
     }
 
 
@@ -133,5 +144,14 @@ class DetailsFragment : Fragment() {
                 mediator.value = it
             }
         }
+    }
+
+    fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
+        val formatter = SimpleDateFormat(format, locale)
+        return formatter.format(this)
+    }
+
+    fun getCurrentDateTime(): Date {
+        return Calendar.getInstance().time
     }
 }

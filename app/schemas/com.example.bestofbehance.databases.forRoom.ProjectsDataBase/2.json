@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "567eadc9daebc145f5588ae32b1f495b",
+    "version": 2,
+    "identityHash": "0e799d7e249cc99be8845e13ecbedf27",
     "entities": [
       {
         "tableName": "ProjectsData",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `bigImage` TEXT, `avatar` TEXT, `artistName` TEXT, `artName` TEXT, `views` TEXT, `appreciations` TEXT, `comments` TEXT, `username` TEXT, `published` INTEGER, `added` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `bigImage` TEXT, `avatar` TEXT, `artistName` TEXT, `artName` TEXT, `views` TEXT, `appreciations` TEXT, `comments` TEXT, `username` TEXT, `published` INTEGER, `added` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -72,7 +72,7 @@
             "fieldPath": "added",
             "columnName": "added",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -88,7 +88,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '567eadc9daebc145f5588ae32b1f495b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0e799d7e249cc99be8845e13ecbedf27')"
     ]
   }
 }

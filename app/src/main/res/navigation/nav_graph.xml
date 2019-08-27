@@ -3,27 +3,32 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph" app:startDestination="@id/best">
     <fragment android:id="@+id/best"
-              android:name="com.example.bestofbehance.layout.Best"
+              android:name="com.example.bestofbehance.fragments.Best"
               android:label="@string/best_title"
               tools:layout="@layout/fragment_best">
         <action android:id="@+id/action_best_to_details" app:destination="@id/details"/>
         <action android:id="@+id/action_best_to_profile" app:destination="@id/profile"/>
     </fragment>
     <fragment android:id="@+id/people"
-              android:name="com.example.bestofbehance.layout.PeopleFragment"
+              android:name="com.example.bestofbehance.fragments.PeopleFragment"
               android:label="@string/people_title"
               tools:layout="@layout/fragment_people">
         <action android:id="@+id/action_people_to_profile" app:destination="@id/profile"/>
+
+        <argument
+                android:name="cardBindingPeople"
+                app:argType="string" />
+
     </fragment>
     <fragment android:id="@+id/projects"
-              android:name="com.example.bestofbehance.layout.ProjectsFragment"
+              android:name="com.example.bestofbehance.fragments.ProjectsFragment"
               android:label="@string/projects_title"
               tools:layout="@layout/fragment_projects">
         <action android:id="@+id/action_projects_to_details" app:destination="@id/details"/>
         <action android:id="@+id/action_projects_to_profile" app:destination="@id/profile"/>
     </fragment>
     <fragment android:id="@+id/details"
-              android:name="com.example.bestofbehance.layout.DetailsFragment"
+              android:name="com.example.bestofbehance.fragments.DetailsFragment"
               android:label="Project"
               tools:layout="@layout/fragment_details">
         <action android:id="@+id/action_details_to_profile" app:destination="@id/profile"/>
@@ -34,14 +39,14 @@
 
     </fragment>
     <fragment android:id="@+id/profile"
-              android:name="com.example.bestofbehance.layout.ProfileFragment"
+              android:name="com.example.bestofbehance.fragments.ProfileFragment"
               android:label="Profile"
               tools:layout="@layout/fragment_profile">
         <action android:id="@+id/action_profile_to_details" app:destination="@id/details"/>
 
         <argument
                 android:name="cardBindingProfile"
-                app:argType="com.example.bestofbehance.binding.CardBinding" />
+                app:argType="string" />
 
     </fragment>
 </navigation>

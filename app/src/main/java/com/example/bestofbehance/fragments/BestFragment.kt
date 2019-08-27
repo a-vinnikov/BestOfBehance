@@ -1,4 +1,4 @@
-package com.example.bestofbehance.layout
+package com.example.bestofbehance.fragments
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -19,12 +19,14 @@ import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.binding.ProjectsBinding
-import com.example.bestofbehance.databases.DBProjectsDao
 import com.example.bestofbehance.databases.SharedPreferenceObject.editorSharedPreference
 import com.example.bestofbehance.databases.SharedPreferenceObject.sharedCurrentViewMode
 import com.example.bestofbehance.databases.forRoom.CardDataBase
+import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
 import com.example.bestofbehance.viewModels.*
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 const val VIEW_MODE_LISTVIEW = "list"
@@ -85,7 +87,6 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
-        DBProjectsDao.close(context!!)
         currentViewMode = sharedCurrentViewMode(context!!, "currentViewMode", currentViewMode)
         createRecyclerView(currentViewMode)
         swipe.isRefreshing = false
@@ -114,11 +115,6 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onResume() {
         super.onResume()
         activity?.navigation?.menu?.findItem(com.example.bestofbehance.R.id.best)?.isChecked = true
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        DBProjectsDao.close(context!!)
     }
 
     private fun createRecyclerView(currentViewMode: String) {
@@ -173,11 +169,18 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
-                /*if (ProjectsDataBase.getDatabase(context!!)?.getCardDao()?.getById(list[position].id) == null) {
-                    ProjectsDataBase.getDatabase(context!!)?.getCardDao()?.insert(list[position])
+                if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(list[position].id) == null) {
+                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.insert(
+                        ProjectsBinding(list[position].id, list[position].bigImage,
+                            list[position].avatar, list[position].artistName,
+                            list[position].artName, list[position].views,
+                            list[position].appreciations, list[position].comments,
+                            list[position].username, list[position].published,
+                            getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss"))
+                    )
                 } else {
-                    ProjectsDataBase.getDatabase(context!!)?.getCardDao()?.deleteById(list[position].id)
-                }*/
+                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.deleteById(list[position].id)
+                }
             }
         }, "Best")
     }
@@ -187,6 +190,15 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
         return activeNetwork?.isConnected
+    }
+
+    fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
+        val formatter = SimpleDateFormat(format, locale)
+        return formatter.format(this)
+    }
+
+    fun getCurrentDateTime(): Date {
+        return Calendar.getInstance().time
     }
 
 }

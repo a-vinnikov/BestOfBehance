@@ -1,4 +1,4 @@
-package com.example.bestofbehance.layout
+package com.example.bestofbehance.fragments
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
@@ -12,15 +12,15 @@ import com.example.bestofbehance.viewModels.InClick
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import com.example.bestofbehance.BR
-import com.example.bestofbehance.databases.DBProjectsDao
 import com.example.bestofbehance.databases.SharedPreferenceObject
+import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
 import com.example.bestofbehance.viewModels.BookmarkClick
 import com.example.bestofbehance.viewModels.NaviController
 import timber.log.Timber
 
 
-class AdapterCopy(var list: MutableList<CardBinding>, val viewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick, val layout: String) :
-    RecyclerView.Adapter<AdapterCopy.ViewHolder>() {
+class AdapterNonPaging(var list: MutableList<CardBinding>, val viewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick, val layout: String) :
+    RecyclerView.Adapter<AdapterNonPaging.ViewHolder>() {
 
     lateinit var context: Context
     private var isLoading = false
@@ -45,13 +45,13 @@ class AdapterCopy(var list: MutableList<CardBinding>, val viewMode: String, val 
 
         holder.itemView.avatarView.setOnClickListener {
             when (layout){
-                "Best" -> {NaviController(context).toProfileFromBest(list[holder.adapterPosition])}
-                "Projects" -> {NaviController(context).toProfileFromProjects(list[holder.adapterPosition])}
+                "Best" -> {NaviController(context).toProfileFromBest(list[holder.adapterPosition].username!!)}
+                "Projects" -> {NaviController(context).toProfileFromProjects(list[holder.adapterPosition].username!!)}
             }
             SharedPreferenceObject.editorSharedPreference(context, "position", holder.adapterPosition.toString())
         }
 
-        holder.itemView.bookmark.isChecked = DBProjectsDao.find(context, list[holder.adapterPosition].id) != null
+        holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(list[position].id) != null
 
         holder.itemView.bookmark.setOnClickListener {
             bookmarkClick.setPosition(position)
@@ -114,17 +114,5 @@ class AdapterCopy(var list: MutableList<CardBinding>, val viewMode: String, val 
         }
 
     }
-
-
-    /*companion object {
-
-        private val diffCallback = object : DiffUtil.ItemCallback<CardBinding>() {
-            override fun areItemsTheSame(oldItem: CardBinding, newItem: CardBinding): Boolean =
-                oldItem.id == newItem.id
-
-            override fun areContentsTheSame(oldItem: CardBinding, newItem: CardBinding): Boolean =
-                oldItem == newItem
-        }
-    }*/
 
 }

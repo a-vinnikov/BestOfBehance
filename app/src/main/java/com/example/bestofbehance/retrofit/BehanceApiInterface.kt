@@ -1,4 +1,4 @@
-package com.example.bestofbehance.Retrofit
+package com.example.bestofbehance.retrofit
 
 import com.example.bestofbehance.gson.CommentsMain
 import com.example.bestofbehance.gson.GeneralResponse

@@ -6,7 +6,7 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.binding.ProfileBinding
-import com.example.bestofbehance.layout.MultiList
+import com.example.bestofbehance.fragments.MultiList
 import com.example.bestofbehance.paging.ProfileDataSource
 import com.example.bestofbehance.paging.TestDataSource
 import com.example.bestofbehance.paging.TestDataSource.Companion.PAGE_SIZE

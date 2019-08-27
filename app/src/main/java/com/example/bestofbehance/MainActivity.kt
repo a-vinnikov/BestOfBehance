@@ -6,7 +6,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.example.bestofbehance.viewModels.NaviController
-import com.example.bestofbehance.viewModels.VolleySingleton
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -31,12 +30,10 @@ open class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setupNavigation()
-        VolleySingleton.initialize(this)
     }
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return super.onSupportNavigateUp()
-
     }
 }

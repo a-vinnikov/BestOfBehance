@@ -1,16 +1,15 @@
 package com.example.bestofbehance.viewModels
 
-import com.example.bestofbehance.Retrofit.BehanceApiInterface
+import com.example.bestofbehance.retrofit.BehanceApiInterface
 import com.example.bestofbehance.binding.*
 import com.example.bestofbehance.gson.*
-import com.example.bestofbehance.layout.MultiList
+import com.example.bestofbehance.fragments.MultiList
 import org.jsoup.Jsoup
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.text.SimpleDateFormat
-import java.util.*
+import java.lang.StringBuilder
 
 class ParseForVM {
 
@@ -21,15 +20,10 @@ class ParseForVM {
     private val apiKey = "0QmPh684DRz1SpWHDikkyFCzLShGiHPi"
 
     fun generalRetrofit(page: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit){
-        val client = Retrofit.Builder()
-            .baseUrl("https://api.behance.net/v2/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
 
-        val service = client.create(BehanceApiInterface::class.java)
-        val call = service.getGeneral("appreciations", page, apiKey)
+        val call = service()?.getGeneral("appreciations", page, apiKey)
 
-        call.enqueue(object : Callback<GeneralResponse> {
+        call?.enqueue(object : Callback<GeneralResponse> {
             override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
 
             }
@@ -76,15 +70,9 @@ class ParseForVM {
 
     fun projectRetrofit(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit){
 
-        val client = Retrofit.Builder()
-            .baseUrl("https://api.behance.net/v2/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val call = service()?.getProject(projectId.toString(), apiKey)
 
-        val service = client.create(BehanceApiInterface::class.java)
-        val call = service.getProject(projectId.toString(), apiKey)
-
-        call.enqueue(object : Callback<ImageResponse> {
+        call?.enqueue(object : Callback<ImageResponse> {
             override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
 
             }
@@ -114,15 +102,9 @@ class ParseForVM {
 
     fun commentsRetrofit(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit){
 
-        val client = Retrofit.Builder()
-            .baseUrl("https://api.behance.net/v2/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val call = service()?.getComments(projectId.toString(), apiKey)
 
-        val service = client.create(BehanceApiInterface::class.java)
-        val call = service.getComments(projectId.toString(), apiKey)
-
-        call.enqueue(object : Callback<CommentsMain> {
+        call?.enqueue(object : Callback<CommentsMain> {
             override fun onFailure(call: Call<CommentsMain>, t: Throwable) {
 
             }
@@ -142,8 +124,6 @@ class ParseForVM {
                     val comment = listResponse?.get(i)?.comment
                     val date = listResponse?.get(i)?.createdOn.toString()
 
-
-                    //mAPIList.add(APIList(Arts, Avatars, Names, Posts, Views, Appreciations, Comments, id))
                     if (i == 0) {
                         iListCom.add(MultiList.CountList(CountBinding(numberOfComments)))
                     }
@@ -159,15 +139,9 @@ class ParseForVM {
 
     fun userRetrofit(username: String, myCallBack: (result: MutableList<ProfileBinding>) -> Unit){
 
-        val client = Retrofit.Builder()
-            .baseUrl("https://api.behance.net/v2/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val call = service()?.getUser(username, apiKey)
 
-        val service = client.create(BehanceApiInterface::class.java)
-        val call = service.getUser(username, apiKey)
-
-        call.enqueue(object : Callback<UserResponse> {
+        call?.enqueue(object : Callback<UserResponse> {
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
 
             }
@@ -184,7 +158,16 @@ class ParseForVM {
                 val followers = listResponse?.stats?.followers
                 val following = listResponse?.stats?.following
                 var aboutArtist = listResponse?.sections?.aboutMe
-                val post = listResponse?.fields?.get(0)
+                val sb = StringBuilder()
+                (0 until listResponse?.fields?.size!!).forEach { i ->
+                    if (i == listResponse.fields.size - 1){
+                        sb.append(listResponse.fields[i])
+                    } else {
+                        sb.append(listResponse.fields[i] + ", ")
+                    }
+                }
+                val post = sb.toString()
+
 
                 if (aboutArtist == null) aboutArtist = "No information"
 
@@ -197,15 +180,10 @@ class ParseForVM {
     }
 
     fun userProjectsRetrofit(username: String, page: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit){
-        val client = Retrofit.Builder()
-            .baseUrl("https://api.behance.net/v2/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
 
-        val service = client.create(BehanceApiInterface::class.java)
-        val call = service.getUserProjects(username, page, apiKey)
+        val call = service()?.getUserProjects(username, page, apiKey)
 
-        call.enqueue(object : Callback<GeneralResponse> {
+        call?.enqueue(object : Callback<GeneralResponse> {
             override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
 
             }
@@ -246,6 +224,15 @@ class ParseForVM {
             }
 
         })
+    }
+
+    private fun service(): BehanceApiInterface? {
+        val client = Retrofit.Builder()
+            .baseUrl("https://api.behance.net/v2/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        return client.create(BehanceApiInterface::class.java)
     }
 
 }
