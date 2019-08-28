@@ -17,7 +17,9 @@ class ParseForVM {
     private val iListCon: MutableList<MultiList> = mutableListOf()
     private val iListCom: MutableList<MultiList> = mutableListOf()
     private val userList: MutableList<ProfileBinding> = mutableListOf()
-    private val apiKey = "0QmPh684DRz1SpWHDikkyFCzLShGiHPi"
+    private val apiKey = "xMrW480v8SrR9J02koQXiIEEMr3uzIfd"
+    //xMrW480v8SrR9J02koQXiIEEMr3uzIfd
+    //0QmPh684DRz1SpWHDikkyFCzLShGiHPi
 
     fun generalRetrofit(page: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit){
 
@@ -121,13 +123,14 @@ class ParseForVM {
 
                     val commentsAvatarView = listResponse?.get(i)?.user?.images?.jsonMember138
                     val commentatorName = listResponse?.get(i)?.user?.displayName
+                    val commentatorUsername = listResponse?.get(i)?.user?.username
                     val comment = listResponse?.get(i)?.comment
                     val date = listResponse?.get(i)?.createdOn.toString()
 
                     if (i == 0) {
                         iListCom.add(MultiList.CountList(CountBinding(numberOfComments)))
                     }
-                    iListCom.add(MultiList.CommentsList(CommentsBinding(commentsAvatarView, commentatorName, comment, date)))
+                    iListCom.add(MultiList.CommentsList(CommentsBinding(commentsAvatarView, commentatorName, commentatorUsername, comment, date)))
                     i + 1
                 }
                 myCallBack.invoke(iListCom)
@@ -158,15 +161,22 @@ class ParseForVM {
                 val followers = listResponse?.stats?.followers
                 val following = listResponse?.stats?.following
                 var aboutArtist = listResponse?.sections?.aboutMe
+                val check = listResponse?.fields?.size!!
+                lateinit var post: String
                 val sb = StringBuilder()
-                (0 until listResponse?.fields?.size!!).forEach { i ->
-                    if (i == listResponse.fields.size - 1){
-                        sb.append(listResponse.fields[i])
-                    } else {
-                        sb.append(listResponse.fields[i] + ", ")
+                post = if (check == 0){
+                    "Nothing here"
+                } else{
+                    (listResponse.fields.indices).forEach { i ->
+                        if (i == listResponse.fields.size - 1){
+                            sb.append(listResponse.fields[i])
+                        } else {
+                            sb.append(listResponse.fields[i] + ", ")
+                        }
                     }
+                    sb.toString()
                 }
-                val post = sb.toString()
+
 
 
                 if (aboutArtist == null) aboutArtist = "No information"

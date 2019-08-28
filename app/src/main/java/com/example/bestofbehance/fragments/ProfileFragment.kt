@@ -1,8 +1,15 @@
 package com.example.bestofbehance.fragments
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -17,7 +24,6 @@ import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.binding.PeopleBinding
 import com.example.bestofbehance.binding.ProfileBinding
 import com.example.bestofbehance.binding.ProjectsBinding
-import com.example.bestofbehance.databases.DBProjectsDao
 import com.example.bestofbehance.databases.SharedPreferenceObject
 import com.example.bestofbehance.databases.SharedPreferenceObject.editorSharedPreference
 import com.example.bestofbehance.databases.forRoom.PeopleDataBase
@@ -25,7 +31,6 @@ import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
 import com.example.bestofbehance.databinding.FragmentProfileBinding
 import com.example.bestofbehance.viewModels.*
 import kotlinx.android.synthetic.main.fragment_profile.*
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,10 +43,6 @@ class ProfileFragment : Fragment() {
     private var currentViewMode = "list"
     lateinit var adapterProfile: PagingAdapterViewHolder
     var userId = 0
-
-    init {
-        Timber.plant(Timber.DebugTree())
-    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.two_buttons_toolbar, menu)
@@ -93,7 +94,7 @@ class ProfileFragment : Fragment() {
             }
 
             R.id.menu_share -> {
-                Toast.makeText(activity, "Work in progress", Toast.LENGTH_SHORT).show()
+                copyText("https://www.behance.net/${args.cardBindingProfile}")
             }
         }
 
@@ -190,11 +191,6 @@ class ProfileFragment : Fragment() {
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        DBProjectsDao.close(context!!)
-    }
-
     private fun createRecyclerView(currentViewMode: String) {
         if (jsonModel.profilePagedList?.value == null) {
             jsonModel.setUserProjects(args.cardBindingProfile)
@@ -246,7 +242,7 @@ class ProfileFragment : Fragment() {
                         )
                     )
                 } else {
-                    DBProjectsDao.delete(context!!, list[position].id)
+                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.deleteById(list[position].id)
                 }
             }
         }, "Profile")
@@ -259,5 +255,18 @@ class ProfileFragment : Fragment() {
 
     fun getCurrentDateTime(): Date {
         return Calendar.getInstance().time
+    }
+
+    fun webPageOpen(url: String) {
+        val uris = Uri.parse(url)
+        val intents = Intent(Intent.ACTION_VIEW, uris)
+        startActivity(intents)
+    }
+
+    fun copyText(text: String) {
+        val myClip = ClipData.newPlainText("text", text)
+        val myClipboard = context!!.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        myClipboard.primaryClip = myClip
+        Toast.makeText(context!!, "Copied into clipboard", Toast.LENGTH_SHORT).show()
     }
 }

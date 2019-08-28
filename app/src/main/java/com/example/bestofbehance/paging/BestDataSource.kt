@@ -8,13 +8,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class TestDataSource : PageKeyedDataSource<Int, CardBinding>() {
+class BestDataSource : PageKeyedDataSource<Int, CardBinding>() {
 
-    companion object {
-        const val PAGE_SIZE = 10
-        const val FIRST_PAGE = 1
-        const val API_KEY = "0QmPh684DRz1SpWHDikkyFCzLShGiHPi"
-    }
+    val FIRST_PAGE = 1
+    val API_KEY = "xMrW480v8SrR9J02koQXiIEEMr3uzIfd"
     private val recList: MutableList<CardBinding> = mutableListOf()
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, CardBinding>) {

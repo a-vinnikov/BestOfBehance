@@ -3,13 +3,14 @@ package com.example.bestofbehance.paging
 import androidx.paging.PageKeyedDataSource
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.gson.GeneralResponse
-import com.example.bestofbehance.paging.TestDataSource.Companion.API_KEY
-import com.example.bestofbehance.paging.TestDataSource.Companion.FIRST_PAGE
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding>() {
+
+    val FIRST_PAGE = 1
+    val API_KEY = "xMrW480v8SrR9J02koQXiIEEMr3uzIfd"
 
     private val recList: MutableList<CardBinding> = mutableListOf()
 

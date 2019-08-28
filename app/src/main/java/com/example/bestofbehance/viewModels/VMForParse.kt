@@ -8,13 +8,13 @@ import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.binding.ProfileBinding
 import com.example.bestofbehance.fragments.MultiList
 import com.example.bestofbehance.paging.ProfileDataSource
-import com.example.bestofbehance.paging.TestDataSource
-import com.example.bestofbehance.paging.TestDataSource.Companion.PAGE_SIZE
-import com.example.bestofbehance.paging.TestDataSourceFactory
+import com.example.bestofbehance.paging.BestDataSource
+import com.example.bestofbehance.paging.DataSourceFactory
 
 
 class VMForParse : AndroidViewModel(Application()) {
 
+    val PAGE_SIZE = 10
     val mainContentList: MutableLiveData<MutableList<CardBinding>> by lazy { MutableLiveData<MutableList<CardBinding>>() }
     val pagingResponseList: MutableLiveData<MutableList<CardBinding>> by lazy { MutableLiveData<MutableList<CardBinding>>() }
     val listForContents: MutableLiveData<MutableList<MultiList>> by lazy { MutableLiveData<MutableList<MultiList>>() }
@@ -40,7 +40,7 @@ class VMForParse : AndroidViewModel(Application()) {
             val abc = result.sortedByDescending { it.published }
             mainContentList.postValue(abc as MutableList<CardBinding>) }
         return mainContentList*/
-        val itemDataSourceFactory = TestDataSourceFactory(TestDataSource())
+        val itemDataSourceFactory = DataSourceFactory(BestDataSource())
         val config =
             PagedList.Config.Builder().setEnablePlaceholders(true).setPageSize(PAGE_SIZE).build()
 
@@ -65,7 +65,7 @@ class VMForParse : AndroidViewModel(Application()) {
     fun setUserProjects(username: String){
         /*ParseForVM().userProjectsRetrofit(username, page) { result -> listForUserProjects.postValue(result) }
         return listForUserProjects*/
-        val itemDataSourceFactory = TestDataSourceFactory(ProfileDataSource(username))
+        val itemDataSourceFactory = DataSourceFactory(ProfileDataSource(username))
         val config =
             PagedList.Config.Builder().setEnablePlaceholders(true).setPageSize(PAGE_SIZE).build()
 

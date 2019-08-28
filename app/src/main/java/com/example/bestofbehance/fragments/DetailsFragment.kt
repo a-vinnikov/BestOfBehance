@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.*
 import android.widget.Toast
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.marginBottom
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
@@ -14,7 +16,6 @@ import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.ProjectsBinding
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
-import com.example.bestofbehance.databases.DBProjectsDao
 import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
 import com.example.bestofbehance.viewModels.NaviController
 import com.example.bestofbehance.viewModels.VMForParse
@@ -60,7 +61,7 @@ class DetailsFragment : Fragment() {
                     )
                     item.setIcon(R.drawable.ic_bookmarks_pressed)
                 } else {
-                    DBProjectsDao.delete(context!!, args.cardBindingArg.id)
+                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.deleteById(args.cardBindingArg.id)
                     item.setIcon(R.drawable.ic_bookmarks_normal)
                 }
             }
@@ -117,11 +118,16 @@ class DetailsFragment : Fragment() {
                 if (imageItems != null && commentsItems != null) {
 
                     val temp: List<MultiList> = imageItems.orEmpty() + commentsItems.orEmpty()
-                    recycler_view_details.adapter = AdapterMulti(temp)
+                    recycler_view_details.adapter = AdapterMulti(temp as MutableList<MultiList>, null)
                     recycler_view_details.layoutManager = LinearLayoutManager(activity)
 
                     comments.setOnClickListener {
-                        (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(imageItems!!.lastIndex + 1, 0)
+                        if (commentsItems!!.size < 7){
+                            (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPosition(temp.size - 1)
+                        } else {
+                            (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(imageItems!!.lastIndex + 1 , 180)
+                        }
+
                     }
                 }
             })

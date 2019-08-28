@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.PeopleBinding
 import com.example.bestofbehance.databases.forRoom.PeopleDataBase
+import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
+import com.example.bestofbehance.viewModels.BookmarkClick
 import com.example.bestofbehance.viewModels.VMForParse
 import com.example.bestofbehance.viewModels.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
@@ -22,7 +24,7 @@ import kotlinx.android.synthetic.main.fragment_projects.*
 class PeopleFragment : Fragment() {
 
     lateinit var jsonModel: VMForParse
-    lateinit var adapterPeople: AdapterNonPaging
+    lateinit var adapterPeople: AdapterMulti
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,17 +62,29 @@ class PeopleFragment : Fragment() {
 
     private fun createRecyclerView() {
 
-        convertProjectsToCard { result ->
+        convertProjectsToCard(PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.all) { result ->
             if (result.size != 0){
-                val temp: List<MultiList> = result
-                recycler_view_people.adapter = AdapterMulti(temp)
+                val temp: MutableList<MultiList> = result
+                 adapterPeople = AdapterMulti(temp, object : BookmarkClick {
+                     override fun setPosition(position: Int) {
+                         if (PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.getByUsername((temp[position] as MultiList.PeopleList).multiPeople.username!!) != null) {
+                             PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.deleteByUsername((temp[position] as MultiList.PeopleList).multiPeople.username!!)
+                             adapterPeople.list.removeAt(position)
+                             adapterPeople.notifyDataSetChanged()
+                             if (PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.all?.size == 0) {
+                                 text_people.visibility = VISIBLE
+                             }
+                         }
+                     }
+                 })
+
+                recycler_view_people.adapter = adapterPeople
                 recycler_view_people.layoutManager = LinearLayoutManager(activity)
             }
         }
     }
 
-    private fun convertProjectsToCard(myCallBack: (result: MutableList<MultiList>) -> Unit) {
-        val list = PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.all
+    private fun convertProjectsToCard(list: MutableList<PeopleBinding>?, myCallBack: (result: MutableList<MultiList>) -> Unit) {
         val listCard: MutableList<MultiList> = mutableListOf()
         for (i in 0 until list!!.size) {
             listCard.add(
@@ -91,6 +105,14 @@ class PeopleFragment : Fragment() {
             )
         }
         myCallBack.invoke(listCard)
+    }
+
+    private fun rewriter(list: List<MultiList>, myCallBack: (result: MutableList<PeopleBinding>?) -> Unit){
+        val temp: MutableList<PeopleBinding>? = null
+        for (element in list){
+            temp?.add((element as MultiList.PeopleList).multiPeople)
+        }
+        myCallBack.invoke(temp)
     }
 
 }

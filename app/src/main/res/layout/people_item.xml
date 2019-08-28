@@ -57,7 +57,7 @@
                     app:layout_constraintStart_toEndOf="@id/peopleAvatarView"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="PrivateResource"
-                    android:layout_marginEnd="30dp"/>
+                    android:layout_marginEnd="50dp"/>
 
             <TextView
                     android:id="@+id/peoplePost"
@@ -70,7 +70,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/peopleAvatarView"
                     app:layout_constraintTop_toBottomOf="@+id/peopleName"
-                    android:layout_marginEnd="30dp"/>
+                    android:layout_marginEnd="50dp"/>
 
             <View
                     android:id="@+id/peopleLine"
@@ -185,8 +185,8 @@
         <ToggleButton
                 android:id="@+id/bookmark_people"
                 style="@style/toggleButton"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_gravity="top|end"

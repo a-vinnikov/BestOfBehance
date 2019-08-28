@@ -6,7 +6,7 @@ import androidx.paging.DataSource
 import androidx.paging.PageKeyedDataSource
 import com.example.bestofbehance.binding.CardBinding
 
-class TestDataSourceFactory(val dataSource: PageKeyedDataSource<Int, CardBinding>) : DataSource.Factory<Int, CardBinding>() {
+class DataSourceFactory(val dataSource: PageKeyedDataSource<Int, CardBinding>) : DataSource.Factory<Int, CardBinding>() {
 
     var itemLiveDataSource: MutableLiveData<PageKeyedDataSource<Int, CardBinding>>? = null
 
