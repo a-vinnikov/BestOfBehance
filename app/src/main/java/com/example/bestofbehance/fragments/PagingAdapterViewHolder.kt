@@ -1,6 +1,7 @@
 package com.example.bestofbehance.fragments
 
 import android.content.Context
+import android.util.TypedValue
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View.GONE
@@ -14,6 +15,7 @@ import com.example.bestofbehance.viewModels.InClick
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import com.example.bestofbehance.BR
+import com.example.bestofbehance.R
 import com.example.bestofbehance.databases.SharedPreferenceObject
 import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
 import com.example.bestofbehance.viewModels.BookmarkClick
@@ -26,10 +28,6 @@ class PagingAdapterViewHolder(val viewMode: String, val inClick: InClick, val bo
 
     lateinit var context: Context
     var position = 0
-
-    init{
-        Timber.plant(Timber.DebugTree())
-    }
 
     //RecyclerView.Adapter<AdapterViewHolder.ViewHolder>() {
 
@@ -68,6 +66,10 @@ class PagingAdapterViewHolder(val viewMode: String, val inClick: InClick, val bo
 
         if (viewMode == "tile") {
             holder.itemView.avatarView.visibility = GONE
+            val tValue = TypedValue()
+            context.resources.getValue(R.dimen.height_of_grid, tValue, true)
+            val floatResources = tValue.float
+            holder.itemView.bigImageView.layoutParams.height = floatResources.toInt()
         }
 
         val copyList = getItem(holder.adapterPosition)!!.copy()

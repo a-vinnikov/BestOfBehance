@@ -18,7 +18,8 @@
                 android:id="@+id/profile_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorMain">
+                android:background="@color/colorMain"
+                app:layout_scrollFlags="scroll|snap">
             <include
                     layout="@layout/profile_card"
                     app:cardViewProfile="@{cardViewProfile}"

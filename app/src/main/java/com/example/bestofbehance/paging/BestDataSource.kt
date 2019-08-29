@@ -1,35 +1,35 @@
 package com.example.bestofbehance.paging
-
-import android.content.ClipData
 import androidx.paging.PageKeyedDataSource
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.gson.GeneralResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import timber.log.Timber
+
+const val FIRST_PAGE = 1
+const val API_KEY = "xMrW480v8SrR9J02koQXiIEEMr3uzIfd"
 
 class BestDataSource : PageKeyedDataSource<Int, CardBinding>() {
-
-    val FIRST_PAGE = 1
-    val API_KEY = "xMrW480v8SrR9J02koQXiIEEMr3uzIfd"
     private val recList: MutableList<CardBinding> = mutableListOf()
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, CardBinding>) {
-        RetrofitClient.getInstance().getApi().getGeneral("appreciations", FIRST_PAGE, API_KEY).enqueue(object : Callback<GeneralResponse> {
+        RetrofitClient.getInstance().getApi().getGeneral("appreciations", FIRST_PAGE).enqueue(object : Callback<GeneralResponse> {
             override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {}
 
             override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
                 response.body()?.run {
                     general(this){result ->
-                        val abc = result.sortedByDescending { it.published }
+                        val abc = result.sortedByDescending { it.published }.toMutableList()
                         callback.onResult(abc, null, FIRST_PAGE + 1)}
+                        Timber.d("Loaded first page")
                 }
             }
         })
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        RetrofitClient.getInstance().getApi().getGeneral("appreciations", params.key, API_KEY)
+        RetrofitClient.getInstance().getApi().getGeneral("appreciations", params.key)
             .enqueue(object : Callback<GeneralResponse> {
                 override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
                 }
@@ -41,6 +41,7 @@ class BestDataSource : PageKeyedDataSource<Int, CardBinding>() {
                             general(this){result ->
                                 val abc = result.sortedByDescending { it.published }
                                 callback.onResult(abc, key)}
+                            Timber.d("Loaded next page, ${params.key} page")
                         }
                     }
                 }
@@ -48,7 +49,7 @@ class BestDataSource : PageKeyedDataSource<Int, CardBinding>() {
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        RetrofitClient.getInstance().getApi().getGeneral("appreciations", params.key, API_KEY)
+        RetrofitClient.getInstance().getApi().getGeneral("appreciations", params.key)
             .enqueue(object : Callback<GeneralResponse> {
                 override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
                 }
@@ -59,6 +60,7 @@ class BestDataSource : PageKeyedDataSource<Int, CardBinding>() {
                         general(this){result ->
                             val abc = result.sortedByDescending { it.published }
                             callback.onResult(abc, key)}
+                        Timber.d("Loaded previous page, ${params.key} page")
                     }
                 }
             })
@@ -66,6 +68,7 @@ class BestDataSource : PageKeyedDataSource<Int, CardBinding>() {
 
     fun general(response: GeneralResponse, myCallBack: (result: MutableList<CardBinding>) -> Unit){
         val listResponse = response.projects
+        recList.clear()
 
 
         for (i in listResponse!!.indices) {

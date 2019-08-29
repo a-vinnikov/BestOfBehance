@@ -15,8 +15,11 @@ import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuInflater
 import android.widget.Toast
+import androidx.annotation.NonNull
+import androidx.annotation.Nullable
 import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
+import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.binding.ProjectsBinding
 import com.example.bestofbehance.databases.SharedPreferenceObject.editorSharedPreference
@@ -24,9 +27,14 @@ import com.example.bestofbehance.databases.SharedPreferenceObject.sharedCurrentV
 import com.example.bestofbehance.databases.forRoom.CardDataBase
 import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
 import com.example.bestofbehance.viewModels.*
-import timber.log.Timber
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.*
+
+
+
+
 
 
 const val VIEW_MODE_LISTVIEW = "list"
@@ -40,10 +48,6 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     lateinit var adapterBest: PagingAdapterViewHolder
     private var isLoading = false
     private val isLastPage = false
-
-    init {
-        Timber.plant(Timber.DebugTree())
-    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(com.example.bestofbehance.R.menu.one_button_toolbar, menu)
@@ -121,7 +125,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         if (isOnline(context!!) == true && isOnline(context!!) != null || jsonModel.itemPagedList == null) {
             jsonModel.setGeneral()
         } else if (isOnline(context!!) == null || isOnline(context!!) == false) {
-            Toast.makeText(context!!, "No internet connection", Toast.LENGTH_LONG).show()
+            //Snackbar.make(snack, "No internet connection", Snackbar.LENGTH_SHORT).setAction("No internet connection", null).show()
             //DBBestCacheDao.read(context!!) { jsonModel.mainContentList.postValue(it) }
             jsonModel.mainContentList.postValue(CardDataBase.getDatabase(context!!)?.getCardDao()?.all)
         }

@@ -4,6 +4,8 @@ import com.example.bestofbehance.retrofit.BehanceApiInterface
 import com.example.bestofbehance.binding.*
 import com.example.bestofbehance.gson.*
 import com.example.bestofbehance.fragments.MultiList
+import com.example.bestofbehance.retrofit.BehanceOkHtttpClient.abc
+import com.example.bestofbehance.retrofit.BehanceOkHtttpClient.cba
 import org.jsoup.Jsoup
 import retrofit2.Call
 import retrofit2.Callback
@@ -23,7 +25,7 @@ class ParseForVM {
 
     fun generalRetrofit(page: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit){
 
-        val call = service()?.getGeneral("appreciations", page, apiKey)
+        val call = service()?.getGeneral("appreciations", page)
 
         call?.enqueue(object : Callback<GeneralResponse> {
             override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
@@ -72,7 +74,7 @@ class ParseForVM {
 
     fun projectRetrofit(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit){
 
-        val call = service()?.getProject(projectId.toString(), apiKey)
+        val call = service()?.getProject(projectId.toString())
 
         call?.enqueue(object : Callback<ImageResponse> {
             override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
@@ -92,8 +94,8 @@ class ParseForVM {
                             val text1 = Jsoup.parse(text).text()
                             iListCon.add(MultiList.TextList(TextBinding(text1)))}
                         "media_collection" -> {
-                            for (j in 0 until listResponse[i]?.components!!.size){
-                                val collectionItem = listResponse[i]?.components!![j]?.src
+                            for (element in listResponse[i]?.components!!){
+                                val collectionItem = element?.src
                                 iListCon.add(MultiList.ImageList(ImageBinding(collectionItem)))} } }
                     i + 1
                 }
@@ -104,7 +106,7 @@ class ParseForVM {
 
     fun commentsRetrofit(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit){
 
-        val call = service()?.getComments(projectId.toString(), apiKey)
+        val call = service()?.getComments(projectId.toString())
 
         call?.enqueue(object : Callback<CommentsMain> {
             override fun onFailure(call: Call<CommentsMain>, t: Throwable) {
@@ -142,7 +144,7 @@ class ParseForVM {
 
     fun userRetrofit(username: String, myCallBack: (result: MutableList<ProfileBinding>) -> Unit){
 
-        val call = service()?.getUser(username, apiKey)
+        val call = service()?.getUser(username)
 
         call?.enqueue(object : Callback<UserResponse> {
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
@@ -191,7 +193,7 @@ class ParseForVM {
 
     fun userProjectsRetrofit(username: String, page: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit){
 
-        val call = service()?.getUserProjects(username, page, apiKey)
+        val call = service()?.getUserProjects(username, page)
 
         call?.enqueue(object : Callback<GeneralResponse> {
             override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
@@ -240,6 +242,7 @@ class ParseForVM {
         val client = Retrofit.Builder()
             .baseUrl("https://api.behance.net/v2/")
             .addConverterFactory(GsonConverterFactory.create())
+            .client(cba().build())
             .build()
 
         return client.create(BehanceApiInterface::class.java)

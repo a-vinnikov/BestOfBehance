@@ -15,7 +15,7 @@ class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding
     private val recList: MutableList<CardBinding> = mutableListOf()
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, CardBinding>) {
-        RetrofitClient.getInstance().getApi().getUserProjects(user, FIRST_PAGE, API_KEY).enqueue(object : Callback<GeneralResponse> {
+        RetrofitClient.getInstance().getApi().getUserProjects(user, FIRST_PAGE).enqueue(object : Callback<GeneralResponse> {
             override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {}
 
             override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
@@ -29,7 +29,7 @@ class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        RetrofitClient.getInstance().getApi().getUserProjects(user, params.key, API_KEY)
+        RetrofitClient.getInstance().getApi().getUserProjects(user, params.key)
             .enqueue(object : Callback<GeneralResponse> {
                 override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
                 }
@@ -48,7 +48,7 @@ class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        RetrofitClient.getInstance().getApi().getUserProjects(user, params.key, API_KEY)
+        RetrofitClient.getInstance().getApi().getUserProjects(user, params.key)
             .enqueue(object : Callback<GeneralResponse> {
                 override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
                 }
