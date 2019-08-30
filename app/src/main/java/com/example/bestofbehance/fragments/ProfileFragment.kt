@@ -1,15 +1,17 @@
 package com.example.bestofbehance.fragments
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -31,6 +33,8 @@ import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
 import com.example.bestofbehance.databinding.FragmentProfileBinding
 import com.example.bestofbehance.viewModels.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.profile_card.*
+import org.jetbrains.anko.lines
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -125,6 +129,10 @@ class ProfileFragment : Fragment() {
             userId = list[0].id
             binding.cardViewProfile = list[0]
             binding.notifyPropertyChanged(BR._all)
+
+            if (list[0].aboutMe != "No information" || list[0].aboutMe!!.length > 100){
+                more.visibility = VISIBLE
+            }
         }
 
         jsonModel.listForUser.observe(this, observerGSON)
@@ -132,6 +140,7 @@ class ProfileFragment : Fragment() {
         return fragmentDetailsView
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -157,6 +166,19 @@ class ProfileFragment : Fragment() {
 
         if (recycler_view_profile.adapter == null) {
             createRecyclerView(currentViewMode)
+        }
+
+        more.setOnClickListener {
+            when (about_me.lineCount) {
+                3 -> {
+                    about_me.maxLines = Integer.MAX_VALUE; about_me.ellipsize = null; more.text =
+                        "Minimize"
+                }
+                in 3..Integer.MAX_VALUE -> {
+                    about_me.maxLines = 3; about_me.ellipsize =
+                        TextUtils.TruncateAt.END; more.text = "More"
+                }
+            }
         }
 
         /*recycler_view_profile.addOnScrollListener(object : PaginationScrollListener(LinearLayoutManager(context)) {
@@ -233,7 +255,7 @@ class ProfileFragment : Fragment() {
                 if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(list[position].id) == null) {
                     ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.insert(
                         ProjectsBinding(
-                            list[position].id, list[position].bigImage,
+                            list[position].id, list[position].bigImage, list[position].thumbnail,
                             list[position].avatar, list[position].artistName,
                             list[position].artName, list[position].views,
                             list[position].appreciations, list[position].comments,
@@ -242,7 +264,8 @@ class ProfileFragment : Fragment() {
                         )
                     )
                 } else {
-                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.deleteById(list[position].id)
+                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()
+                        ?.deleteById(list[position].id)
                 }
             }
         }, "Profile")

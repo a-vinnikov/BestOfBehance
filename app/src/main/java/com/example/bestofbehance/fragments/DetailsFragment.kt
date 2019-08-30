@@ -52,7 +52,7 @@ class DetailsFragment : Fragment() {
             R.id.menu_bookmark -> {
                 if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(args.cardBindingArg.id) == null) {
                     ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.insert(
-                        ProjectsBinding(args.cardBindingArg.id, args.cardBindingArg.bigImage,
+                        ProjectsBinding(args.cardBindingArg.id, args.cardBindingArg.bigImage, args.cardBindingArg.thumbnail,
                             args.cardBindingArg.avatar, args.cardBindingArg.artistName,
                             args.cardBindingArg.artName, args.cardBindingArg.views,
                             args.cardBindingArg.appreciations, args.cardBindingArg.comments,

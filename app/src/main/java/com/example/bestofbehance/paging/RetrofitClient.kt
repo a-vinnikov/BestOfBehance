@@ -1,8 +1,7 @@
 package com.example.bestofbehance.paging
 
 import com.example.bestofbehance.retrofit.BehanceApiInterface
-import com.example.bestofbehance.retrofit.BehanceOkHtttpClient.abc
-import com.example.bestofbehance.retrofit.BehanceOkHtttpClient.cba
+import com.example.bestofbehance.retrofit.BehanceOkHtttpClient.okHttpBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -25,7 +24,7 @@ class RetrofitClient {
         retrofit = Retrofit.Builder()
             .baseUrl("https://api.behance.net/v2/")
             .addConverterFactory(GsonConverterFactory.create())
-            .client(cba().build())
+            .client(okHttpBuilder().build())
             .build()
     }
 

@@ -10,7 +10,6 @@ import retrofit2.Response
 class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding>() {
 
     val FIRST_PAGE = 1
-    val API_KEY = "xMrW480v8SrR9J02koQXiIEEMr3uzIfd"
 
     private val recList: MutableList<CardBinding> = mutableListOf()
 
@@ -22,29 +21,36 @@ class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding
                 response.body()?.run {
                     projects(user,this){ result ->
                         val abc = result.sortedByDescending { it.published }
-                        callback.onResult(abc, null, FIRST_PAGE + 1)}
+                        if (abc.size < 48){
+                            callback.onResult(abc, null, FIRST_PAGE)
+                        } else {
+                            callback.onResult(abc, null, FIRST_PAGE + 1)
+                        }
+                        }
                 }
             }
         })
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        RetrofitClient.getInstance().getApi().getUserProjects(user, params.key)
-            .enqueue(object : Callback<GeneralResponse> {
-                override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
-                }
+        if(params.key != 1){
+            RetrofitClient.getInstance().getApi().getUserProjects(user, params.key)
+                .enqueue(object : Callback<GeneralResponse> {
+                    override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
+                    }
 
-                override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
-                    response.body()?.run {
-                        val key = params.key + 1
+                    override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
                         response.body()?.run {
-                            projects(user,this){ result ->
-                                val abc = result.sortedByDescending { it.published }
-                                callback.onResult(abc, key)}
+                            val key = params.key + 1
+                            response.body()?.run {
+                                projects(user,this){ result ->
+                                    val abc = result.sortedByDescending { it.published }
+                                    callback.onResult(abc, key)}
+                            }
                         }
                     }
-                }
-            })
+                })
+        }
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
@@ -71,6 +77,7 @@ class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding
         for (i in listResponse!!.indices) {
 
             val art = listResponse[i]?.covers?.original
+            val thumbnail = listResponse[i]?.covers?.jsonMember115
             val artistName = listResponse[i]?.owners?.get(0)?.displayName
             val avatar = listResponse[i]?.owners?.get(0)?.images?.jsonMember138
             val appreciations = listResponse[i]?.stats?.appreciations
@@ -84,6 +91,7 @@ class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding
                 CardBinding(
                     id!!,
                     art,
+                    thumbnail,
                     avatar,
                     artistName,
                     artName,

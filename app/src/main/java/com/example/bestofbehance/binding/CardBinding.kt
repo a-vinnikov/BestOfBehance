@@ -9,6 +9,7 @@ import java.io.Serializable
 data class CardBinding(
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     @ColumnInfo(name = "bigImage") var bigImage: String? = null,
+    @ColumnInfo(name = "thumbnail") var thumbnail: String? = null,
     @ColumnInfo(name = "avatar") var avatar: String? = null,
     @ColumnInfo(name = "artistName") var artistName: String? = "Name",
     @ColumnInfo(name = "artName") var artName: String? = "Art",

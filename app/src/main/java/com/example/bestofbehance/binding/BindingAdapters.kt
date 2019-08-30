@@ -18,9 +18,9 @@ object BindingAdapters{
     }
 
     @JvmStatic
-    @BindingAdapter("loadingRoundedImage")
-    fun setRoundedImageUrl(view: ImageView, url: String?) {
-        Glide.with(view.context).load(url).thumbnail(0.5f).apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(15, 0) as Transformation<Bitmap>)).into(view)
+    @BindingAdapter(value = ["loadingRoundedImage", "loadingThumbnail"])
+    fun setRoundedImageUrl(view: ImageView, url: String?, turl: String?) {
+        Glide.with(view.context).load(url).thumbnail(Glide.with(view.context).load(turl)).apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(15, 0) as Transformation<Bitmap>)).into(view)
     }
 
     @JvmStatic

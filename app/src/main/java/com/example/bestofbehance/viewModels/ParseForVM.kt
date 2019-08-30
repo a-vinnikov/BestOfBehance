@@ -4,8 +4,7 @@ import com.example.bestofbehance.retrofit.BehanceApiInterface
 import com.example.bestofbehance.binding.*
 import com.example.bestofbehance.gson.*
 import com.example.bestofbehance.fragments.MultiList
-import com.example.bestofbehance.retrofit.BehanceOkHtttpClient.abc
-import com.example.bestofbehance.retrofit.BehanceOkHtttpClient.cba
+import com.example.bestofbehance.retrofit.BehanceOkHtttpClient.okHttpBuilder
 import org.jsoup.Jsoup
 import retrofit2.Call
 import retrofit2.Callback
@@ -39,6 +38,7 @@ class ParseForVM {
                 for (i in listResponse!!.indices) {
 
                     val art = listResponse[i]?.covers?.original
+                    val thumbnail = listResponse[i]?.covers?.jsonMember115
                     val artistName = listResponse[i]?.owners?.get(0)?.displayName
                     val avatar = listResponse[i]?.owners?.get(0)?.images?.jsonMember138
                     val appreciations = listResponse[i]?.stats?.appreciations
@@ -53,6 +53,7 @@ class ParseForVM {
                         CardBinding(
                             id!!,
                             art,
+                            thumbnail,
                             avatar,
                             artistName,
                             artName,
@@ -162,7 +163,7 @@ class ParseForVM {
                 val appreciations = listResponse?.stats?.appreciations
                 val followers = listResponse?.stats?.followers
                 val following = listResponse?.stats?.following
-                var aboutArtist = listResponse?.sections?.aboutMe
+                var aboutArtist = listResponse?.sections?.aboutMe?.replace("\n", "")
                 val check = listResponse?.fields?.size!!
                 lateinit var post: String
                 val sb = StringBuilder()
@@ -207,6 +208,7 @@ class ParseForVM {
                 for (i in listResponse!!.indices) {
 
                     val art = listResponse[i]?.covers?.original
+                    val thumbnail = listResponse[i]?.covers?.jsonMember115
                     val artistName = listResponse[i]?.owners?.get(0)?.displayName
                     val avatar = listResponse[i]?.owners?.get(0)?.images?.jsonMember138
                     val appreciations = listResponse[i]?.stats?.appreciations
@@ -220,6 +222,7 @@ class ParseForVM {
                         CardBinding(
                             id!!,
                             art,
+                            thumbnail,
                             avatar,
                             artistName,
                             artName,
@@ -242,7 +245,7 @@ class ParseForVM {
         val client = Retrofit.Builder()
             .baseUrl("https://api.behance.net/v2/")
             .addConverterFactory(GsonConverterFactory.create())
-            .client(cba().build())
+            .client(okHttpBuilder().build())
             .build()
 
         return client.create(BehanceApiInterface::class.java)

@@ -74,6 +74,7 @@ class BestDataSource : PageKeyedDataSource<Int, CardBinding>() {
         for (i in listResponse!!.indices) {
 
             val art = listResponse[i]?.covers?.original
+            val thumbnail = listResponse[i]?.covers?.jsonMember115
             val artistName = listResponse[i]?.owners?.get(0)?.displayName
             val avatar = listResponse[i]?.owners?.get(0)?.images?.jsonMember138
             val appreciations = listResponse[i]?.stats?.appreciations
@@ -88,6 +89,7 @@ class BestDataSource : PageKeyedDataSource<Int, CardBinding>() {
                 CardBinding(
                     id!!,
                     art,
+                    thumbnail,
                     avatar,
                     artistName,
                     artName,

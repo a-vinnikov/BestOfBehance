@@ -15,20 +15,7 @@ object BehanceOkHtttpClient {
     //xMrW480v8SrR9J02koQXiIEEMr3uzIfd
     //0QmPh684DRz1SpWHDikkyFCzLShGiHPi
 
- /*   private class CustomInterceptor : Interceptor {
-        @Throws(IOException::class)
-        override fun intercept(chain: Interceptor.Chain): Response {
-            val request = chain.request().newBuilder().header("api_key", "xMrW480v8SrR9J02koQXiIEEMr3uzIfd").build()
-            return chain.proceed(request)
-        }
-    }
-
-    var okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(CustomInterceptor())
-        .addNetworkInterceptor(CustomInterceptor())
-        .build()*/
-
-    fun cba(): OkHttpClient.Builder {
+    fun okHttpBuilder(): OkHttpClient.Builder {
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.HEADERS
 
@@ -40,7 +27,7 @@ object BehanceOkHtttpClient {
                 val originalHttpUrl = original.url
 
                 val url = originalHttpUrl.newBuilder()
-                    .addQueryParameter("api_key", "xMrW480v8SrR9J02koQXiIEEMr3uzIfd")
+                    .addQueryParameter("api_key", "0QmPh684DRz1SpWHDikkyFCzLShGiHPi")
                     .build()
 
                 // Request customization: add request headers

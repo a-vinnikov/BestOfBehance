@@ -14,6 +14,7 @@
     <string name="comments">COMMENTS</string>
     <string name="no_bookmarks">No bookmarks</string>
     <string name="projects">Projects</string>
+    <string name="more">More</string>
 
     <plurals name="commentsCount">
         <item quantity="one">Comment(%d)</item>

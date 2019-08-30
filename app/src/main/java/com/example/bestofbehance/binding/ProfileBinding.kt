@@ -9,7 +9,7 @@ data class ProfileBinding(
     var appreciations: String? = "0",
     var followers: String? = "0",
     var following: String? = "0",
-    var occupation: String? = null,
+    var aboutMe: String? = null,
     var post: String? = "Post"
     /*var pinterest: String? = null,
     var instagram: String? = null,

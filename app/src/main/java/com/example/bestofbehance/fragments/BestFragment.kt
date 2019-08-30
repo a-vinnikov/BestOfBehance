@@ -50,16 +50,16 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private val isLastPage = false
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(com.example.bestofbehance.R.menu.one_button_toolbar, menu)
+        inflater.inflate(R.menu.one_button_toolbar, menu)
 
         when (currentViewMode) {
             "list" -> {
-                menu.findItem(com.example.bestofbehance.R.id.menu_switcher)
-                    ?.setIcon(com.example.bestofbehance.R.drawable.list)
+                menu.findItem(R.id.menu_switcher)
+                    ?.setIcon(R.drawable.list)
             }
             "tile" -> {
-                menu.findItem(com.example.bestofbehance.R.id.menu_switcher)
-                    ?.setIcon(com.example.bestofbehance.R.drawable.tile)
+                menu.findItem(R.id.menu_switcher)
+                    ?.setIcon(R.drawable.tile)
             }
         }
 
@@ -69,13 +69,13 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         currentViewMode = sharedCurrentViewMode(context!!, "currentViewMode", currentViewMode)
         when (item.itemId) {
-            com.example.bestofbehance.R.id.menu_switcher -> {
+            R.id.menu_switcher -> {
                 if (currentViewMode == "tile") {
-                    item.setIcon(com.example.bestofbehance.R.drawable.list)
+                    item.setIcon(R.drawable.list)
                     createRecyclerView(VIEW_MODE_LISTVIEW)
                     editorSharedPreference(context!!, "currentViewMode", VIEW_MODE_LISTVIEW)
                 } else if (currentViewMode == "list") {
-                    item.setIcon(com.example.bestofbehance.R.drawable.tile)
+                    item.setIcon(R.drawable.tile)
                     createRecyclerView(VIEW_MODE_GRIDVIEW)
                     editorSharedPreference(context!!, "currentViewMode", VIEW_MODE_GRIDVIEW)
                 }
@@ -101,7 +101,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(com.example.bestofbehance.R.layout.fragment_best, container, false)
+        return inflater.inflate(R.layout.fragment_best, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -118,7 +118,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun onResume() {
         super.onResume()
-        activity?.navigation?.menu?.findItem(com.example.bestofbehance.R.id.best)?.isChecked = true
+        activity?.navigation?.menu?.findItem(R.id.best)?.isChecked = true
     }
 
     private fun createRecyclerView(currentViewMode: String) {
@@ -175,7 +175,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             override fun setPosition(position: Int) {
                 if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(list[position].id) == null) {
                     ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.insert(
-                        ProjectsBinding(list[position].id, list[position].bigImage,
+                        ProjectsBinding(list[position].id, list[position].bigImage, list[position].thumbnail,
                             list[position].avatar, list[position].artistName,
                             list[position].artName, list[position].views,
                             list[position].appreciations, list[position].comments,

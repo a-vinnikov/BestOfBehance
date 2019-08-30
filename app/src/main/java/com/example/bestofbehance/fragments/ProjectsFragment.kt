@@ -138,7 +138,7 @@ class ProjectsFragment : Fragment() {
         val list = ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.all
         val listCard: MutableList<CardBinding> = mutableListOf()
         for (i in 0 until list!!.size){
-            listCard.add(CardBinding(list[i].id, list[i].bigImage, list[i].avatar, list[i].artistName, list[i].artName, list[i].views, list[i].appreciations, list[i].comments, list[i].username, list[i].published))
+            listCard.add(CardBinding(list[i].id, list[i].bigImage, list[i].thumbnail, list[i].avatar, list[i].artistName, list[i].artName, list[i].views, list[i].appreciations, list[i].comments, list[i].username, list[i].published))
         }
         myCallBack.invoke(listCard)
     }

@@ -10,13 +10,13 @@ import androidx.room.Room
 
 private const val DB_NAME = "CardData.db"
 
-@Database(entities = [CardBinding::class], version = 4)
+@Database(entities = [CardBinding::class], version = 5)
 abstract class CardDataBase : RoomDatabase() {
 
     abstract fun getCardDao(): CardDao
 
 
-    class Migration1To4 : Migration(1, 4) {
+    class Migration1To4 : Migration(1, 5) {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL("CREATE TABLE CardData_new (id text, bigImage text,avatar text,artistName text,artName text,views text,appreciations text,comments text,username text,published integer, PRIMARY KEY(id))")
             database.execSQL("INSERT INTO CardData_new SELECT bigImage, avatar, artistName, artName, views, appreciations, comments, username, published, id FROM CardData")
