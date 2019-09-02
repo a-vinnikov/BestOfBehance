@@ -181,36 +181,6 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        /*recycler_view_profile.addOnScrollListener(object : PaginationScrollListener(LinearLayoutManager(context)) {
-            override fun getTotalPageCount(): Int {
-                //return TOTAL_PAGES
-                return 0
-            }
-
-            override fun isLastPage(): Boolean {
-
-                if (adapterProfile.position == (adapterProfile.list.size - 1) && adapterProfile.list.size > 40) {
-                    isLoading = true
-                    page += 1
-                    jsonModel.setNextPageForUser(args.cardBindingProfile.username!!, page)
-                    val observerGSONPaging = Observer<MutableList<CardBinding>> {
-                        adapterProfile.addData(it)
-                        isLoading = false
-                        Timber.d("Loaded page $page")
-                    }
-                    jsonModel.pagingResponseList.observe(this@ProfileFragment, observerGSONPaging)
-                }
-                return isLastPage
-            }
-
-            override fun isLoading(): Boolean {
-                return isLoading
-            }
-
-            override fun loadMoreItems() {
-            }
-        })*/
-
     }
 
     private fun createRecyclerView(currentViewMode: String) {
@@ -252,10 +222,10 @@ class ProfileFragment : Fragment() {
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
-                if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(list[position].id) == null) {
+                if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(list[position].id!!) == null) {
                     ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.insert(
                         ProjectsBinding(
-                            list[position].id, list[position].bigImage, list[position].thumbnail,
+                            list[position].id!!, list[position].bigImage, list[position].thumbnail,
                             list[position].avatar, list[position].artistName,
                             list[position].artName, list[position].views,
                             list[position].appreciations, list[position].comments,
@@ -265,7 +235,7 @@ class ProfileFragment : Fragment() {
                     )
                 } else {
                     ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()
-                        ?.deleteById(list[position].id)
+                        ?.deleteById(list[position].id!!)
                 }
             }
         }, "Profile")

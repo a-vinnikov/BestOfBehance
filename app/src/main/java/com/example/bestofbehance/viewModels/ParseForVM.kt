@@ -157,6 +157,7 @@ class ParseForVM {
 
                 val id = listResponse?.id
                 val avatar = listResponse?.images?.jsonMember276
+                val thumbnail = listResponse?.images?.jsonMember100
                 val artistName = listResponse?.displayName
                 val cityCountry = listResponse?.city + ", " + listResponse?.country
                 val views = listResponse?.stats?.views
@@ -184,7 +185,7 @@ class ParseForVM {
 
                 if (aboutArtist == null) aboutArtist = "No information"
 
-                userList.add(ProfileBinding(id!!, avatar, artistName, cityCountry, views.toString(), appreciations.toString(), followers.toString(), following.toString(), aboutArtist, post))
+                userList.add(ProfileBinding(id!!, avatar, thumbnail, artistName, cityCountry, views.toString(), appreciations.toString(), followers.toString(), following.toString(), aboutArtist, post))
 
                 myCallBack.invoke(userList)
             }

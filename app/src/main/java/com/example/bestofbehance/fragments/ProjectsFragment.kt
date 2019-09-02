@@ -122,8 +122,8 @@ class ProjectsFragment : Fragment() {
 
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
-                if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(list[position].id) != null) {
-                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.deleteById(list[position].id)
+                if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(list[position].id!!) != null) {
+                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.deleteById(list[position].id!!)
                     adapterProjects.list.removeAt(position)
                     adapterProjects.notifyDataSetChanged()
                         if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.all?.size == 0) {

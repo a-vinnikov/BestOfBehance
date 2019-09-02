@@ -8,7 +8,6 @@ import retrofit2.Response
 import timber.log.Timber
 
 const val FIRST_PAGE = 1
-const val API_KEY = "xMrW480v8SrR9J02koQXiIEEMr3uzIfd"
 
 class BestDataSource : PageKeyedDataSource<Int, CardBinding>() {
     private val recList: MutableList<CardBinding> = mutableListOf()

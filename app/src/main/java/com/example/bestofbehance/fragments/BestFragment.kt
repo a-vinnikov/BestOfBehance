@@ -14,9 +14,6 @@ import android.view.*
 import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuInflater
-import android.widget.Toast
-import androidx.annotation.NonNull
-import androidx.annotation.Nullable
 import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import com.example.bestofbehance.R
@@ -27,8 +24,7 @@ import com.example.bestofbehance.databases.SharedPreferenceObject.sharedCurrentV
 import com.example.bestofbehance.databases.forRoom.CardDataBase
 import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
 import com.example.bestofbehance.viewModels.*
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.runBlocking
+import com.example.bestofbehance.viewModels.ConnectChecking.isOnline
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -113,7 +109,6 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         if (recycler_view.adapter == null) {
             createRecyclerView(currentViewMode)
         }
-
     }
 
     override fun onResume() {
@@ -122,43 +117,56 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun createRecyclerView(currentViewMode: String) {
-        if (isOnline(context!!) == true && isOnline(context!!) != null || jsonModel.itemPagedList == null) {
-            jsonModel.setGeneral()
-        } else if (isOnline(context!!) == null || isOnline(context!!) == false) {
-            //Snackbar.make(snack, "No internet connection", Snackbar.LENGTH_SHORT).setAction("No internet connection", null).show()
-            //DBBestCacheDao.read(context!!) { jsonModel.mainContentList.postValue(it) }
-            jsonModel.mainContentList.postValue(CardDataBase.getDatabase(context!!)?.getCardDao()?.all)
-        }
 
-        when (currentViewMode) {
-            "list" -> {
-                recycler_view.layoutManager = LinearLayoutManager(activity)
-                jsonModel.itemPagedList?.observe(this,
-                    Observer<PagedList<CardBinding>> {
-                        adapterBest = adapterFun(it, "list") as PagingAdapterViewHolder
-                        adapterBest.submitList(it)
-                        recycler_view.adapter = adapterBest
-                    })
-            }
-            "tile" -> {
-                recycler_view.layoutManager = GridLayoutManager(activity, 2)
-                jsonModel.itemPagedList?.observe(this,
-                    Observer<PagedList<CardBinding>> {
-                        adapterBest = adapterFun(it, "tile") as PagingAdapterViewHolder
-                        adapterBest.submitList(it)
-                        recycler_view.adapter = adapterBest
-                    })
-            }
-        }
+        val connectionLiveData = ConnectionLiveData(context!!)
+        connectionLiveData.observe(this, androidx.lifecycle.Observer { isConnected ->
+            isConnected?.let {
+                when (it){
+                    true -> {if (swipe.isRefreshing || jsonModel.itemPagedList?.value?.size == null){
+                        jsonModel.setGeneral()
+                        jsonModel.setDBGeneral(1)
+                    }
 
-        val observerGSON = Observer<MutableList<CardBinding>> { list ->
+                        when (currentViewMode) {
+                            "list" -> {
+                                recycler_view.layoutManager = LinearLayoutManager(activity)
+                                jsonModel.itemPagedList?.observe(this,
+                                    Observer<PagedList<CardBinding>> { list ->
+                                        adapterBest = adapterFun(list, "list") as PagingAdapterViewHolder
+                                        adapterBest.submitList(list)
+                                        recycler_view.adapter = adapterBest
+                                    })
+                            }
+                            "tile" -> {
+                                recycler_view.layoutManager = GridLayoutManager(activity, 2)
+                                jsonModel.itemPagedList?.observe(this,
+                                    Observer<PagedList<CardBinding>> { list ->
+                                        adapterBest = adapterFun(list, "tile") as PagingAdapterViewHolder
+                                        adapterBest.submitList(list)
+                                        recycler_view.adapter = adapterBest
+                                    })
+                            }
+                        }
 
-            CardDataBase.getDatabase(context!!)?.getCardDao()?.deleteAll()
-            for (i in 0 until list.size) {
-                CardDataBase.getDatabase(context!!)?.getCardDao()?.insert(list[i])
+                        val observerGSON = Observer<MutableList<CardBinding>> { list ->
+
+                            CardDataBase.getDatabase(context!!)?.getCardDao()?.deleteAll()
+                            for (i in 0 until list.size) {
+                                CardDataBase.getDatabase(context!!)?.getCardDao()?.insert(list[i])
+                            }
+                        }
+                        jsonModel.mainContentList.observe(this, observerGSON)}
+                    false -> {when (currentViewMode) {
+                        "list" -> {
+                            recycler_view.adapter = adapterOffline(CardDataBase.getDatabase(context!!)?.getCardDao()?.all!!, "list")
+                            recycler_view.layoutManager = LinearLayoutManager(activity) }
+                        "tile" -> {
+                            recycler_view.adapter = adapterOffline(CardDataBase.getDatabase(context!!)?.getCardDao()?.all!!, "tile")
+                            recycler_view.layoutManager = GridLayoutManager(activity, 2) }
+                    }}
+                }
             }
-        }
-        jsonModel.mainContentList.observe(this, observerGSON)
+        })
 
     }
 
@@ -173,9 +181,9 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
-                if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(list[position].id) == null) {
+                if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(list[position].id!!) == null) {
                     ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.insert(
-                        ProjectsBinding(list[position].id, list[position].bigImage, list[position].thumbnail,
+                        ProjectsBinding(list[position].id!!, list[position].bigImage, list[position].thumbnail,
                             list[position].avatar, list[position].artistName,
                             list[position].artName, list[position].views,
                             list[position].appreciations, list[position].comments,
@@ -183,17 +191,19 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                             getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss"))
                     )
                 } else {
-                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.deleteById(list[position].id)
+                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.deleteById(list[position].id!!)
                 }
             }
         }, "Best")
     }
 
-    private fun isOnline(context: Context): Boolean? {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
-        return activeNetwork?.isConnected
+    fun adapterOffline(list: MutableList<CardBinding>, viewMode: String): AdapterNonPaging {
+
+        return AdapterNonPaging(list, viewMode, object : InClick {
+            override fun onItemClick(item: CardBinding, position: Int) {}
+
+        }, object : BookmarkClick {
+            override fun setPosition(position: Int) {} }, "Best")
     }
 
     fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {

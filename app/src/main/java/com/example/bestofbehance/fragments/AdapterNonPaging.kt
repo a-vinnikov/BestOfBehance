@@ -17,6 +17,7 @@ import com.example.bestofbehance.R
 import com.example.bestofbehance.databases.SharedPreferenceObject
 import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
 import com.example.bestofbehance.viewModels.BookmarkClick
+import com.example.bestofbehance.viewModels.ConnectChecking.isOnline
 import com.example.bestofbehance.viewModels.NaviController
 
 
@@ -40,22 +41,25 @@ class AdapterNonPaging(var list: MutableList<CardBinding>, val viewMode: String,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
 
-        holder.itemView.avatarView.setOnClickListener {
-            when (layout){
-                "Best" -> {NaviController(context).toProfileFromBest(list[holder.adapterPosition].username!!)}
-                "Projects" -> {NaviController(context).toProfileFromProjects(list[holder.adapterPosition].username!!)}
+        if (isOnline(context) != null || isOnline(context) == true){
+            holder.itemView.avatarView.setOnClickListener {
+                when (layout){
+                    "Best" -> {NaviController(context).toProfileFromBest(list[holder.adapterPosition].username!!)}
+                    "Projects" -> {NaviController(context).toProfileFromProjects(list[holder.adapterPosition].username!!)}
+                }
+                SharedPreferenceObject.editorSharedPreference(context, "position", holder.adapterPosition.toString())
             }
-            SharedPreferenceObject.editorSharedPreference(context, "position", holder.adapterPosition.toString())
+
+            holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(list[holder.adapterPosition].id!!) != null
+
+            holder.itemView.bookmark.setOnClickListener {
+                bookmarkClick.setPosition(holder.adapterPosition)
+            }
+
+            holder.itemView.constLayout.setOnClickListener {
+                inClick.onItemClick(list[holder.adapterPosition], holder.adapterPosition)
         }
 
-        holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(list[position].id) != null
-
-        holder.itemView.bookmark.setOnClickListener {
-            bookmarkClick.setPosition(position)
-        }
-
-        holder.itemView.constLayout.setOnClickListener {
-            inClick.onItemClick(list[holder.adapterPosition], holder.adapterPosition)
         }
 
         if (layout == "Profile"){

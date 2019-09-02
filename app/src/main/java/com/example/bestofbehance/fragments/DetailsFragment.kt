@@ -35,7 +35,7 @@ class DetailsFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.two_buttons_toolbar, menu)
 
-        if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(args.cardBindingArg.id) == null) {
+        if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(args.cardBindingArg.id!!) == null) {
             menu.findItem(R.id.menu_bookmark)
                 ?.setIcon(R.drawable.ic_bookmarks_normal)
         } else {
@@ -50,9 +50,9 @@ class DetailsFragment : Fragment() {
         when (item.itemId) {
 
             R.id.menu_bookmark -> {
-                if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(args.cardBindingArg.id) == null) {
+                if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(args.cardBindingArg.id!!) == null) {
                     ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.insert(
-                        ProjectsBinding(args.cardBindingArg.id, args.cardBindingArg.bigImage, args.cardBindingArg.thumbnail,
+                        ProjectsBinding(args.cardBindingArg.id!!, args.cardBindingArg.bigImage, args.cardBindingArg.thumbnail,
                             args.cardBindingArg.avatar, args.cardBindingArg.artistName,
                             args.cardBindingArg.artName, args.cardBindingArg.views,
                             args.cardBindingArg.appreciations, args.cardBindingArg.comments,
@@ -61,7 +61,7 @@ class DetailsFragment : Fragment() {
                     )
                     item.setIcon(R.drawable.ic_bookmarks_pressed)
                 } else {
-                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.deleteById(args.cardBindingArg.id)
+                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.deleteById(args.cardBindingArg.id!!)
                     item.setIcon(R.drawable.ic_bookmarks_normal)
                 }
             }
@@ -139,8 +139,8 @@ class DetailsFragment : Fragment() {
 
     private fun fetchData(): MediatorLiveData<MutableList<MultiList>> {
         val liveDataMulti = MediatorLiveData<MutableList<MultiList>>()
-        mediatorAdd(liveDataMulti, jsonModel.setContent(args.cardBindingArg.id))
-        mediatorAdd(liveDataMulti, jsonModel.setComments(args.cardBindingArg.id))
+        mediatorAdd(liveDataMulti, jsonModel.setContent(args.cardBindingArg.id!!))
+        mediatorAdd(liveDataMulti, jsonModel.setComments(args.cardBindingArg.id!!))
         return liveDataMulti
     }
 

@@ -32,7 +32,6 @@
                     android:id="@+id/bigImageView"
                     android:layout_width="0dp"
                     android:layout_height="300dp"
-                    android:scaleType="fitXY"
                     android:adjustViewBounds="true"
                     app:layout_constrainedHeight="true"
                     tools:ignore="ContentDescription"

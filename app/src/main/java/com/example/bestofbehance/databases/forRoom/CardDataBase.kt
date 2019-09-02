@@ -16,10 +16,19 @@ abstract class CardDataBase : RoomDatabase() {
     abstract fun getCardDao(): CardDao
 
 
-    class Migration1To4 : Migration(1, 5) {
+    class Migration1To4 : Migration(1, 4) {
         override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("CREATE TABLE CardData_new (id text, bigImage text,avatar text,artistName text,artName text,views text,appreciations text,comments text,username text,published integer, PRIMARY KEY(id))")
+            database.execSQL("CREATE TABLE CardData_new (id text, bigImage text, avatar text,artistName text,artName text,views text,appreciations text,comments text,username text,published integer, PRIMARY KEY(id))")
             database.execSQL("INSERT INTO CardData_new SELECT bigImage, avatar, artistName, artName, views, appreciations, comments, username, published, id FROM CardData")
+            database.execSQL("DROP TABLE CardData")
+            database.execSQL("ALTER TABLE CardData_new RENAME TO CardData")
+        }
+    }
+
+    class Migration4to5: Migration(4, 5){
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("CREATE TABLE CardData_new (id integer, bigImage text, thumbnail text, avatar text,artistName text,artName text,views text,appreciations text,comments text,username text,published integer, PRIMARY KEY(id))")
+            database.execSQL("INSERT INTO CardData_new SELECT id, bigImage, null, avatar, artistName, artName, views, appreciations, comments, username, published FROM CardData")
             database.execSQL("DROP TABLE CardData")
             database.execSQL("ALTER TABLE CardData_new RENAME TO CardData")
         }
@@ -28,6 +37,7 @@ abstract class CardDataBase : RoomDatabase() {
     companion object {
         @JvmField
         val migration_1_4 = Migration1To4()
+        val migration_4_5 = Migration4to5()
         private var INSTANCE: CardDataBase? = null
 
         fun getDatabase(context: Context): CardDataBase? {
@@ -38,7 +48,7 @@ abstract class CardDataBase : RoomDatabase() {
                             context.applicationContext,
                             CardDataBase::class.java,
                             DB_NAME
-                        ).addMigrations(migration_1_4).allowMainThreadQueries().build()
+                        ).addMigrations(migration_1_4, migration_4_5).allowMainThreadQueries().build()
                     }
                 }
             }

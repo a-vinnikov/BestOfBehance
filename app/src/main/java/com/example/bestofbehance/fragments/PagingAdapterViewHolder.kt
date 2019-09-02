@@ -49,7 +49,7 @@ class PagingAdapterViewHolder(val viewMode: String, val inClick: InClick, val bo
             SharedPreferenceObject.editorSharedPreference(context, "position", holder.adapterPosition.toString())
         }
 
-        holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(getItem(position)!!.id) != null
+        holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(getItem(position)!!.id!!) != null
 
         holder.itemView.bookmark.setOnClickListener {
             bookmarkClick.setPosition(position)

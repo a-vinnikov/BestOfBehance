@@ -1,7 +1,6 @@
 package com.example.bestofbehance.viewModels
 
 import android.app.Application
-import android.nfc.tech.MifareUltralight.PAGE_SIZE
 import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
@@ -32,6 +31,11 @@ class VMForParse : AndroidViewModel(Application()) {
             PagedList.Config.Builder().setEnablePlaceholders(true).setPageSize(PAGING_PAGE_SIZE).build()
 
         itemPagedList = LivePagedListBuilder(itemDataSourceFactory, config).build()
+    }
+
+    fun setDBGeneral(page: Int): MutableLiveData<MutableList<CardBinding>> {
+        ParseForVM().generalRetrofit(page) { result -> mainContentList.postValue(result) }
+        return mainContentList
     }
 
     fun setContent(id: Int): MutableLiveData<MutableList<MultiList>> {
