@@ -21,15 +21,17 @@ import com.example.bestofbehance.viewModels.ConnectChecking.isOnline
 import com.example.bestofbehance.viewModels.NaviController
 
 
-class AdapterNonPaging(var list: MutableList<CardBinding>, val viewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick, val layout: String) :
+class AdapterNonPaging(
+    var list: MutableList<CardBinding>,
+    val viewMode: String,
+    val inClick: InClick,
+    val bookmarkClick: BookmarkClick,
+    val layout: String
+) :
     RecyclerView.Adapter<AdapterNonPaging.ViewHolder>() {
 
     lateinit var context: Context
-    private var isLoading = false
-    private val isLastPage = false
     var position = 0
-
-    //PagedListAdapter<CardBinding, AdapterViewHolder.ViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -41,16 +43,22 @@ class AdapterNonPaging(var list: MutableList<CardBinding>, val viewMode: String,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
 
-        if (isOnline(context) != null || isOnline(context) == true){
+        if (isOnline(context) != null || isOnline(context) == true) {
             holder.itemView.avatarView.setOnClickListener {
-                when (layout){
-                    "Best" -> {NaviController(context).toProfileFromBest(list[holder.adapterPosition].username!!)}
-                    "Projects" -> {NaviController(context).toProfileFromProjects(list[holder.adapterPosition].username!!)}
+                when (layout) {
+                    "Best" -> {
+                        NaviController(context).toProfileFromBest(list[holder.adapterPosition].username!!)
+                    }
+                    "Projects" -> {
+                        NaviController(context).toProfileFromProjects(list[holder.adapterPosition].username!!)
+                    }
                 }
-                SharedPreferenceObject.editorSharedPreference(context, "position", holder.adapterPosition.toString())
+                SharedPreferenceObject.editorSharedPreference(
+                    context,
+                    "position",
+                    holder.adapterPosition.toString()
+                )
             }
-
-            holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(list[holder.adapterPosition].id!!) != null
 
             holder.itemView.bookmark.setOnClickListener {
                 bookmarkClick.setPosition(holder.adapterPosition)
@@ -58,11 +66,14 @@ class AdapterNonPaging(var list: MutableList<CardBinding>, val viewMode: String,
 
             holder.itemView.constLayout.setOnClickListener {
                 inClick.onItemClick(list[holder.adapterPosition], holder.adapterPosition)
-        }
+            }
 
         }
 
-        if (layout == "Profile"){
+        holder.itemView.bookmark.isChecked =
+            ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(list[holder.adapterPosition].id!!) != null
+
+        if (layout == "Profile") {
             holder.itemView.avatarView.visibility = GONE
             holder.itemView.artistName.visibility = GONE
         }
@@ -84,12 +95,6 @@ class AdapterNonPaging(var list: MutableList<CardBinding>, val viewMode: String,
         }
 
         holder.bind(copyList)
-    }
-
-    fun addData(listData: MutableList<CardBinding>) {
-        val abc = list + listData
-        list = abc as MutableList<CardBinding>
-        notifyDataSetChanged()
     }
 
     override fun getItemCount() = list.size

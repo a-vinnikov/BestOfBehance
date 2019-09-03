@@ -83,6 +83,7 @@ class BestDataSource : PageKeyedDataSource<Int, CardBinding>() {
             val id = listResponse[i]?.id
             val username = listResponse[i]?.owners?.get(0)?.username
             val published = listResponse[i]?.publishedOn
+            val url = listResponse[i]?.url
 
             recList.add(
                 CardBinding(
@@ -96,7 +97,8 @@ class BestDataSource : PageKeyedDataSource<Int, CardBinding>() {
                     appreciations.toString(),
                     comments.toString(),
                     username,
-                    published
+                    published,
+                    url
                 )
             )
             i + 1

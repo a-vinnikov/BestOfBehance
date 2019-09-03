@@ -1,5 +1,6 @@
 package com.example.bestofbehance.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.*
@@ -56,7 +57,7 @@ class DetailsFragment : Fragment() {
                             args.cardBindingArg.avatar, args.cardBindingArg.artistName,
                             args.cardBindingArg.artName, args.cardBindingArg.views,
                             args.cardBindingArg.appreciations, args.cardBindingArg.comments,
-                            args.cardBindingArg.username, args.cardBindingArg.published,
+                            args.cardBindingArg.username, args.cardBindingArg.published, args.cardBindingArg.url,
                             getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss"))
                     )
                     item.setIcon(R.drawable.ic_bookmarks_pressed)
@@ -67,7 +68,13 @@ class DetailsFragment : Fragment() {
             }
 
             R.id.menu_share -> {
-                Toast.makeText(activity, "Work in progress", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(activity, "Work in progress", Toast.LENGTH_SHORT).show()
+                val intent = Intent()
+                intent.action = Intent.ACTION_SEND
+                intent.putExtra(Intent.EXTRA_TEXT, args.cardBindingArg.url)
+                intent.type = "text/plain"
+
+                startActivity(Intent.createChooser(intent, "Share to : "))
             }
         }
         return super.onOptionsItemSelected(item)
@@ -107,7 +114,7 @@ class DetailsFragment : Fragment() {
         var imageItems: MutableList<MultiList>? = null
         var commentsItems: MutableList<MultiList>? = null
 
-        liveData.observe(this,
+        liveData.observe(viewLifecycleOwner,
             Observer<MutableList<MultiList>> {
                 when (it[position]) {
                     is MultiList.ImageList -> imageItems = it
@@ -125,7 +132,7 @@ class DetailsFragment : Fragment() {
                         if (commentsItems!!.size < 7){
                             (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPosition(temp.size - 1)
                         } else {
-                            (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(imageItems!!.lastIndex + 1 , 180)
+                            (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(imageItems!!.lastIndex + 1 , 200)
                         }
 
                     }

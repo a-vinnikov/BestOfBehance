@@ -10,7 +10,7 @@ import androidx.room.Room
 
 private const val DB_NAME = "CardData.db"
 
-@Database(entities = [CardBinding::class], version = 5)
+@Database(entities = [CardBinding::class], version = 6)
 abstract class CardDataBase : RoomDatabase() {
 
     abstract fun getCardDao(): CardDao
@@ -34,10 +34,20 @@ abstract class CardDataBase : RoomDatabase() {
         }
     }
 
+    class Migration5to6: Migration(5, 6){
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("CREATE TABLE CardData_new (id integer, bigImage text, thumbnail text, avatar text,artistName text,artName text,views text,appreciations text,comments text,username text,published integer,url text, PRIMARY KEY(id))")
+            database.execSQL("INSERT INTO CardData_new SELECT id, bigImage, thumbnail, avatar, artistName, artName, views, appreciations, comments, username, published, null FROM CardData")
+            database.execSQL("DROP TABLE CardData")
+            database.execSQL("ALTER TABLE CardData_new RENAME TO CardData")
+        }
+    }
+
     companion object {
         @JvmField
         val migration_1_4 = Migration1To4()
         val migration_4_5 = Migration4to5()
+        val migration_5_6 = Migration5to6()
         private var INSTANCE: CardDataBase? = null
 
         fun getDatabase(context: Context): CardDataBase? {
@@ -48,7 +58,7 @@ abstract class CardDataBase : RoomDatabase() {
                             context.applicationContext,
                             CardDataBase::class.java,
                             DB_NAME
-                        ).addMigrations(migration_1_4, migration_4_5).allowMainThreadQueries().build()
+                        ).addMigrations(migration_1_4, migration_4_5, migration_5_6).allowMainThreadQueries().build()
                     }
                 }
             }

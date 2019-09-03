@@ -86,6 +86,7 @@ class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding
             val artName = listResponse[i]?.name
             val id = listResponse[i]?.id
             val published = listResponse[i]?.publishedOn
+            val url = listResponse[i]?.url
 
             recList.add(
                 CardBinding(
@@ -99,7 +100,8 @@ class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding
                     appreciations.toString(),
                     comments.toString(),
                     username,
-                    published
+                    published,
+                    url
                 )
             )
             i + 1

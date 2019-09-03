@@ -48,6 +48,7 @@ class ParseForVM {
                     val id = listResponse[i]?.id
                     val username = listResponse[i]?.owners?.get(0)?.username
                     val published = listResponse[i]?.publishedOn
+                    val url = listResponse[i]?.url
 
                     recList.add(
                         CardBinding(
@@ -61,7 +62,8 @@ class ParseForVM {
                             appreciations.toString(),
                             comments.toString(),
                             username,
-                            published
+                            published,
+                            url
                         )
                     )
                     i + 1
@@ -121,22 +123,23 @@ class ParseForVM {
 
                 if(numberOfComments == 0){
                     iListCom.add(MultiList.CountList(CountBinding(numberOfComments.toInt())))
-                }
-                for (i in 0 until numberOfComments!!) {
+                }else{
+                    for (i in 0 until numberOfComments!!) {
 
-                    val commentsAvatarView = listResponse?.get(i)?.user?.images?.jsonMember138
-                    val commentatorName = listResponse?.get(i)?.user?.displayName
-                    val commentatorUsername = listResponse?.get(i)?.user?.username
-                    val comment = listResponse?.get(i)?.comment
-                    val date = listResponse?.get(i)?.createdOn.toString()
+                        val commentsAvatarView = listResponse?.get(i)?.user?.images?.jsonMember138
+                        val commentatorName = listResponse?.get(i)?.user?.displayName
+                        val commentatorUsername = listResponse?.get(i)?.user?.username
+                        val comment = listResponse?.get(i)?.comment
+                        val date = listResponse?.get(i)?.createdOn.toString()
 
-                    if (i == 0) {
-                        iListCom.add(MultiList.CountList(CountBinding(numberOfComments)))
+                        if (i == 0) {
+                            iListCom.add(MultiList.CountList(CountBinding(numberOfComments)))
+                        }
+                        iListCom.add(MultiList.CommentsList(CommentsBinding(commentsAvatarView, commentatorName, commentatorUsername, comment, date)))
+                        i + 1
                     }
-                    iListCom.add(MultiList.CommentsList(CommentsBinding(commentsAvatarView, commentatorName, commentatorUsername, comment, date)))
-                    i + 1
+                    myCallBack.invoke(iListCom)
                 }
-                myCallBack.invoke(iListCom)
             }
 
         })
@@ -165,22 +168,20 @@ class ParseForVM {
                 val followers = listResponse?.stats?.followers
                 val following = listResponse?.stats?.following
                 var aboutArtist = listResponse?.sections?.aboutMe?.replace("\n", "")
-                val check = listResponse?.fields?.size!!
-                lateinit var post: String
-                val sb = StringBuilder()
-                post = if (check == 0){
-                    "Nothing here"
-                } else{
-                    (listResponse.fields.indices).forEach { i ->
-                        if (i == listResponse.fields.size - 1){
-                            sb.append(listResponse.fields[i])
-                        } else {
-                            sb.append(listResponse.fields[i] + ", ")
+                val post = with(StringBuilder()) {
+                    if (listResponse?.fields?.size!! == 0) {
+                        append("Nothing here")
+                    } else {
+                        (listResponse.fields.indices).forEach { i ->
+                            if (i == listResponse.fields.size - 1) {
+                                append(listResponse.fields[i])
+                            } else {
+                                append(listResponse.fields[i] + ", ")
+                            }
                         }
                     }
-                    sb.toString()
+                    toString()
                 }
-
 
 
                 if (aboutArtist == null) aboutArtist = "No information"
@@ -191,55 +192,6 @@ class ParseForVM {
             }
         })
 
-    }
-
-    fun userProjectsRetrofit(username: String, page: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit){
-
-        val call = service()?.getUserProjects(username, page)
-
-        call?.enqueue(object : Callback<GeneralResponse> {
-            override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
-
-            }
-
-            override fun onResponse(call: Call<GeneralResponse>, response: retrofit2.Response<GeneralResponse>) {
-                val listResponse = response.body()?.projects
-
-
-                for (i in listResponse!!.indices) {
-
-                    val art = listResponse[i]?.covers?.original
-                    val thumbnail = listResponse[i]?.covers?.jsonMember115
-                    val artistName = listResponse[i]?.owners?.get(0)?.displayName
-                    val avatar = listResponse[i]?.owners?.get(0)?.images?.jsonMember138
-                    val appreciations = listResponse[i]?.stats?.appreciations
-                    val views = listResponse[i]?.stats?.views
-                    val comments = listResponse[i]?.stats?.comments
-                    val artName = listResponse[i]?.name
-                    val id = listResponse[i]?.id
-                    val published = listResponse[i]?.publishedOn
-
-                    recList.add(
-                        CardBinding(
-                            id!!,
-                            art,
-                            thumbnail,
-                            avatar,
-                            artistName,
-                            artName,
-                            views.toString(),
-                            appreciations.toString(),
-                            comments.toString(),
-                            username,
-                            published
-                        )
-                    )
-                    i + 1
-                }
-                myCallBack.invoke(recList)
-            }
-
-        })
     }
 
     private fun service(): BehanceApiInterface? {

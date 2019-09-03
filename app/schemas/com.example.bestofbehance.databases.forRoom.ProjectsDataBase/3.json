@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "e9ba2243b48233cda99bf9b95616fbcd",
+    "identityHash": "2821da1a5da9ed89bc1bf9d6ea8d3d63",
     "entities": [
       {
         "tableName": "ProjectsData",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `bigImage` TEXT, `thumbnail` TEXT, `avatar` TEXT, `artistName` TEXT, `artName` TEXT, `views` TEXT, `appreciations` TEXT, `comments` TEXT, `username` TEXT, `published` INTEGER, `added` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `bigImage` TEXT, `thumbnail` TEXT, `avatar` TEXT, `artistName` TEXT, `artName` TEXT, `views` TEXT, `appreciations` TEXT, `comments` TEXT, `username` TEXT, `published` INTEGER, `url` TEXT, `added` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -75,6 +75,12 @@
             "notNull": false
           },
           {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "added",
             "columnName": "added",
             "affinity": "TEXT",
@@ -94,7 +100,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e9ba2243b48233cda99bf9b95616fbcd')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2821da1a5da9ed89bc1bf9d6ea8d3d63')"
     ]
   }
 }

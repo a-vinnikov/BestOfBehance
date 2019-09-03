@@ -10,7 +10,7 @@ import com.example.bestofbehance.binding.ProjectsBinding
 
 private const val DB_NAME = "ProjectsData.db"
 
-@Database(entities = [ProjectsBinding::class], version = 3)
+@Database(entities = [ProjectsBinding::class], version = 4)
 abstract class ProjectsDataBase : RoomDatabase() {
 
     abstract fun getProjectsDao(): ProjectsDao
@@ -28,10 +28,17 @@ abstract class ProjectsDataBase : RoomDatabase() {
         }
     }
 
+    class Migration3To4 : Migration(3, 4) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("ALTER TABLE ProjectsData ADD COLUMN url TEXT DEFAULT ''")
+        }
+    }
+
     companion object {
         @JvmField
         var migration_1_2 = Migration1To2()
         var migration2to3 = Migration2To3()
+        var migration3to4 = Migration3To4()
         var INSTANCE: ProjectsDataBase? = null
 
         fun getDatabase(context: Context): ProjectsDataBase? {
@@ -42,7 +49,7 @@ abstract class ProjectsDataBase : RoomDatabase() {
                             context.applicationContext,
                             ProjectsDataBase::class.java,
                             DB_NAME
-                        ).addMigrations(migration_1_2, migration2to3).allowMainThreadQueries().build()
+                        ).addMigrations(migration_1_2, migration2to3, migration3to4).allowMainThreadQueries().build()
                     }
                 }
             }

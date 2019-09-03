@@ -17,7 +17,8 @@ data class CardBinding(
     @ColumnInfo(name = "appreciations") var appreciations: String? = "0",
     @ColumnInfo(name = "comments") var comments: String? = "0",
     @ColumnInfo(name = "username") var username: String?,
-    @ColumnInfo(name = "published") var published: Int?
+    @ColumnInfo(name = "published") var published: Int?,
+    @ColumnInfo(name = "url") var url: String?
 
 
 ) : Serializable

@@ -88,7 +88,7 @@ class ProfileFragment : Fragment() {
                         )
                     }
 
-                    jsonModel.listForUser.observe(this, observerGSON)
+                    jsonModel.listForUser.observe(viewLifecycleOwner, observerGSON)
                     item.setIcon(R.drawable.ic_bookmarks_pressed)
                 } else {
                     PeopleDataBase.getDatabase(context!!)?.getPeopleDao()
@@ -98,7 +98,13 @@ class ProfileFragment : Fragment() {
             }
 
             R.id.menu_share -> {
-                copyText("https://www.behance.net/${args.cardBindingProfile}")
+                //copyText("https://www.behance.net/${args.cardBindingProfile}")
+                val intent = Intent()
+                intent.action = Intent.ACTION_SEND
+                intent.putExtra(Intent.EXTRA_TEXT, "https://www.behance.net/${args.cardBindingProfile}")
+                intent.type = "text/plain"
+
+                startActivity(Intent.createChooser(intent, "Share to : "))
             }
         }
 
@@ -135,7 +141,7 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        jsonModel.listForUser.observe(this, observerGSON)
+        jsonModel.listForUser.observe(viewLifecycleOwner, observerGSON)
 
         return fragmentDetailsView
     }
@@ -191,7 +197,7 @@ class ProfileFragment : Fragment() {
         when (currentViewMode) {
             "list" -> {
                 recycler_view_profile.layoutManager = LinearLayoutManager(activity)
-                jsonModel.profilePagedList?.observe(this,
+                jsonModel.profilePagedList?.observe(viewLifecycleOwner,
                     Observer<PagedList<CardBinding>> {
                         adapterProfile = adapterFun(it, "list") as PagingAdapterViewHolder
                         adapterProfile.submitList(it)
@@ -200,7 +206,7 @@ class ProfileFragment : Fragment() {
             }
             "tile" -> {
                 recycler_view_profile.layoutManager = GridLayoutManager(activity, 2)
-                jsonModel.profilePagedList?.observe(this,
+                jsonModel.profilePagedList?.observe(viewLifecycleOwner,
                     Observer<PagedList<CardBinding>> {
                         adapterProfile = adapterFun(it, "tile") as PagingAdapterViewHolder
                         adapterProfile.submitList(it)
@@ -229,7 +235,7 @@ class ProfileFragment : Fragment() {
                             list[position].avatar, list[position].artistName,
                             list[position].artName, list[position].views,
                             list[position].appreciations, list[position].comments,
-                            list[position].username, list[position].published,
+                            list[position].username, list[position].published, list[position].url,
                             getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss")
                         )
                     )

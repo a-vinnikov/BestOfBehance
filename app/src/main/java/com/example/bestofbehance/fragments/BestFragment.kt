@@ -119,18 +119,17 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private fun createRecyclerView(currentViewMode: String) {
 
         val connectionLiveData = ConnectionLiveData(context!!)
-        connectionLiveData.observe(this, androidx.lifecycle.Observer { isConnected ->
+        connectionLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer { isConnected ->
             isConnected?.let {
                 when (it){
                     true -> {if (swipe.isRefreshing || jsonModel.itemPagedList?.value?.size == null){
                         jsonModel.setGeneral()
                         jsonModel.setDBGeneral(1)
                     }
-
                         when (currentViewMode) {
                             "list" -> {
                                 recycler_view.layoutManager = LinearLayoutManager(activity)
-                                jsonModel.itemPagedList?.observe(this,
+                                jsonModel.itemPagedList?.observe(viewLifecycleOwner,
                                     Observer<PagedList<CardBinding>> { list ->
                                         adapterBest = adapterFun(list, "list") as PagingAdapterViewHolder
                                         adapterBest.submitList(list)
@@ -139,7 +138,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                             }
                             "tile" -> {
                                 recycler_view.layoutManager = GridLayoutManager(activity, 2)
-                                jsonModel.itemPagedList?.observe(this,
+                                jsonModel.itemPagedList?.observe(viewLifecycleOwner,
                                     Observer<PagedList<CardBinding>> { list ->
                                         adapterBest = adapterFun(list, "tile") as PagingAdapterViewHolder
                                         adapterBest.submitList(list)
@@ -155,15 +154,21 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                                 CardDataBase.getDatabase(context!!)?.getCardDao()?.insert(list[i])
                             }
                         }
-                        jsonModel.mainContentList.observe(this, observerGSON)}
-                    false -> {when (currentViewMode) {
-                        "list" -> {
-                            recycler_view.adapter = adapterOffline(CardDataBase.getDatabase(context!!)?.getCardDao()?.all!!, "list")
-                            recycler_view.layoutManager = LinearLayoutManager(activity) }
-                        "tile" -> {
-                            recycler_view.adapter = adapterOffline(CardDataBase.getDatabase(context!!)?.getCardDao()?.all!!, "tile")
-                            recycler_view.layoutManager = GridLayoutManager(activity, 2) }
-                    }}
+                        jsonModel.mainContentList.observe(viewLifecycleOwner, observerGSON)
+
+                    }
+                    false -> {
+                        recycler_view.apply {
+                            when (currentViewMode) {
+                            "list" -> {
+                                adapter = adapterOffline(CardDataBase.getDatabase(context!!)?.getCardDao()?.all!!, "list")
+                                layoutManager = LinearLayoutManager(activity) }
+                            "tile" -> {
+                                adapter = adapterOffline(CardDataBase.getDatabase(context!!)?.getCardDao()?.all!!, "tile")
+                                layoutManager = GridLayoutManager(activity, 2) }
+                        } }
+
+                    }
                 }
             }
         })
@@ -187,7 +192,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                             list[position].avatar, list[position].artistName,
                             list[position].artName, list[position].views,
                             list[position].appreciations, list[position].comments,
-                            list[position].username, list[position].published,
+                            list[position].username, list[position].published, list[position].url,
                             getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss"))
                     )
                 } else {

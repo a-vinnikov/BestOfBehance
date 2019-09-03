@@ -1,15 +1,8 @@
 package com.example.bestofbehance
 
-import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Color
-import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.observe
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
@@ -17,12 +10,7 @@ import com.example.bestofbehance.viewModels.ConnectionLiveData
 import com.example.bestofbehance.viewModels.NaviController
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
-
+import org.jetbrains.anko.textView
 
 
 open class MainActivity : AppCompatActivity() {
@@ -57,9 +45,14 @@ open class MainActivity : AppCompatActivity() {
                         true -> {snackBar.dismiss()}
                         false -> {
                             val layout = snackBar.view as Snackbar.SnackbarLayout
-                            layout.setBackgroundColor(Color.parseColor("#43A6F6"))
-                            snackBar.setActionTextColor(Color.parseColor("#FFFFFF"))
-                            snackBar.show()}
+                            layout.apply{
+                                setBackgroundColor(Color.parseColor("#43A6F6"))
+                                textView().textSize = 20F}
+
+                            snackBar.apply{
+                                setActionTextColor(Color.parseColor("#FFFFFF"))
+                                show()}
+                        }
                     }
                 }
         })

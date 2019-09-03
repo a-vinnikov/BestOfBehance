@@ -18,6 +18,7 @@ data class ProjectsBinding(
     @ColumnInfo(name = "comments") var comments: String? = "0",
     @ColumnInfo(name = "username") var username: String?,
     @ColumnInfo(name = "published") var published: Int?,
+    @ColumnInfo(name = "url") var url: String?,
     @ColumnInfo(name = "added") var added: String?
 ) : Serializable
 
