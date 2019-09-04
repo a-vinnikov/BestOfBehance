@@ -1,5 +1,7 @@
+/*
 package com.example.bestofbehance.paging
 
+import android.content.Context
 import com.example.bestofbehance.retrofit.BehanceApiInterface
 import com.example.bestofbehance.retrofit.BehanceOkHtttpClient.okHttpBuilder
 import retrofit2.Retrofit
@@ -24,9 +26,9 @@ class RetrofitClient {
         retrofit = Retrofit.Builder()
             .baseUrl("https://api.behance.net/v2/")
             .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpBuilder().build())
+            .client(okHttpBuilder(context).build())
             .build()
     }
 
     fun getApi(): BehanceApiInterface = retrofit.create(BehanceApiInterface::class.java)
-}
+}*/

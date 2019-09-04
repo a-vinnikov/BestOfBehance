@@ -1,7 +1,7 @@
 package com.example.bestofbehance.binding
 
 data class ProfileBinding(
-    var id: Int = 0,
+    var id: Int? = 0,
     var avatar: String? = null,
     var thumbnail: String? = null,
     var name: String? = "Name",
@@ -11,11 +11,5 @@ data class ProfileBinding(
     var followers: String? = "0",
     var following: String? = "0",
     var aboutMe: String? = null,
-    var post: String? = "Post",
-    var pinterest: String? = null,
-    var instagram: String? = null,
-    var facebook: String? = null,
-    var behance: String? = null,
-    var dribbble: String? = null,
-    var twitter: String? = null
+    var post: String? = "Post"
 )

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.binding.*
+import com.example.bestofbehance.dagger.NetworkModule
 import com.example.bestofbehance.databases.forRoom.PeopleDataBase
 import com.example.bestofbehance.databinding.*
 import com.example.bestofbehance.viewModels.BookmarkClick
@@ -116,8 +117,10 @@ class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick
             binding.notifyPropertyChanged(BR._all)
 
             itemView.bookmark_people.isChecked = PeopleDataBase.getDatabase(context)?.getPeopleDao()?.getByUsername(people.username!!) != null
-            itemView.peopleLayout.setOnClickListener { NaviController(context).toProfileFromPeople(people.username!!) }
-            itemView.bookmark_people.setOnClickListener { bookmark.setPosition(adapterPosition) }
+            if (NetworkModule().hasNetwork(context)){
+                itemView.peopleLayout.setOnClickListener { NaviController(context).toProfileFromPeople(people.username!!) }
+                itemView.bookmark_people.setOnClickListener { bookmark.setPosition(adapterPosition) }
+            }
         }
 
     }

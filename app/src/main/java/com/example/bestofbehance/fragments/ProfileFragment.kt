@@ -12,6 +12,7 @@ import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -70,11 +71,11 @@ class ProfileFragment : Fragment() {
             R.id.menu_bookmark -> {
                 if (PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.getByUsername(args.cardBindingProfile) == null) {
 
-                    jsonModel.setUser(args.cardBindingProfile)
+                    jsonModel.setUser(args.cardBindingProfile, context!!)
                     val observerGSON = Observer<MutableList<ProfileBinding>> { list ->
                         PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.insert(
                             PeopleBinding(
-                                list[0].id,
+                                list[0].id!!,
                                 args.cardBindingProfile,
                                 list[0].avatar,
                                 list[0].name,
@@ -128,11 +129,11 @@ class ProfileFragment : Fragment() {
 
         jsonModel = ViewModelProviders.of(this, ViewModelFactory()).get(VMForParse::class.java)
 
-        jsonModel.setUser(args.cardBindingProfile)
+        jsonModel.setUser(args.cardBindingProfile, context!!)
 
         val observerGSON = Observer<MutableList<ProfileBinding>> { list ->
 
-            userId = list[0].id
+            if (list[0].id != null) userId = list[0].id!!
             binding.cardViewProfile = list[0]
             binding.notifyPropertyChanged(BR._all)
 
@@ -142,6 +143,40 @@ class ProfileFragment : Fragment() {
         }
 
         jsonModel.listForUser.observe(viewLifecycleOwner, observerGSON)
+
+        val observerMapGSON = Observer<MutableMap<String, String?>> { links ->
+            for (i in links.keys){
+                if (links[i] != null) {
+                    when(i){
+                        "Pinterest" -> {
+                            pinterest_image.visibility = VISIBLE
+                            pinterest_image.setOnClickListener { webPageOpen(links["Pinterest"]!!) }
+                        }
+                        "Instagram" -> {
+                            instagram_image.visibility = VISIBLE
+                            instagram_image.setOnClickListener { webPageOpen(links["Instagram"]!!) }
+                        }
+                        "Facebook" -> {
+                            facebook_image.visibility = VISIBLE
+                            facebook_image.setOnClickListener { webPageOpen(links["Facebook"]!!) }
+                        }
+                        "Behance" -> {
+                            be_image.visibility = VISIBLE
+                            instagram_image.setOnClickListener { webPageOpen(links["Behance"]!!) }
+                        }
+                        "Dribbble" -> {
+                            dribbble_image.visibility = VISIBLE
+                            dribbble_image.setOnClickListener { webPageOpen(links["Dribbble"]!!) }
+                        }
+                        "Twitter" -> {
+                            twitter_image.visibility = VISIBLE
+                            twitter_image.setOnClickListener { webPageOpen(links["Twitter"]!!) }
+                        }
+                     }
+                }
+            }
+        }
+        jsonModel.listForLinks.observe(viewLifecycleOwner, observerMapGSON)
 
         return fragmentDetailsView
     }
@@ -191,7 +226,7 @@ class ProfileFragment : Fragment() {
 
     private fun createRecyclerView(currentViewMode: String) {
         if (jsonModel.profilePagedList?.value == null) {
-            jsonModel.setUserProjects(args.cardBindingProfile)
+            jsonModel.setUserProjects(args.cardBindingProfile, context!!)
         }
 
         when (currentViewMode) {

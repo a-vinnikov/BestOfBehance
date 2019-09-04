@@ -14,10 +14,10 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
+import com.example.bestofbehance.dagger.NetworkModule
 import com.example.bestofbehance.databases.SharedPreferenceObject
 import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
 import com.example.bestofbehance.viewModels.BookmarkClick
-import com.example.bestofbehance.viewModels.ConnectChecking.isOnline
 import com.example.bestofbehance.viewModels.NaviController
 
 
@@ -43,7 +43,7 @@ class AdapterNonPaging(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
 
-        if (isOnline(context) != null || isOnline(context) == true) {
+        if (NetworkModule().hasNetwork(context)) {
             holder.itemView.avatarView.setOnClickListener {
                 when (layout) {
                     "Best" -> {

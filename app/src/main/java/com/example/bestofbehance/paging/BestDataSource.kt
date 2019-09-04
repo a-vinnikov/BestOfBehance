@@ -1,6 +1,8 @@
 package com.example.bestofbehance.paging
+import android.content.Context
 import androidx.paging.PageKeyedDataSource
 import com.example.bestofbehance.binding.CardBinding
+import com.example.bestofbehance.dagger.NetworkModule
 import com.example.bestofbehance.gson.GeneralResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -9,11 +11,12 @@ import timber.log.Timber
 
 const val FIRST_PAGE = 1
 
-class BestDataSource : PageKeyedDataSource<Int, CardBinding>() {
+class BestDataSource(val context: Context) : PageKeyedDataSource<Int, CardBinding>() {
     private val recList: MutableList<CardBinding> = mutableListOf()
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, CardBinding>) {
-        RetrofitClient.getInstance().getApi().getGeneral("appreciations", FIRST_PAGE).enqueue(object : Callback<GeneralResponse> {
+        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient(context).build())).getGeneral("appreciations", FIRST_PAGE).enqueue(object : Callback<GeneralResponse> {
+        //RetrofitClient.getInstance().getApi().getGeneral("appreciations", FIRST_PAGE).enqueue(object : Callback<GeneralResponse> {
             override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {}
 
             override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
@@ -28,7 +31,7 @@ class BestDataSource : PageKeyedDataSource<Int, CardBinding>() {
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        RetrofitClient.getInstance().getApi().getGeneral("appreciations", params.key)
+        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient(context).build())).getGeneral("appreciations", params.key)
             .enqueue(object : Callback<GeneralResponse> {
                 override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
                 }
@@ -48,7 +51,7 @@ class BestDataSource : PageKeyedDataSource<Int, CardBinding>() {
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        RetrofitClient.getInstance().getApi().getGeneral("appreciations", params.key)
+        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient(context).build())).getGeneral("appreciations", params.key)
             .enqueue(object : Callback<GeneralResponse> {
                 override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
                 }

@@ -1,15 +1,14 @@
 package com.example.bestofbehance.viewModels
 
+import android.content.Context
 import com.example.bestofbehance.retrofit.BehanceApiInterface
 import com.example.bestofbehance.binding.*
+import com.example.bestofbehance.dagger.NetworkModule
 import com.example.bestofbehance.gson.*
 import com.example.bestofbehance.fragments.MultiList
-import com.example.bestofbehance.retrofit.BehanceOkHtttpClient.okHttpBuilder
 import org.jsoup.Jsoup
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.StringBuilder
 
 class ParseForVM {
@@ -18,13 +17,13 @@ class ParseForVM {
     private val iListCon: MutableList<MultiList> = mutableListOf()
     private val iListCom: MutableList<MultiList> = mutableListOf()
     private val userList: MutableList<ProfileBinding> = mutableListOf()
-    private val apiKey = "xMrW480v8SrR9J02koQXiIEEMr3uzIfd"
+    private val linksList: MutableMap<String, String?> = mutableMapOf()
     //xMrW480v8SrR9J02koQXiIEEMr3uzIfd
     //0QmPh684DRz1SpWHDikkyFCzLShGiHPi
 
-    fun generalRetrofit(page: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit){
+    fun generalRetrofit(page: Int, context: Context, myCallBack: (result: MutableList<CardBinding>) -> Unit){
 
-        val call = service()?.getGeneral("appreciations", page)
+        val call = service(context)?.getGeneral("appreciations", page)
 
         call?.enqueue(object : Callback<GeneralResponse> {
             override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
@@ -35,7 +34,7 @@ class ParseForVM {
                 val listResponse = response.body()?.projects
 
 
-                for (i in listResponse!!.indices) {
+                if (listResponse != null) for (i in listResponse.indices) {
 
                     val art = listResponse[i]?.covers?.original
                     val thumbnail = listResponse[i]?.covers?.jsonMember115
@@ -75,9 +74,9 @@ class ParseForVM {
     }
 
 
-    fun projectRetrofit(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit){
+    fun projectRetrofit(projectId: Int, context: Context,  myCallBack: (result: MutableList<MultiList>) -> Unit){
 
-        val call = service()?.getProject(projectId.toString())
+        val call = service(context)?.getProject(projectId.toString())
 
         call?.enqueue(object : Callback<ImageResponse> {
             override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
@@ -88,7 +87,7 @@ class ParseForVM {
 
                 val listResponse = response.body()?.project?.modules
 
-                for (i in listResponse!!.indices) {
+                if (listResponse != null) for (i in listResponse.indices) {
 
                     when (listResponse[i]!!.type) {
                         "image" -> {val image = listResponse[i]?.src
@@ -107,9 +106,9 @@ class ParseForVM {
         })
     }
 
-    fun commentsRetrofit(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit){
+    fun commentsRetrofit(projectId: Int, context: Context,  myCallBack: (result: MutableList<MultiList>) -> Unit){
 
-        val call = service()?.getComments(projectId.toString())
+        val call = service(context)?.getComments(projectId.toString())
 
         call?.enqueue(object : Callback<CommentsMain> {
             override fun onFailure(call: Call<CommentsMain>, t: Throwable) {
@@ -124,13 +123,13 @@ class ParseForVM {
                 if(numberOfComments == 0){
                     iListCom.add(MultiList.CountList(CountBinding(numberOfComments.toInt())))
                 }else{
-                    for (i in 0 until numberOfComments!!) {
+                    if (listResponse != null) for (i in 0 until numberOfComments!!) {
 
-                        val commentsAvatarView = listResponse?.get(i)?.user?.images?.jsonMember138
-                        val commentatorName = listResponse?.get(i)?.user?.displayName
-                        val commentatorUsername = listResponse?.get(i)?.user?.username
-                        val comment = listResponse?.get(i)?.comment
-                        val date = listResponse?.get(i)?.createdOn.toString()
+                        val commentsAvatarView = listResponse[i]?.user?.images?.jsonMember138
+                        val commentatorName = listResponse[i]?.user?.displayName
+                        val commentatorUsername = listResponse[i]?.user?.username
+                        val comment = listResponse[i]?.comment
+                        val date = listResponse[i]?.createdOn.toString()
 
                         if (i == 0) {
                             iListCom.add(MultiList.CountList(CountBinding(numberOfComments)))
@@ -146,9 +145,9 @@ class ParseForVM {
 
     }
 
-    fun userRetrofit(username: String, myCallBack: (result: MutableList<ProfileBinding>) -> Unit){
+    fun userRetrofit(username: String, context: Context,  myCallBack: (result: MutableList<ProfileBinding>, links: MutableMap<String, String?>) -> Unit){
 
-        val call = service()?.getUser(username)
+        val call = service(context)?.getUser(username)
 
         call?.enqueue(object : Callback<UserResponse> {
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
@@ -169,7 +168,7 @@ class ParseForVM {
                 val following = listResponse?.stats?.following
                 var aboutArtist = listResponse?.sections?.aboutMe?.replace("\n", "")
                 val post = with(StringBuilder()) {
-                    if (listResponse?.fields?.size!! == 0) {
+                    if (listResponse != null) if (listResponse.fields?.size!! == 0) {
                         append("Nothing here")
                     } else {
                         (listResponse.fields.indices).forEach { i ->
@@ -183,25 +182,53 @@ class ParseForVM {
                     toString()
                 }
 
+                if (listResponse?.hasSocialLinks == true) {
+                    for (i in listResponse.socialLinks!!.indices) {
+                        with(listResponse.socialLinks[i]) {
+                            when (this?.serviceName) {
+                                "Pinterest" -> {
+                                    val pinterest = this.url
+                                    linksList.put("Pinterest", pinterest)
+                                }
+                                "Instagram" -> {
+                                    val instagram = this.url
+                                    linksList.put("Instagram", instagram)
+                                }
+                                "Facebook" -> {
+                                    val facebook = this.url
+                                    linksList.put("Facebook", facebook)
+                                }
+                                "Behance" -> {
+                                    val behance = this.url
+                                    linksList.put("Behance", behance)
+                                }
+                                "Dribbble" -> {
+                                    val dribbble = this.url
+                                    linksList.put("Dribbble", dribbble)
+                                }
+                                "Twitter" -> {
+                                    val twitter = this.url
+                                    linksList.put("Twitter", twitter)
+                                }
+                                else -> {}
+                            }
+                        }
+                    }
+                }
+
 
                 if (aboutArtist == null) aboutArtist = "No information"
 
-                userList.add(ProfileBinding(id!!, avatar, thumbnail, artistName, cityCountry, views.toString(), appreciations.toString(), followers.toString(), following.toString(), aboutArtist, post))
+                userList.add(ProfileBinding(id, avatar, thumbnail, artistName, cityCountry, views.toString(), appreciations.toString(), followers.toString(), following.toString(), aboutArtist, post))
 
-                myCallBack.invoke(userList)
+                myCallBack.invoke(userList, linksList)
             }
         })
 
     }
 
-    private fun service(): BehanceApiInterface? {
-        val client = Retrofit.Builder()
-            .baseUrl("https://api.behance.net/v2/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpBuilder().build())
-            .build()
-
-        return client.create(BehanceApiInterface::class.java)
+    private fun service(context: Context): BehanceApiInterface? {
+        return with(NetworkModule()){ providesBehanceApi(providesRetrofit(providesOkHttpClient(context).build())) }
     }
 
 }

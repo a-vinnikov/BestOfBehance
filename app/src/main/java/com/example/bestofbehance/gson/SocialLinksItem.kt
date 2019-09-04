@@ -26,5 +26,20 @@ data class SocialLinksItem(
 	val isTumblr: Boolean? = null,
 
 	@field:SerializedName("isTwitter")
-	val isTwitter: Boolean? = null
+	val isTwitter: Boolean? = null,
+
+	@field:SerializedName("isFacebook")
+	val isFacebook: Boolean? = null,
+
+	@field:SerializedName("isFlickr")
+	val isFlickr: Boolean? = null,
+
+	@field:SerializedName("isPinterest")
+	val isPinterest: Boolean? = null,
+
+	@field:SerializedName("isBehance")
+	val isBehance: Boolean? = null,
+
+	@field:SerializedName("isDribbble")
+	val isDribbble: Boolean? = null
 )

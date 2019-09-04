@@ -116,7 +116,7 @@ class DetailsFragment : Fragment() {
 
         liveData.observe(viewLifecycleOwner,
             Observer<MutableList<MultiList>> {
-                when (it[position]) {
+                if(it.size != 0) when (it[position]) {
                     is MultiList.ImageList -> imageItems = it
                     is MultiList.TextList -> imageItems = it
                     is MultiList.CountList -> commentsItems = it
@@ -146,8 +146,8 @@ class DetailsFragment : Fragment() {
 
     private fun fetchData(): MediatorLiveData<MutableList<MultiList>> {
         val liveDataMulti = MediatorLiveData<MutableList<MultiList>>()
-        mediatorAdd(liveDataMulti, jsonModel.setContent(args.cardBindingArg.id!!))
-        mediatorAdd(liveDataMulti, jsonModel.setComments(args.cardBindingArg.id!!))
+        mediatorAdd(liveDataMulti, jsonModel.setContent(args.cardBindingArg.id!!, context!!))
+        mediatorAdd(liveDataMulti, jsonModel.setComments(args.cardBindingArg.id!!, context!!))
         return liveDataMulti
     }
 
