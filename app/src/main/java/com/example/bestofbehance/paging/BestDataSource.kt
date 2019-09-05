@@ -3,6 +3,7 @@ import android.content.Context
 import androidx.paging.PageKeyedDataSource
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.dagger.NetworkModule
+import com.example.bestofbehance.databases.forRoom.CardDataBase
 import com.example.bestofbehance.gson.GeneralResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,13 +16,14 @@ class BestDataSource(val context: Context) : PageKeyedDataSource<Int, CardBindin
     private val recList: MutableList<CardBinding> = mutableListOf()
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, CardBinding>) {
-        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient(context).build())).getGeneral("appreciations", FIRST_PAGE).enqueue(object : Callback<GeneralResponse> {
+        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient().build())).getGeneral("appreciations", FIRST_PAGE).enqueue(object : Callback<GeneralResponse> {
         //RetrofitClient.getInstance().getApi().getGeneral("appreciations", FIRST_PAGE).enqueue(object : Callback<GeneralResponse> {
             override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {}
 
             override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
                 response.body()?.run {
                     general(this){result ->
+                        dbFill(result)
                         val abc = result.sortedByDescending { it.published }.toMutableList()
                         callback.onResult(abc, null, FIRST_PAGE + 1)}
                         Timber.d("Loaded first page")
@@ -31,7 +33,7 @@ class BestDataSource(val context: Context) : PageKeyedDataSource<Int, CardBindin
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient(context).build())).getGeneral("appreciations", params.key)
+        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient().build())).getGeneral("appreciations", params.key)
             .enqueue(object : Callback<GeneralResponse> {
                 override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
                 }
@@ -51,7 +53,7 @@ class BestDataSource(val context: Context) : PageKeyedDataSource<Int, CardBindin
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient(context).build())).getGeneral("appreciations", params.key)
+        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient().build())).getGeneral("appreciations", params.key)
             .enqueue(object : Callback<GeneralResponse> {
                 override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
                 }
@@ -107,5 +109,13 @@ class BestDataSource(val context: Context) : PageKeyedDataSource<Int, CardBindin
             i + 1
         }
         myCallBack.invoke(recList)
+    }
+
+    private fun dbFill(list: MutableList<CardBinding>){
+        CardDataBase.getDatabase(context)?.getCardDao()?.deleteAll()
+        for (i in 0 until list.size) {
+            CardDataBase.getDatabase(context)?.getCardDao()?.insert(list[i])
+        }
+        Timber.d("DB updated")
     }
 }

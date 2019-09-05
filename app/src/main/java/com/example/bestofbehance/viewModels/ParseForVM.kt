@@ -21,9 +21,9 @@ class ParseForVM {
     //xMrW480v8SrR9J02koQXiIEEMr3uzIfd
     //0QmPh684DRz1SpWHDikkyFCzLShGiHPi
 
-    fun generalRetrofit(page: Int, context: Context, myCallBack: (result: MutableList<CardBinding>) -> Unit){
+    fun generalRetrofit(page: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit){
 
-        val call = service(context)?.getGeneral("appreciations", page)
+        val call = service()?.getGeneral("appreciations", page)
 
         call?.enqueue(object : Callback<GeneralResponse> {
             override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
@@ -74,9 +74,9 @@ class ParseForVM {
     }
 
 
-    fun projectRetrofit(projectId: Int, context: Context,  myCallBack: (result: MutableList<MultiList>) -> Unit){
+    fun projectRetrofit(projectId: Int,  myCallBack: (result: MutableList<MultiList>) -> Unit){
 
-        val call = service(context)?.getProject(projectId.toString())
+        val call = service()?.getProject(projectId.toString())
 
         call?.enqueue(object : Callback<ImageResponse> {
             override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
@@ -106,9 +106,9 @@ class ParseForVM {
         })
     }
 
-    fun commentsRetrofit(projectId: Int, context: Context,  myCallBack: (result: MutableList<MultiList>) -> Unit){
+    fun commentsRetrofit(projectId: Int,  myCallBack: (result: MutableList<MultiList>) -> Unit){
 
-        val call = service(context)?.getComments(projectId.toString())
+        val call = service()?.getComments(projectId.toString())
 
         call?.enqueue(object : Callback<CommentsMain> {
             override fun onFailure(call: Call<CommentsMain>, t: Throwable) {
@@ -145,9 +145,9 @@ class ParseForVM {
 
     }
 
-    fun userRetrofit(username: String, context: Context,  myCallBack: (result: MutableList<ProfileBinding>, links: MutableMap<String, String?>) -> Unit){
+    fun userRetrofit(username: String,  myCallBack: (result: MutableList<ProfileBinding>, links: MutableMap<String, String?>) -> Unit){
 
-        val call = service(context)?.getUser(username)
+        val call = service()?.getUser(username)
 
         call?.enqueue(object : Callback<UserResponse> {
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
@@ -227,8 +227,8 @@ class ParseForVM {
 
     }
 
-    private fun service(context: Context): BehanceApiInterface? {
-        return with(NetworkModule()){ providesBehanceApi(providesRetrofit(providesOkHttpClient(context).build())) }
+    private fun service(): BehanceApiInterface? {
+        return with(NetworkModule()){ providesBehanceApi(providesRetrofit(providesOkHttpClient().build())) }
     }
 
 }

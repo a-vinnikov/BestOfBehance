@@ -25,6 +25,9 @@ import com.example.bestofbehance.databases.SharedPreferenceObject.sharedCurrentV
 import com.example.bestofbehance.databases.forRoom.CardDataBase
 import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
 import com.example.bestofbehance.viewModels.*
+import kotlinx.android.synthetic.main.fragment_profile.*
+import okhttp3.internal.notifyAll
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -62,15 +65,20 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         currentViewMode = sharedCurrentViewMode(context!!, "currentViewMode", currentViewMode)
         when (item.itemId) {
             R.id.menu_switcher -> {
-                if (currentViewMode == "tile") {
-                    item.setIcon(R.drawable.list)
-                    createRecyclerView(VIEW_MODE_LISTVIEW)
-                    editorSharedPreference(context!!, "currentViewMode", VIEW_MODE_LISTVIEW)
-                } else if (currentViewMode == "list") {
-                    item.setIcon(R.drawable.tile)
-                    createRecyclerView(VIEW_MODE_GRIDVIEW)
-                    editorSharedPreference(context!!, "currentViewMode", VIEW_MODE_GRIDVIEW)
+
+                when(currentViewMode){
+                    "tile" -> {
+                        editorSharedPreference(context!!, "currentViewMode", VIEW_MODE_LISTVIEW)
+                        recycler_view.layoutManager = LinearLayoutManager(activity)
+                        item.setIcon(R.drawable.list)
+                    }
+                    "list" -> {
+                        editorSharedPreference(context!!, "currentViewMode", VIEW_MODE_GRIDVIEW)
+                        recycler_view.layoutManager = GridLayoutManager(activity, 2)
+                        item.setIcon(R.drawable.tile)
+                    }
                 }
+                recycler_view.adapter?.notifyDataSetChanged()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -103,6 +111,10 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         currentViewMode = sharedCurrentViewMode(context!!, "currentViewMode", currentViewMode)
         if (recycler_view.adapter == null) {
+            when(currentViewMode){
+                "list" -> {recycler_view.layoutManager = LinearLayoutManager(activity)}
+                "tile" -> {recycler_view.layoutManager = GridLayoutManager(activity, 2)}
+            }
             createRecyclerView(currentViewMode)
         }
     }
@@ -119,39 +131,16 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 true -> {
                     if (swipe.isRefreshing || jsonModel.itemPagedList?.value?.size == null) {
                         jsonModel.setGeneral(context!!)
-                        jsonModel.setDBGeneral(1, context!!)
-                    }
-                    when (currentViewMode) {
-                        "list" -> {
-                            recycler_view.layoutManager = LinearLayoutManager(activity)
-                            jsonModel.itemPagedList?.observe(viewLifecycleOwner,
-                                Observer<PagedList<CardBinding>> { list ->
-                                    adapterBest =
-                                        adapterFun(list, "list") as PagingAdapterViewHolder
-                                    adapterBest.submitList(list)
-                                    recycler_view.adapter = adapterBest
-                                })
-                        }
-                        "tile" -> {
-                            recycler_view.layoutManager = GridLayoutManager(activity, 2)
-                            jsonModel.itemPagedList?.observe(viewLifecycleOwner,
-                                Observer<PagedList<CardBinding>> { list ->
-                                    adapterBest =
-                                        adapterFun(list, "tile") as PagingAdapterViewHolder
-                                    adapterBest.submitList(list)
-                                    recycler_view.adapter = adapterBest
-                                })
-                        }
+                        //jsonModel.setDBGeneral(1, context!!)
                     }
 
-                    val observerGSON = Observer<MutableList<CardBinding>> { list ->
-
-                        CardDataBase.getDatabase(context!!)?.getCardDao()?.deleteAll()
-                        for (i in 0 until list.size) {
-                            CardDataBase.getDatabase(context!!)?.getCardDao()?.insert(list[i])
-                        }
-                    }
-                    jsonModel.mainContentList.observe(viewLifecycleOwner, observerGSON)
+                    jsonModel.itemPagedList?.observe(viewLifecycleOwner,
+                        Observer<PagedList<CardBinding>> { list ->
+                            adapterBest =
+                                adapterFun(list) as PagingAdapterViewHolder
+                            adapterBest.submitList(list)
+                            recycler_view.adapter = adapterBest
+                        })
 
                 }
                 false -> {
@@ -181,11 +170,9 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun adapterFun(
-        list: MutableList<CardBinding>,
-        viewMode: String
-    ): PagedListAdapter<CardBinding, PagingAdapterViewHolder.ViewHolder> {
+        list: MutableList<CardBinding>): PagedListAdapter<CardBinding, PagingAdapterViewHolder.ViewHolder> {
 
-        return PagingAdapterViewHolder(viewMode, object : InClick {
+        return PagingAdapterViewHolder(object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
                 NaviController(context!!).toDetailsFromBest(item)
             }

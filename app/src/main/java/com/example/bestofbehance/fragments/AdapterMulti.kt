@@ -56,8 +56,8 @@ class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
         when (holder) {
             is ImageViewHolder -> holder.onBindImage((list[position] as MultiList.ImageList).multiImage)
-            is TextViewHolder -> holder.onBindImage((list[position] as MultiList.TextList).multiText)
-            is CountViewHolder -> holder.onBindImage((list[position] as MultiList.CountList).multiCount)
+            is TextViewHolder -> holder.onBindText((list[position] as MultiList.TextList).multiText)
+            is CountViewHolder -> holder.onBindCount((list[position] as MultiList.CountList).multiCount)
             is CommentsViewHolder -> holder.onBindComments((list[position] as MultiList.CommentsList).multiComment, context)
             is PeopleViewHolder -> holder.onBindPeople((list[position] as MultiList.PeopleList).multiPeople, context, bookmark!!)
             else -> throw IllegalArgumentException()
@@ -85,7 +85,7 @@ class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick
 
     class TextViewHolder(private val binding: ListTextBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun onBindImage(text: TextBinding) {
+        fun onBindText(text: TextBinding) {
             binding.cardViewText = text
             binding.notifyPropertyChanged(BR._all)
         }
@@ -93,7 +93,7 @@ class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick
 
     class CountViewHolder(private val binding: CountItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun onBindImage(count: CountBinding) {
+        fun onBindCount(count: CountBinding) {
             binding.countsView = count
             binding.notifyPropertyChanged(BR._all)
         }

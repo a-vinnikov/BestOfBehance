@@ -68,7 +68,6 @@ class DetailsFragment : Fragment() {
             }
 
             R.id.menu_share -> {
-                //Toast.makeText(activity, "Work in progress", Toast.LENGTH_SHORT).show()
                 val intent = Intent()
                 intent.action = Intent.ACTION_SEND
                 intent.putExtra(Intent.EXTRA_TEXT, args.cardBindingArg.url)
@@ -132,7 +131,8 @@ class DetailsFragment : Fragment() {
                         if (commentsItems!!.size < 7){
                             (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPosition(temp.size - 1)
                         } else {
-                            (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(imageItems!!.lastIndex + 1 , 200)
+                            details_card.setExpanded(false)
+                            (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(imageItems!!.lastIndex + 1 , 0)
                         }
 
                     }
@@ -146,8 +146,8 @@ class DetailsFragment : Fragment() {
 
     private fun fetchData(): MediatorLiveData<MutableList<MultiList>> {
         val liveDataMulti = MediatorLiveData<MutableList<MultiList>>()
-        mediatorAdd(liveDataMulti, jsonModel.setContent(args.cardBindingArg.id!!, context!!))
-        mediatorAdd(liveDataMulti, jsonModel.setComments(args.cardBindingArg.id!!, context!!))
+        mediatorAdd(liveDataMulti, jsonModel.setContent(args.cardBindingArg.id!!))
+        mediatorAdd(liveDataMulti, jsonModel.setComments(args.cardBindingArg.id!!))
         return liveDataMulti
     }
 

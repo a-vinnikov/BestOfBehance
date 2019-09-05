@@ -35,29 +35,29 @@ class VMForParse : AndroidViewModel(Application()) {
         itemPagedList = LivePagedListBuilder(itemDataSourceFactory, config).build()
     }
 
-    fun setDBGeneral(page: Int, context: Context): MutableLiveData<MutableList<CardBinding>> {
-        ParseForVM().generalRetrofit(page, context) { result -> mainContentList.postValue(result) }
+    fun setDBGeneral(page: Int): MutableLiveData<MutableList<CardBinding>> {
+        ParseForVM().generalRetrofit(page) { result -> mainContentList.postValue(result) }
         return mainContentList
     }
 
-    fun setContent(id: Int, context: Context): MutableLiveData<MutableList<MultiList>> {
-        ParseForVM().projectRetrofit(id, context) { result -> listForContents.postValue(result) }
+    fun setContent(id: Int): MutableLiveData<MutableList<MultiList>> {
+        ParseForVM().projectRetrofit(id) { result -> listForContents.postValue(result) }
         return listForContents
     }
 
-    fun setComments(id: Int, context: Context): MutableLiveData<MutableList<MultiList>> {
-        ParseForVM().commentsRetrofit(id, context) { result -> listForComments.postValue(result) }
+    fun setComments(id: Int): MutableLiveData<MutableList<MultiList>> {
+        ParseForVM().commentsRetrofit(id) { result -> listForComments.postValue(result) }
         return listForComments
     }
 
-    fun setUser(username: String, context: Context): Pair<MutableLiveData<MutableList<ProfileBinding>>, MutableLiveData<MutableMap<String, String?>>> {
-        ParseForVM().userRetrofit(username, context) { result, links -> listForUser.postValue(result)
+    fun setUser(username: String): Pair<MutableLiveData<MutableList<ProfileBinding>>, MutableLiveData<MutableMap<String, String?>>> {
+        ParseForVM().userRetrofit(username) { result, links -> listForUser.postValue(result)
             listForLinks.postValue(links)}
         return Pair(listForUser, listForLinks)
     }
 
-    fun setUserProjects(username: String, context: Context){
-        val itemDataSourceFactory = DataSourceFactory(ProfileDataSource(username, context))
+    fun setUserProjects(username: String){
+        val itemDataSourceFactory = DataSourceFactory(ProfileDataSource(username))
         val config =
             PagedList.Config.Builder().setEnablePlaceholders(true).setPageSize(PAGING_PAGE_SIZE).build()
 

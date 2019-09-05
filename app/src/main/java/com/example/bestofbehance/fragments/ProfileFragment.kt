@@ -33,6 +33,7 @@ import com.example.bestofbehance.databases.forRoom.PeopleDataBase
 import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
 import com.example.bestofbehance.databinding.FragmentProfileBinding
 import com.example.bestofbehance.viewModels.*
+import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.profile_card.*
 import org.jetbrains.anko.lines
@@ -69,40 +70,46 @@ class ProfileFragment : Fragment() {
         when (item.itemId) {
 
             R.id.menu_bookmark -> {
-                if (PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.getByUsername(args.cardBindingProfile) == null) {
+                when {
+                    nameProfile.text == null -> item.isCheckable = false
+                    PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.getByUsername(args.cardBindingProfile) == null -> {
 
-                    jsonModel.setUser(args.cardBindingProfile, context!!)
-                    val observerGSON = Observer<MutableList<ProfileBinding>> { list ->
-                        PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.insert(
-                            PeopleBinding(
-                                list[0].id!!,
-                                args.cardBindingProfile,
-                                list[0].avatar,
-                                list[0].name,
-                                list[0].post,
-                                list[0].views,
-                                list[0].appreciations,
-                                list[0].followers,
-                                list[0].following,
-                                getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss")
+                        jsonModel.setUser(args.cardBindingProfile)
+                        val observerGSON = Observer<MutableList<ProfileBinding>> { list ->
+                            PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.insert(
+                                PeopleBinding(
+                                    list[0].id!!,
+                                    args.cardBindingProfile,
+                                    list[0].avatar,
+                                    list[0].name,
+                                    list[0].post,
+                                    list[0].views,
+                                    list[0].appreciations,
+                                    list[0].followers,
+                                    list[0].following,
+                                    getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss")
+                                )
                             )
-                        )
-                    }
+                        }
 
-                    jsonModel.listForUser.observe(viewLifecycleOwner, observerGSON)
-                    item.setIcon(R.drawable.ic_bookmarks_pressed)
-                } else {
-                    PeopleDataBase.getDatabase(context!!)?.getPeopleDao()
-                        ?.deleteByUsername(args.cardBindingProfile)
-                    item.setIcon(R.drawable.ic_bookmarks_normal)
+                        jsonModel.listForUser.observe(viewLifecycleOwner, observerGSON)
+                        item.setIcon(R.drawable.ic_bookmarks_pressed)
+                    }
+                    else -> {
+                        PeopleDataBase.getDatabase(context!!)?.getPeopleDao()
+                            ?.deleteByUsername(args.cardBindingProfile)
+                        item.setIcon(R.drawable.ic_bookmarks_normal)
+                    }
                 }
             }
 
             R.id.menu_share -> {
-                //copyText("https://www.behance.net/${args.cardBindingProfile}")
                 val intent = Intent()
                 intent.action = Intent.ACTION_SEND
-                intent.putExtra(Intent.EXTRA_TEXT, "https://www.behance.net/${args.cardBindingProfile}")
+                intent.putExtra(
+                    Intent.EXTRA_TEXT,
+                    "https://www.behance.net/${args.cardBindingProfile}"
+                )
                 intent.type = "text/plain"
 
                 startActivity(Intent.createChooser(intent, "Share to : "))
@@ -129,7 +136,7 @@ class ProfileFragment : Fragment() {
 
         jsonModel = ViewModelProviders.of(this, ViewModelFactory()).get(VMForParse::class.java)
 
-        jsonModel.setUser(args.cardBindingProfile, context!!)
+        jsonModel.setUser(args.cardBindingProfile)
 
         val observerGSON = Observer<MutableList<ProfileBinding>> { list ->
 
@@ -137,7 +144,7 @@ class ProfileFragment : Fragment() {
             binding.cardViewProfile = list[0]
             binding.notifyPropertyChanged(BR._all)
 
-            if (list[0].aboutMe != "No information" || list[0].aboutMe!!.length > 100){
+            if (list[0].aboutMe != "No information" || list[0].aboutMe!!.length > 100) {
                 more.visibility = VISIBLE
             }
         }
@@ -145,9 +152,9 @@ class ProfileFragment : Fragment() {
         jsonModel.listForUser.observe(viewLifecycleOwner, observerGSON)
 
         val observerMapGSON = Observer<MutableMap<String, String?>> { links ->
-            for (i in links.keys){
+            for (i in links.keys) {
                 if (links[i] != null) {
-                    when(i){
+                    when (i) {
                         "Pinterest" -> {
                             pinterest_image.visibility = VISIBLE
                             pinterest_image.setOnClickListener { webPageOpen(links["Pinterest"]!!) }
@@ -172,7 +179,7 @@ class ProfileFragment : Fragment() {
                             twitter_image.visibility = VISIBLE
                             twitter_image.setOnClickListener { webPageOpen(links["Twitter"]!!) }
                         }
-                     }
+                    }
                 }
             }
         }
@@ -185,28 +192,34 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(
-            context!!,
-            "currentViewModeProfile",
-            currentViewMode
+        currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context!!, "currentViewModeProfile", currentViewMode
         )
+
         when (currentViewMode) {
             "list" -> viewModeProfile.isChecked = false
             "tile" -> viewModeProfile.isChecked = true
         }
 
         viewModeProfile.setOnClickListener {
-            if (!viewModeProfile.isChecked) {
-                createRecyclerView(VIEW_MODE_LISTVIEW)
+            when(viewModeProfile.isChecked){
+                false -> {
                 editorSharedPreference(context!!, "currentViewModeProfile", VIEW_MODE_LISTVIEW)
-            } else if (viewModeProfile.isChecked) {
-                createRecyclerView(VIEW_MODE_GRIDVIEW)
-                editorSharedPreference(context!!, "currentViewModeProfile", VIEW_MODE_GRIDVIEW)
+                recycler_view_profile.layoutManager = LinearLayoutManager(activity)
             }
+                true -> {
+                editorSharedPreference(context!!, "currentViewModeProfile", VIEW_MODE_GRIDVIEW)
+                recycler_view_profile.layoutManager = GridLayoutManager(activity, 2)
+            }
+        }
+            recycler_view_profile.adapter?.notifyDataSetChanged()
         }
 
         if (recycler_view_profile.adapter == null) {
-            createRecyclerView(currentViewMode)
+            when(currentViewMode){
+                "list" -> {recycler_view_profile.layoutManager = LinearLayoutManager(activity)}
+                "tile" -> {recycler_view_profile.layoutManager = GridLayoutManager(activity, 2)}
+            }
+            createRecyclerView()
         }
 
         more.setOnClickListener {
@@ -224,40 +237,23 @@ class ProfileFragment : Fragment() {
 
     }
 
-    private fun createRecyclerView(currentViewMode: String) {
+    private fun createRecyclerView() {
         if (jsonModel.profilePagedList?.value == null) {
-            jsonModel.setUserProjects(args.cardBindingProfile, context!!)
+            jsonModel.setUserProjects(args.cardBindingProfile)
         }
 
-        when (currentViewMode) {
-            "list" -> {
-                recycler_view_profile.layoutManager = LinearLayoutManager(activity)
-                jsonModel.profilePagedList?.observe(viewLifecycleOwner,
-                    Observer<PagedList<CardBinding>> {
-                        adapterProfile = adapterFun(it, "list") as PagingAdapterViewHolder
-                        adapterProfile.submitList(it)
-                        recycler_view_profile.adapter = adapterProfile
-                    })
-            }
-            "tile" -> {
-                recycler_view_profile.layoutManager = GridLayoutManager(activity, 2)
-                jsonModel.profilePagedList?.observe(viewLifecycleOwner,
-                    Observer<PagedList<CardBinding>> {
-                        adapterProfile = adapterFun(it, "tile") as PagingAdapterViewHolder
-                        adapterProfile.submitList(it)
-                        recycler_view_profile.adapter = adapterProfile
-                    })
-            }
-        }
+        jsonModel.profilePagedList?.observe(viewLifecycleOwner,
+            Observer<PagedList<CardBinding>> {
+                adapterProfile = adapterFun(it) as PagingAdapterViewHolder
+                adapterProfile.submitList(it)
+                recycler_view_profile.adapter = adapterProfile
+            })
 
     }
 
-    private fun adapterFun(
-        list: MutableList<CardBinding>,
-        viewMode: String
-    ): PagedListAdapter<CardBinding, PagingAdapterViewHolder.ViewHolder> {
+    private fun adapterFun(list: MutableList<CardBinding>): PagedListAdapter<CardBinding, PagingAdapterViewHolder.ViewHolder> {
 
-        return PagingAdapterViewHolder(viewMode, object : InClick {
+        return PagingAdapterViewHolder(object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
                 NaviController(context!!).toDetailsFromProfile(item)
             }

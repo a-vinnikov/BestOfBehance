@@ -13,6 +13,9 @@ data class ModulesItem(
 	@field:SerializedName("components")
 	val components: List<ComponentsItem?>? = null,
 
+	@field:SerializedName("sizes")
+	val sizes: Sizes? = null,
+
 	@field:SerializedName("src")
 	val src: String? = null
 )

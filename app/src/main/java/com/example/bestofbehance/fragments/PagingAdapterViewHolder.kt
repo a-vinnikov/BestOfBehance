@@ -5,6 +5,7 @@ import android.util.TypedValue
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -17,13 +18,14 @@ import java.text.DecimalFormat
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
 import com.example.bestofbehance.databases.SharedPreferenceObject
+import com.example.bestofbehance.databases.SharedPreferenceObject.sharedCurrentViewMode
 import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
 import com.example.bestofbehance.viewModels.BookmarkClick
 import com.example.bestofbehance.viewModels.NaviController
 import timber.log.Timber
 
 
-class PagingAdapterViewHolder(val viewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick, val layout: String) :
+class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkClick, val layout: String) :
     PagedListAdapter<CardBinding, PagingAdapterViewHolder.ViewHolder>(diffCallback) {
 
     lateinit var context: Context
@@ -40,12 +42,16 @@ class PagingAdapterViewHolder(val viewMode: String, val inClick: InClick, val bo
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
+        var currentViewMode = ""
+
+        when(layout){
+            "Best" -> { currentViewMode = sharedCurrentViewMode(context, "currentViewMode", currentViewMode)}
+            "Profile" -> {currentViewMode = sharedCurrentViewMode(context, "currentViewModeProfile", currentViewMode)}
+        }
+
 
         holder.itemView.avatarView.setOnClickListener {
-            when (layout){
-                "Best" -> {NaviController(context).toProfileFromBest(getItem(holder.adapterPosition)?.username!!)}
-                "Projects" -> {NaviController(context).toProfileFromProjects(getItem(holder.adapterPosition)?.username!!)}
-            }
+            NaviController(context).toProfileFromBest(getItem(holder.adapterPosition)?.username!!)
             SharedPreferenceObject.editorSharedPreference(context, "position", holder.adapterPosition.toString())
         }
 
@@ -64,20 +70,25 @@ class PagingAdapterViewHolder(val viewMode: String, val inClick: InClick, val bo
             holder.itemView.artistName.visibility = GONE
         }
 
-        if (viewMode == "tile") {
-            holder.itemView.avatarView.visibility = GONE
-            val tValue = TypedValue()
-            context.resources.getValue(R.dimen.height_of_grid, tValue, true)
-            val floatResources = tValue.float
-            holder.itemView.bigImageView.layoutParams.height = floatResources.toInt()
-        }
+        var copyList = getItem(holder.adapterPosition)!!.copy()
 
-        val copyList = getItem(holder.adapterPosition)!!.copy()
-        if (viewMode == "tile") {
-            copyList.views = holder.decimal(copyList.views.toString())
-            copyList.appreciations = holder.decimal(copyList.appreciations.toString())
-            copyList.comments = holder.decimal(copyList.comments.toString())
+        when (currentViewMode) {
+            "tile" -> {
+                holder.itemView.avatarView.visibility = GONE
+                /*val tValue = TypedValue()
+                context.resources.getValue(R.dimen.height_of_grid, tValue, true)
+                val floatResources = tValue.float
+                holder.itemView.bigImageView.layoutParams.height = floatResources.toInt()*/
 
+                copyList.views = holder.decimal(copyList.views.toString())
+                copyList.appreciations = holder.decimal(copyList.appreciations.toString())
+                copyList.comments = holder.decimal(copyList.comments.toString())
+            }
+
+            "list" -> {
+                if (layout == "Best") holder.itemView.avatarView.visibility = VISIBLE
+                copyList = getItem(holder.adapterPosition)!!.copy()
+            }
         }
 
         holder.bind(copyList)

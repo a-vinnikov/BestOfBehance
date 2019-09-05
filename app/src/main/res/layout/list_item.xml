@@ -31,7 +31,7 @@
             <ImageView
                     android:id="@+id/bigImageView"
                     android:layout_width="0dp"
-                    android:layout_height="300dp"
+                    android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
                     app:layout_constrainedHeight="true"
                     tools:ignore="ContentDescription"

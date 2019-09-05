@@ -9,14 +9,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ProfileDataSource(val user: String, val context: Context) : PageKeyedDataSource<Int, CardBinding>() {
+class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding>() {
 
     val FIRST_PAGE = 1
 
     private val recList: MutableList<CardBinding> = mutableListOf()
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, CardBinding>) {
-        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient(context).build())).getUserProjects(user, FIRST_PAGE).enqueue(object : Callback<GeneralResponse> {
+        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient().build())).getUserProjects(user, FIRST_PAGE).enqueue(object : Callback<GeneralResponse> {
             override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {}
 
             override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
@@ -36,7 +36,7 @@ class ProfileDataSource(val user: String, val context: Context) : PageKeyedDataS
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
         if(params.key != 1){
-            NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient(context).build())).getUserProjects(user, params.key)
+            NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient().build())).getUserProjects(user, params.key)
                 .enqueue(object : Callback<GeneralResponse> {
                     override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
                     }
@@ -56,7 +56,7 @@ class ProfileDataSource(val user: String, val context: Context) : PageKeyedDataS
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient(context).build())).getUserProjects(user, params.key)
+        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient().build())).getUserProjects(user, params.key)
             .enqueue(object : Callback<GeneralResponse> {
                 override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
                 }

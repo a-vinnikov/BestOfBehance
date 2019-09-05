@@ -4,17 +4,19 @@ import android.content.Context
 import com.example.bestofbehance.retrofit.BehanceApiInterface
 import dagger.Module
 import dagger.Provides
-import okhttp3.Cache
-import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 import android.net.ConnectivityManager
-import okhttp3.Interceptor
-import okhttp3.Response
+import okhttp3.*
+import timber.log.Timber
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+import android.R.string
+import android.os.AsyncTask.execute
+
+
 
 var API_KEY = "xMrW480v8SrR9J02koQXiIEEMr3uzIfd"
 //xMrW480v8SrR9J02koQXiIEEMr3uzIfd
@@ -40,14 +42,12 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun providesOkHttpClient(context: Context): OkHttpClient.Builder {
-        val cacheSize = (200 * 1024 * 1024).toLong()
-        val myCache = Cache(context.cacheDir, cacheSize)
+    fun providesOkHttpClient(): OkHttpClient.Builder {
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.HEADERS
 
         val httpClient = OkHttpClient.Builder()
-        httpClient.cache(myCache).addNetworkInterceptor (object : Interceptor {
+        httpClient.addNetworkInterceptor (object : Interceptor {
             @Throws(IOException::class)
             override fun intercept(chain: Interceptor.Chain): Response {
                 val original = chain.request()
@@ -57,10 +57,7 @@ class NetworkModule {
                     .addQueryParameter("api_key", API_KEY)
                     .build()
 
-                val requestBuilder = if (hasNetwork(context))
-                    original.newBuilder().url(url).header("Cache-Control", "public, max-age=" + 5)
-                else
-                    original.newBuilder().url(url).header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7)
+                val requestBuilder = original.newBuilder().url(url)
 
                 val request = requestBuilder.build()
 
@@ -81,7 +78,7 @@ class NetworkModule {
         httpClient.writeTimeout(5, TimeUnit.MINUTES)
         httpClient.readTimeout(5, TimeUnit.MINUTES)
 
-        //httpClient.addNetworkInterceptor(logging)
+        httpClient.addNetworkInterceptor(logging)
 
         return httpClient
     }
