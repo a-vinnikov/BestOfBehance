@@ -48,6 +48,7 @@ class ProfileFragment : Fragment() {
 
     private var currentViewMode = "list"
     lateinit var adapterProfile: PagingAdapterViewHolder
+    lateinit var url: String
     var userId = 0
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -107,8 +108,7 @@ class ProfileFragment : Fragment() {
                 val intent = Intent()
                 intent.action = Intent.ACTION_SEND
                 intent.putExtra(
-                    Intent.EXTRA_TEXT,
-                    "https://www.behance.net/${args.cardBindingProfile}"
+                    Intent.EXTRA_TEXT, url
                 )
                 intent.type = "text/plain"
 
@@ -139,6 +139,8 @@ class ProfileFragment : Fragment() {
         jsonModel.setUser(args.cardBindingProfile)
 
         val observerGSON = Observer<MutableList<ProfileBinding>> { list ->
+
+            if (list[0].url != null ) url = list[0].url!!
 
             if (list[0].id != null) userId = list[0].id!!
             binding.cardViewProfile = list[0]

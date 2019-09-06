@@ -11,5 +11,6 @@ data class ProfileBinding(
     var followers: String? = "0",
     var following: String? = "0",
     var aboutMe: String? = null,
-    var post: String? = "Post"
+    var post: String? = "Post",
+    var url: String? = null
 )

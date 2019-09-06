@@ -21,7 +21,7 @@ class ParseForVM {
     //xMrW480v8SrR9J02koQXiIEEMr3uzIfd
     //0QmPh684DRz1SpWHDikkyFCzLShGiHPi
 
-    fun generalRetrofit(page: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit){
+    fun generalRetrofit(page: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit) {
 
         val call = service()?.getGeneral("appreciations", page)
 
@@ -30,7 +30,10 @@ class ParseForVM {
 
             }
 
-            override fun onResponse(call: Call<GeneralResponse>, response: retrofit2.Response<GeneralResponse>) {
+            override fun onResponse(
+                call: Call<GeneralResponse>,
+                response: retrofit2.Response<GeneralResponse>
+            ) {
                 val listResponse = response.body()?.projects
 
 
@@ -74,7 +77,7 @@ class ParseForVM {
     }
 
 
-    fun projectRetrofit(projectId: Int,  myCallBack: (result: MutableList<MultiList>) -> Unit){
+    fun projectRetrofit(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit) {
 
         val call = service()?.getProject(projectId.toString())
 
@@ -83,22 +86,32 @@ class ParseForVM {
 
             }
 
-            override fun onResponse(call: Call<ImageResponse>, response: retrofit2.Response<ImageResponse>) {
+            override fun onResponse(
+                call: Call<ImageResponse>,
+                response: retrofit2.Response<ImageResponse>
+            ) {
 
                 val listResponse = response.body()?.project?.modules
 
                 if (listResponse != null) for (i in listResponse.indices) {
 
                     when (listResponse[i]!!.type) {
-                        "image" -> {val image = listResponse[i]?.src
-                            iListCon.add(MultiList.ImageList(ImageBinding(image)))}
-                        "text" -> {val text = listResponse[i]?.text.toString()
+                        "image" -> {
+                            val image = listResponse[i]?.src
+                            iListCon.add(MultiList.ImageList(ImageBinding(image)))
+                        }
+                        "text" -> {
+                            val text = listResponse[i]?.text.toString()
                             val text1 = Jsoup.parse(text).text()
-                            iListCon.add(MultiList.TextList(TextBinding(text1)))}
+                            iListCon.add(MultiList.TextList(TextBinding(text1)))
+                        }
                         "media_collection" -> {
-                            for (element in listResponse[i]?.components!!){
+                            for (element in listResponse[i]?.components!!) {
                                 val collectionItem = element?.src
-                                iListCon.add(MultiList.ImageList(ImageBinding(collectionItem)))} } }
+                                iListCon.add(MultiList.ImageList(ImageBinding(collectionItem)))
+                            }
+                        }
+                    }
                     i + 1
                 }
                 myCallBack.invoke(iListCon)
@@ -106,7 +119,7 @@ class ParseForVM {
         })
     }
 
-    fun commentsRetrofit(projectId: Int,  myCallBack: (result: MutableList<MultiList>) -> Unit){
+    fun commentsRetrofit(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit) {
 
         val call = service()?.getComments(projectId.toString())
 
@@ -115,14 +128,17 @@ class ParseForVM {
 
             }
 
-            override fun onResponse(call: Call<CommentsMain>, response: retrofit2.Response<CommentsMain>) {
+            override fun onResponse(
+                call: Call<CommentsMain>,
+                response: retrofit2.Response<CommentsMain>
+            ) {
 
                 val listResponse = response.body()?.comments
                 val numberOfComments = response.body()?.comments?.size
 
-                if(numberOfComments == 0){
+                if (numberOfComments == 0) {
                     iListCom.add(MultiList.CountList(CountBinding(numberOfComments.toInt())))
-                }else{
+                } else {
                     if (listResponse != null) for (i in 0 until numberOfComments!!) {
 
                         val commentsAvatarView = listResponse[i]?.user?.images?.jsonMember138
@@ -134,7 +150,17 @@ class ParseForVM {
                         if (i == 0) {
                             iListCom.add(MultiList.CountList(CountBinding(numberOfComments)))
                         }
-                        iListCom.add(MultiList.CommentsList(CommentsBinding(commentsAvatarView, commentatorName, commentatorUsername, comment, date)))
+                        iListCom.add(
+                            MultiList.CommentsList(
+                                CommentsBinding(
+                                    commentsAvatarView,
+                                    commentatorName,
+                                    commentatorUsername,
+                                    comment,
+                                    date
+                                )
+                            )
+                        )
                         i + 1
                     }
                     myCallBack.invoke(iListCom)
@@ -145,7 +171,10 @@ class ParseForVM {
 
     }
 
-    fun userRetrofit(username: String,  myCallBack: (result: MutableList<ProfileBinding>, links: MutableMap<String, String?>) -> Unit){
+    fun userRetrofit(
+        username: String,
+        myCallBack: (result: MutableList<ProfileBinding>, links: MutableMap<String, String?>) -> Unit
+    ) {
 
         val call = service()?.getUser(username)
 
@@ -154,7 +183,10 @@ class ParseForVM {
 
             }
 
-            override fun onResponse(call: Call<UserResponse>, response: retrofit2.Response<UserResponse>) {
+            override fun onResponse(
+                call: Call<UserResponse>,
+                response: retrofit2.Response<UserResponse>
+            ) {
                 val listResponse = response.body()?.user
 
                 val id = listResponse?.id
@@ -181,6 +213,8 @@ class ParseForVM {
                     }
                     toString()
                 }
+                val url = listResponse?.url
+
 
                 if (listResponse?.hasSocialLinks == true) {
                     for (i in listResponse.socialLinks!!.indices) {
@@ -210,7 +244,8 @@ class ParseForVM {
                                     val twitter = this.url
                                     linksList.put("Twitter", twitter)
                                 }
-                                else -> {}
+                                else -> {
+                                }
                             }
                         }
                     }
@@ -219,7 +254,22 @@ class ParseForVM {
 
                 if (aboutArtist == null) aboutArtist = "No information"
 
-                userList.add(ProfileBinding(id, avatar, thumbnail, artistName, cityCountry, views.toString(), appreciations.toString(), followers.toString(), following.toString(), aboutArtist, post))
+                userList.add(
+                    ProfileBinding(
+                        id,
+                        avatar,
+                        thumbnail,
+                        artistName,
+                        cityCountry,
+                        views.toString(),
+                        appreciations.toString(),
+                        followers.toString(),
+                        following.toString(),
+                        aboutArtist,
+                        post,
+                        url
+                    )
+                )
 
                 myCallBack.invoke(userList, linksList)
             }
@@ -228,7 +278,7 @@ class ParseForVM {
     }
 
     private fun service(): BehanceApiInterface? {
-        return with(NetworkModule()){ providesBehanceApi(providesRetrofit(providesOkHttpClient().build())) }
+        return with(NetworkModule()) { providesBehanceApi(providesRetrofit(providesOkHttpClient().build())) }
     }
 
 }

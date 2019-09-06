@@ -4,9 +4,13 @@ import android.graphics.Bitmap
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.Transformation
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.module.AppGlideModule
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import org.jetbrains.anko.matchParent
 
@@ -20,7 +24,8 @@ object BindingAdapters{
     @JvmStatic
     @BindingAdapter(value = ["loadingRoundedImage", "loadingThumbnail"])
     fun setRoundedImageUrl(view: ImageView, url: String?, turl: String?) {
-        Glide.with(view.context).load(url).thumbnail(Glide.with(view.context).load(turl)).apply(RequestOptions.centerCropTransform()).apply(RequestOptions.bitmapTransform(RoundedCornersTransformation(15, 0) as Transformation<Bitmap>)).into(view)
+        val options = RequestOptions().transform(MultiTransformation(CenterCrop(), RoundedCornersTransformation(15, 0)))
+        Glide.with(view.context).load(url).thumbnail(Glide.with(view.context).load(turl).diskCacheStrategy(DiskCacheStrategy.ALL).apply(RequestOptions.centerCropTransform())).apply(options).into(view)
     }
 
     @JvmStatic
@@ -34,4 +39,5 @@ object BindingAdapters{
     fun setBigCircleImageUrl(view: ImageView, url: String?, turl: String?) {
         Glide.with(view.context).load(url).thumbnail(Glide.with(view.context).load(turl).apply(RequestOptions.circleCropTransform())).apply(RequestOptions.circleCropTransform()).into(view)
     }
+
 }

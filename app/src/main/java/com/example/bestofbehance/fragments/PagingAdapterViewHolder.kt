@@ -52,7 +52,7 @@ class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkC
 
         holder.itemView.avatarView.setOnClickListener {
             NaviController(context).toProfileFromBest(getItem(holder.adapterPosition)?.username!!)
-            SharedPreferenceObject.editorSharedPreference(context, "position", holder.adapterPosition.toString())
+            //SharedPreferenceObject.editorSharedPreference(context, "position", holder.adapterPosition.toString())
         }
 
         holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(getItem(position)!!.id!!) != null

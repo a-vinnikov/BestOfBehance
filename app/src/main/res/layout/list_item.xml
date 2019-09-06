@@ -31,10 +31,11 @@
             <ImageView
                     android:id="@+id/bigImageView"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:adjustViewBounds="true"
                     app:layout_constrainedHeight="true"
                     tools:ignore="ContentDescription"
+                    app:layout_constraintDimensionRatio = "W, 1:1"
                     app:loadingRoundedImage="@{cardView.bigImage}"
                     app:loadingThumbnail="@{cardView.thumbnail}"
                     app:layout_constraintStart_toStartOf="parent"

@@ -148,16 +148,12 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                         when (currentViewMode) {
                             "list" -> {
                                 adapter = adapterOffline(
-                                    CardDataBase.getDatabase(context!!)?.getCardDao()?.all!!,
-                                    "list"
-                                )
+                                    CardDataBase.getDatabase(context!!)?.getCardDao()?.all!!)
                                 layoutManager = LinearLayoutManager(activity)
                             }
                             "tile" -> {
                                 adapter = adapterOffline(
-                                    CardDataBase.getDatabase(context!!)?.getCardDao()?.all!!,
-                                    "tile"
-                                )
+                                    CardDataBase.getDatabase(context!!)?.getCardDao()?.all!!)
                                 layoutManager = GridLayoutManager(activity, 2)
                             }
                         }
@@ -197,9 +193,9 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }, "Best")
     }
 
-    fun adapterOffline(list: MutableList<CardBinding>, viewMode: String): AdapterNonPaging {
+    fun adapterOffline(list: MutableList<CardBinding>): AdapterNonPaging {
 
-        return AdapterNonPaging(list, viewMode, object : InClick {
+        return AdapterNonPaging(list, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {}
 
         }, object : BookmarkClick {

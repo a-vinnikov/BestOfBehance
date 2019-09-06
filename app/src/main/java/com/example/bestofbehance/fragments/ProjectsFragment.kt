@@ -44,12 +44,14 @@ class ProjectsFragment : Fragment() {
             R.id.menu_switcher -> {
                 if (currentViewMode == "tile") {
                     item.setIcon(R.drawable.list)
-                    createRecyclerView(VIEW_MODE_LISTVIEW)
+                    //createRecyclerView(VIEW_MODE_LISTVIEW)
                     SharedPreferenceObject.editorSharedPreference(context!!, "currentViewModeProjects", VIEW_MODE_LISTVIEW)
+                    recycler_view_projects.layoutManager = LinearLayoutManager(activity)
                 } else if (currentViewMode == "list") {
                     item.setIcon(R.drawable.tile)
-                    createRecyclerView(VIEW_MODE_GRIDVIEW)
+                    //createRecyclerView(VIEW_MODE_GRIDVIEW)
                     SharedPreferenceObject.editorSharedPreference(context!!, "currentViewModeProjects", VIEW_MODE_GRIDVIEW)
+                    recycler_view_projects.layoutManager = GridLayoutManager(activity, 2)
                 }
             }
         }
@@ -73,7 +75,15 @@ class ProjectsFragment : Fragment() {
         currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context!!, "currentViewModeProjects", currentViewMode)
 
         if (recycler_view_projects.adapter == null) {
-            createRecyclerView(currentViewMode)
+            when (currentViewMode) {
+                "list" -> {
+                    recycler_view_projects.layoutManager = LinearLayoutManager(activity)
+                }
+                "tile" -> {
+                    recycler_view_projects.layoutManager = GridLayoutManager(activity, 2)
+                }
+            }
+            createRecyclerView()
         }
     }
 
@@ -87,35 +97,16 @@ class ProjectsFragment : Fragment() {
         activity?.navigation?.menu?.findItem(R.id.projects)?.isChecked = true
     }
 
-    private fun createRecyclerView(currentViewMode: String) {
+    private fun createRecyclerView() {
 
-        when (currentViewMode) {
-            "list" -> {
-                //DBProjectsDao.read(context!!) { result -> adapterProjects = adapterFun(result, "list") }
-                convertProjectsToCard{result -> adapterProjects = adapterFun(result, "list")}
-
-            }
-            "tile" -> {
-                //DBProjectsDao.read(context!!) { result -> adapterProjects = adapterFun(result, "tile") }
-                convertProjectsToCard{result -> adapterProjects = adapterFun(result, "tile")}
-            }
-        }
-
+        convertProjectsToCard{result -> adapterProjects = adapterFun(result)}
         recycler_view_projects.adapter = adapterProjects
 
-        when (currentViewMode) {
-            "list" -> {
-                recycler_view_projects.layoutManager = LinearLayoutManager(activity)
-            }
-            "tile" -> {
-                recycler_view_projects.layoutManager = GridLayoutManager(activity, 2)
-            }
-        }
     }
 
-    fun adapterFun(list: MutableList<CardBinding>, viewMode: String): AdapterNonPaging {
+    fun adapterFun(list: MutableList<CardBinding>): AdapterNonPaging {
 
-        return AdapterNonPaging(list, viewMode, object : InClick {
+        return AdapterNonPaging(list, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
                 NaviController(context!!).toDetailsFromProjects(item)
             }
