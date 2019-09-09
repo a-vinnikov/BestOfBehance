@@ -36,7 +36,6 @@ import com.example.bestofbehance.viewModels.*
 import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.profile_card.*
-import org.jetbrains.anko.lines
 import java.text.SimpleDateFormat
 import java.util.*
 
