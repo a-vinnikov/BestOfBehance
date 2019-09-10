@@ -40,28 +40,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{cardViewDetails.artistName}"
-                android:layout_marginTop="4dp"
-                android:textSize="15sp"
-                android:textStyle="bold"
                 android:textColor="@color/cardview_dark_background"
-                tools:ignore="PrivateResource"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/postDetails"
                 app:layout_constraintStart_toEndOf="@id/avatarViewDetails"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/postDetails"/>
+                tools:ignore="PrivateResource" />
+
         <TextView
                 android:id="@+id/postDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:text="@{cardViewDetails.artName}"
                 android:textSize="14sp"
-                app:layout_constraintTop_toBottomOf="@id/nameDetails"
-                app:layout_constraintBottom_toTopOf="@id/lineDetails"
-                app:layout_constraintStart_toEndOf="@id/avatarViewDetails"/>
+                app:layout_constraintStart_toStartOf="@id/nameDetails"
+                app:layout_constraintTop_toBottomOf="@id/nameDetails" />
 
         <View android:id="@+id/lineDetails"
               android:layout_width="0dp"
               android:layout_height="1dp"
-              android:layout_marginTop="3dp"
+              android:layout_marginTop="9dp"
               android:layout_marginBottom="6dp"
               android:layout_marginStart="16dp"
               android:layout_marginEnd="16dp"
