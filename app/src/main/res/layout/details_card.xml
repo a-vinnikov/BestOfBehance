@@ -24,8 +24,8 @@
 
         <ImageView
                 android:id="@+id/avatarViewDetails"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:padding="4dp"
                 android:layout_marginStart="16dp"
                 app:layout_constraintTop_toTopOf="parent"
@@ -52,7 +52,6 @@
                 android:id="@+id/postDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:text="@{cardViewDetails.artName}"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="@id/nameDetails"
