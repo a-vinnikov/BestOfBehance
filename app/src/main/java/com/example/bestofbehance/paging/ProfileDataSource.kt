@@ -10,8 +10,6 @@ import retrofit2.Response
 
 class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding>() {
 
-    val FIRST_PAGE = 1
-
     private val recList: MutableList<CardBinding> = mutableListOf()
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, CardBinding>) {
@@ -21,11 +19,11 @@ class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding
             override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
                 response.body()?.run {
                     projects(user,this){ result ->
-                        val abc = result.sortedByDescending { it.published }
-                        if (abc.size < 48){
-                            callback.onResult(abc, null, FIRST_PAGE)
+                        val firstResponse = result.sortedByDescending { it.published }
+                        if (firstResponse.size < 48){
+                            callback.onResult(firstResponse, null, FIRST_PAGE)
                         } else {
-                            callback.onResult(abc, null, FIRST_PAGE + 1)
+                            callback.onResult(firstResponse, null, FIRST_PAGE + 1)
                         }
                         }
                 }
@@ -41,14 +39,12 @@ class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding
                     }
 
                     override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
-                        response.body()?.run {
                             val key = params.key + 1
                             response.body()?.run {
                                 projects(user,this){ result ->
-                                    val abc = result.sortedByDescending { it.published }
-                                    callback.onResult(abc, key)}
+                                    val anotherResponse = result.sortedByDescending { it.published }
+                                    callback.onResult(anotherResponse, key)}
                             }
-                        }
                     }
                 })
         }
@@ -73,7 +69,7 @@ class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding
 
     private fun projects(username: String, response: GeneralResponse, myCallBack: (result: MutableList<CardBinding>) -> Unit){
         val listResponse = response.projects
-
+        recList.clear()
 
         for (i in listResponse!!.indices) {
 

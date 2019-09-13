@@ -16,7 +16,6 @@ const val PAGING_PAGE_SIZE = 10
 
 class VMForParse : AndroidViewModel(Application()) {
 
-    val mainContentList: MutableLiveData<MutableList<CardBinding>> by lazy { MutableLiveData<MutableList<CardBinding>>() }
     val listForContents: MutableLiveData<MutableList<MultiList>> by lazy { MutableLiveData<MutableList<MultiList>>() }
     val listForComments: MutableLiveData<MutableList<MultiList>> by lazy { MutableLiveData<MutableList<MultiList>>() }
     val listForUser: MutableLiveData<MutableList<ProfileBinding>> by lazy { MutableLiveData<MutableList<ProfileBinding>>() }
@@ -52,6 +51,7 @@ class VMForParse : AndroidViewModel(Application()) {
     }
 
     fun setUserProjects(username: String){
+        profilePagedList?.value?.clear()
         val itemDataSourceFactory = DataSourceFactory(ProfileDataSource(username))
         val config =
             PagedList.Config.Builder().setEnablePlaceholders(true).setPageSize(PAGING_PAGE_SIZE).build()
