@@ -9,10 +9,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
-import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -27,13 +25,16 @@ import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.binding.PeopleBinding
 import com.example.bestofbehance.binding.ProfileBinding
 import com.example.bestofbehance.binding.ProjectsBinding
-import com.example.bestofbehance.databases.SharedPreferenceObject
-import com.example.bestofbehance.databases.SharedPreferenceObject.editorSharedPreference
-import com.example.bestofbehance.databases.forRoom.PeopleDataBase
-import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
+import com.example.bestofbehance.classesToSupport.BookmarkClick
+import com.example.bestofbehance.classesToSupport.InClick
+import com.example.bestofbehance.classesToSupport.NaviController
+import com.example.bestofbehance.classesToSupport.SharedPreferenceObject
+import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.editorSharedPreference
+import com.example.bestofbehance.databases.PeopleDataBase
+import com.example.bestofbehance.databases.ProjectsDataBase
 import com.example.bestofbehance.databinding.FragmentProfileBinding
+import com.example.bestofbehance.forAdapters.PagingAdapterViewHolder
 import com.example.bestofbehance.viewModels.*
-import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.profile_card.*
 import java.text.SimpleDateFormat
@@ -288,16 +289,9 @@ class ProfileFragment : Fragment() {
         return Calendar.getInstance().time
     }
 
-    fun webPageOpen(url: String) {
+    private fun webPageOpen(url: String) {
         val uris = Uri.parse(url)
         val intents = Intent(Intent.ACTION_VIEW, uris)
         startActivity(intents)
-    }
-
-    fun copyText(text: String) {
-        val myClip = ClipData.newPlainText("text", text)
-        val myClipboard = context!!.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-        myClipboard.primaryClip = myClip
-        Toast.makeText(context!!, "Copied into clipboard", Toast.LENGTH_SHORT).show()
     }
 }

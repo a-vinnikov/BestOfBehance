@@ -4,9 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.*
-import android.widget.Toast
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.marginBottom
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
@@ -16,9 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.ProjectsBinding
+import com.example.bestofbehance.classesToSupport.MultiList
+import com.example.bestofbehance.databases.ProjectsDataBase
+import com.example.bestofbehance.classesToSupport.NaviController
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
-import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
-import com.example.bestofbehance.viewModels.NaviController
+import com.example.bestofbehance.forAdapters.AdapterMulti
 import com.example.bestofbehance.viewModels.VMForParse
 import com.example.bestofbehance.viewModels.ViewModelFactory
 import kotlinx.android.synthetic.main.details_card.*
@@ -139,7 +138,9 @@ class DetailsFragment : Fragment() {
                 }
             })
 
-        avatarViewDetails.setOnClickListener { NaviController(context!!).toProfileFromDetails(args.cardBindingArg.username!!) }
+        avatarViewDetails.setOnClickListener { NaviController(
+            context!!
+        ).toProfileFromDetails(args.cardBindingArg.username!!) }
     }
 
 

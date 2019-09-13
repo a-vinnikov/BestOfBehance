@@ -1,4 +1,4 @@
-package com.example.bestofbehance.databases.forRoom
+package com.example.bestofbehance.databases
 
 import android.content.Context
 import androidx.room.*
@@ -49,7 +49,11 @@ abstract class ProjectsDataBase : RoomDatabase() {
                             context.applicationContext,
                             ProjectsDataBase::class.java,
                             DB_NAME
-                        ).addMigrations(migration_1_2, migration2to3, migration3to4).allowMainThreadQueries().build()
+                        ).addMigrations(
+                            migration_1_2,
+                            migration2to3,
+                            migration3to4
+                        ).allowMainThreadQueries().build()
                     }
                 }
             }

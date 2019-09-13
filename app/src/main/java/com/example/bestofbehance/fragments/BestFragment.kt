@@ -1,8 +1,5 @@
 package com.example.bestofbehance.fragments
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -19,15 +16,17 @@ import androidx.paging.PagedListAdapter
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.binding.ProjectsBinding
+import com.example.bestofbehance.classesToSupport.BookmarkClick
+import com.example.bestofbehance.classesToSupport.InClick
+import com.example.bestofbehance.classesToSupport.NaviController
 import com.example.bestofbehance.dagger.NetworkModule
-import com.example.bestofbehance.databases.SharedPreferenceObject.editorSharedPreference
-import com.example.bestofbehance.databases.SharedPreferenceObject.sharedCurrentViewMode
-import com.example.bestofbehance.databases.forRoom.CardDataBase
-import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
+import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.editorSharedPreference
+import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.sharedCurrentViewMode
+import com.example.bestofbehance.databases.CardDataBase
+import com.example.bestofbehance.databases.ProjectsDataBase
+import com.example.bestofbehance.forAdapters.AdapterNonPaging
+import com.example.bestofbehance.forAdapters.PagingAdapterViewHolder
 import com.example.bestofbehance.viewModels.*
-import kotlinx.android.synthetic.main.fragment_profile.*
-import okhttp3.internal.notifyAll
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -39,10 +38,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     lateinit var jsonModel: VMForParse
     private var currentViewMode = "list"
-    var page = 1
     lateinit var adapterBest: PagingAdapterViewHolder
-    private var isLoading = false
-    private val isLastPage = false
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.one_button_toolbar, menu)
@@ -131,7 +127,6 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 true -> {
                     if (swipe.isRefreshing || jsonModel.itemPagedList?.value?.size == null) {
                         jsonModel.setGeneral(context!!)
-                        //jsonModel.setDBGeneral(1, context!!)
                     }
 
                     jsonModel.itemPagedList?.observe(viewLifecycleOwner,
@@ -193,7 +188,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }, "Best")
     }
 
-    fun adapterOffline(list: MutableList<CardBinding>): AdapterNonPaging {
+    private fun adapterOffline(list: MutableList<CardBinding>): AdapterNonPaging {
 
         return AdapterNonPaging(list, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {}

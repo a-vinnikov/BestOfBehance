@@ -1,4 +1,4 @@
-package com.example.bestofbehance.viewModels
+package com.example.bestofbehance.classesToSupport
 
 import android.app.Application
 import com.example.bestofbehance.BuildConfig

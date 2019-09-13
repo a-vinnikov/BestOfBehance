@@ -1,4 +1,4 @@
-package com.example.bestofbehance.databases.forRoom
+package com.example.bestofbehance.databases
 
 import androidx.room.*
 import com.example.bestofbehance.binding.CardBinding

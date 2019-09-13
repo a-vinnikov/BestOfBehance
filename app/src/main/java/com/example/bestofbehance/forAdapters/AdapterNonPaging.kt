@@ -1,7 +1,6 @@
-package com.example.bestofbehance.fragments
+package com.example.bestofbehance.forAdapters
 
 import android.content.Context
-import android.util.TypedValue
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -10,16 +9,9 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.list_item.view.*
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.databinding.ListItemBinding
-import com.example.bestofbehance.viewModels.InClick
-import java.math.RoundingMode
-import java.text.DecimalFormat
 import com.example.bestofbehance.BR
-import com.example.bestofbehance.R
-import com.example.bestofbehance.dagger.NetworkModule
-import com.example.bestofbehance.databases.SharedPreferenceObject
-import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
-import com.example.bestofbehance.viewModels.BookmarkClick
-import com.example.bestofbehance.viewModels.NaviController
+import com.example.bestofbehance.classesToSupport.*
+import com.example.bestofbehance.databases.ProjectsDataBase
 
 
 class AdapterNonPaging(var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick, val layout: String) : RecyclerView.Adapter<AdapterNonPaging.ViewHolder>() {
@@ -48,11 +40,11 @@ class AdapterNonPaging(var list: MutableList<CardBinding>, val inClick: InClick,
 
         holder.itemView.avatarView.setOnClickListener {
             when(layout){
-                "Best" -> {NaviController(context).toProfileFromBest(list[holder.adapterPosition].username!!) }
-                "Projects" -> {NaviController(context).toProfileFromProjects(list[holder.adapterPosition].username!!) }
+                "Best" -> {
+                    NaviController(context).toProfileFromBest(list[holder.adapterPosition].username!!) }
+                "Projects" -> {
+                    NaviController(context).toProfileFromProjects(list[holder.adapterPosition].username!!) }
             }
-
-            //SharedPreferenceObject.editorSharedPreference(context, "position", holder.adapterPosition.toString())
         }
 
         holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(list[position].id!!) != null
@@ -70,14 +62,10 @@ class AdapterNonPaging(var list: MutableList<CardBinding>, val inClick: InClick,
         when (currentViewMode) {
             "tile" -> {
                 holder.itemView.avatarView.visibility = GONE
-                /*val tValue = TypedValue()
-                context.resources.getValue(R.dimen.height_of_grid, tValue, true)
-                val floatResources = tValue.float
-                holder.itemView.bigImageView.layoutParams.height = floatResources.toInt()*/
 
-                copyList.views = holder.decimal(copyList.views.toString())
-                copyList.appreciations = holder.decimal(copyList.appreciations.toString())
-                copyList.comments = holder.decimal(copyList.comments.toString())
+                copyList.views = MathObject.decimal(copyList.views.toString())
+                copyList.appreciations = MathObject.decimal(copyList.appreciations.toString())
+                copyList.comments = MathObject.decimal(copyList.comments.toString())
             }
 
             "list" -> {
@@ -97,18 +85,6 @@ class AdapterNonPaging(var list: MutableList<CardBinding>, val inClick: InClick,
         fun bind(Api: CardBinding) {
             binding.cardView = Api
             binding.notifyPropertyChanged(BR._all)
-        }
-
-        fun decimal(numberString: String): String {
-            var number = numberString
-            if (number.toInt() > 1000) {
-                var round = number.toInt()
-                val df = DecimalFormat("#.#")
-                round /= 1000
-                df.roundingMode = RoundingMode.CEILING
-                number = (df.format(round) + "k")
-            }
-            return number
         }
 
     }

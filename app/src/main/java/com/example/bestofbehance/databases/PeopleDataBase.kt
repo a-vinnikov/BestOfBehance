@@ -1,4 +1,4 @@
-package com.example.bestofbehance.databases.forRoom
+package com.example.bestofbehance.databases
 
 import android.content.Context
 import androidx.room.*
@@ -18,7 +18,6 @@ abstract class PeopleDataBase : RoomDatabase() {
 
     class Migration1To2 : Migration(1, 3) {
         override fun migrate(database: SupportSQLiteDatabase) {
-            //database.execSQL("ALTER TABLE PeopleData DROP COLUMN username TEXT")
             database.execSQL("CREATE TABLE PeopleData_new (id TEXT, avatar TEXT, name TEXT, post TEXT, views TEXT, appreciations TEXT, followers TEXT, following TEXT, added TEXT, PRIMARY KEY(id))")
             database.execSQL("INSERT INTO PeopleData_new (id, avatar, name, post, views, appreciations, followers, following, added) SELECT id, avatar, name, post, views, appreciations, followers, following, added FROM PeopleData")
             database.execSQL("DROP TABLE PeopleData")
@@ -46,7 +45,10 @@ abstract class PeopleDataBase : RoomDatabase() {
                             context.applicationContext,
                             PeopleDataBase::class.java,
                             DB_NAME
-                        ).addMigrations(migration_1_2, migration_2_3).allowMainThreadQueries().build()
+                        ).addMigrations(
+                            migration_1_2,
+                            migration_2_3
+                        ).allowMainThreadQueries().build()
                     }
                 }
             }

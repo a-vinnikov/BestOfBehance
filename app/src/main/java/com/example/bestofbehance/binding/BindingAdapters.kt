@@ -7,8 +7,8 @@ import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.request.RequestOptions
-import com.example.bestofbehance.viewModels.GlideApp
-import com.example.bestofbehance.viewModels.GlideOptions.circleCropTransform
+import com.example.bestofbehance.classesToSupport.GlideApp
+import com.example.bestofbehance.classesToSupport.GlideOptions.circleCropTransform
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 
 object BindingAdapters{
@@ -20,9 +20,9 @@ object BindingAdapters{
 
     @JvmStatic
     @BindingAdapter(value = ["loadingRoundedImage", "loadingThumbnail"])
-    fun setRoundedImageUrl(view: ImageView, url: String?, turl: String?) {
+    fun setRoundedImageUrl(view: ImageView, url: String?, thumbnail: String?) {
         val options = RequestOptions().transform(MultiTransformation(CenterCrop(), RoundedCornersTransformation(15, 0)))
-        GlideApp.with(view.context).load(url).thumbnail(Glide.with(view.context).load(turl).apply(options)).apply(options).diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(view)
+        GlideApp.with(view.context).load(url).thumbnail(Glide.with(view.context).load(thumbnail).apply(options)).apply(options).diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(view)
     }
 
     @JvmStatic
@@ -33,8 +33,8 @@ object BindingAdapters{
 
     @JvmStatic
     @BindingAdapter(value = ["loadingBigCircleImage", "loadingThumbnail"])
-    fun setBigCircleImageUrl(view: ImageView, url: String?, turl: String?) {
-        GlideApp.with(view.context).load(url).thumbnail(Glide.with(view.context).load(turl).apply(circleCropTransform())).apply(circleCropTransform()).into(view)
+    fun setBigCircleImageUrl(view: ImageView, url: String?, thumbnail: String?) {
+        GlideApp.with(view.context).load(url).thumbnail(Glide.with(view.context).load(thumbnail).apply(circleCropTransform())).apply(circleCropTransform()).into(view)
     }
 
 }

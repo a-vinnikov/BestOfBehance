@@ -22,4 +22,3 @@ data class ProjectsBinding(
     @ColumnInfo(name = "added") var added: String?
 ) : Serializable
 
-//.apply( RequestOptions().circleCrop())

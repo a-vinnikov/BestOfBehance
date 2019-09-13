@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
-import com.example.bestofbehance.viewModels.ConnectionLiveData
-import com.example.bestofbehance.viewModels.NaviController
+import com.example.bestofbehance.classesToSupport.ConnectionLiveData
+import com.example.bestofbehance.classesToSupport.NaviController
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.textView
@@ -26,8 +26,13 @@ open class MainActivity : AppCompatActivity() {
         .build()
 
     private fun setupNavigation() {
-        NavigationUI.setupActionBarWithNavController(this, NaviController(this).controller, appBarConfiguration)
-        navigation.setupWithNavController(NaviController(this).controller)
+        NavigationUI.setupActionBarWithNavController(this, NaviController(
+            this
+        ).controller, appBarConfiguration)
+        navigation.setupWithNavController(
+            NaviController(
+                this
+            ).controller)
 
     }
 
@@ -56,7 +61,6 @@ open class MainActivity : AppCompatActivity() {
                     }
                 }
         })
-        //ConnectChecking.check(this, snack_coordinator)
     }
 
     override fun onSupportNavigateUp(): Boolean {

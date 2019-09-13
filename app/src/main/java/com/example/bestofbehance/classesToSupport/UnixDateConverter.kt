@@ -1,7 +1,6 @@
-package com.example.bestofbehance.binding
+package com.example.bestofbehance.classesToSupport
 
 import android.annotation.SuppressLint
-import androidx.databinding.BindingConversion
 import java.text.SimpleDateFormat
 import java.util.*
 

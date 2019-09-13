@@ -11,14 +11,14 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.PeopleBinding
-import com.example.bestofbehance.databases.forRoom.PeopleDataBase
-import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
-import com.example.bestofbehance.viewModels.BookmarkClick
+import com.example.bestofbehance.databases.PeopleDataBase
+import com.example.bestofbehance.classesToSupport.BookmarkClick
+import com.example.bestofbehance.classesToSupport.MultiList
+import com.example.bestofbehance.forAdapters.AdapterMulti
 import com.example.bestofbehance.viewModels.VMForParse
 import com.example.bestofbehance.viewModels.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_people.*
-import kotlinx.android.synthetic.main.fragment_projects.*
 
 
 class PeopleFragment : Fragment() {
@@ -65,7 +65,8 @@ class PeopleFragment : Fragment() {
         convertProjectsToCard(PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.all) { result ->
             if (result.size != 0){
                 val temp: MutableList<MultiList> = result
-                 adapterPeople = AdapterMulti(temp, object : BookmarkClick {
+                 adapterPeople = AdapterMulti(temp, object :
+                     BookmarkClick {
                      override fun setPosition(position: Int) {
                          if (PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.getByUsername((temp[position] as MultiList.PeopleList).multiPeople.username!!) != null) {
                              PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.deleteByUsername((temp[position] as MultiList.PeopleList).multiPeople.username!!)
@@ -105,14 +106,6 @@ class PeopleFragment : Fragment() {
             )
         }
         myCallBack.invoke(listCard)
-    }
-
-    private fun rewriter(list: List<MultiList>, myCallBack: (result: MutableList<PeopleBinding>?) -> Unit){
-        val temp: MutableList<PeopleBinding>? = null
-        for (element in list){
-            temp?.add((element as MultiList.PeopleList).multiPeople)
-        }
-        myCallBack.invoke(temp)
     }
 
 }

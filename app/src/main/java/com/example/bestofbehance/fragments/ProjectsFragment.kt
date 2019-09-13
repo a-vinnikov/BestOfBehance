@@ -10,8 +10,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.databases.SharedPreferenceObject
-import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
+import com.example.bestofbehance.classesToSupport.BookmarkClick
+import com.example.bestofbehance.classesToSupport.InClick
+import com.example.bestofbehance.classesToSupport.NaviController
+import com.example.bestofbehance.classesToSupport.SharedPreferenceObject
+import com.example.bestofbehance.databases.ProjectsDataBase
+import com.example.bestofbehance.forAdapters.AdapterNonPaging
 import com.example.bestofbehance.viewModels.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_projects.*

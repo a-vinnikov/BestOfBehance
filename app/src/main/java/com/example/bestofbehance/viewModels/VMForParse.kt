@@ -7,7 +7,7 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.binding.ProfileBinding
-import com.example.bestofbehance.fragments.MultiList
+import com.example.bestofbehance.classesToSupport.MultiList
 import com.example.bestofbehance.paging.ProfileDataSource
 import com.example.bestofbehance.paging.BestDataSource
 import com.example.bestofbehance.paging.DataSourceFactory
@@ -33,11 +33,6 @@ class VMForParse : AndroidViewModel(Application()) {
             PagedList.Config.Builder().setEnablePlaceholders(true).setPageSize(PAGING_PAGE_SIZE).build()
 
         itemPagedList = LivePagedListBuilder(itemDataSourceFactory, config).build()
-    }
-
-    fun setDBGeneral(page: Int): MutableLiveData<MutableList<CardBinding>> {
-        ParseForVM().generalRetrofit(page) { result -> mainContentList.postValue(result) }
-        return mainContentList
     }
 
     fun setContent(id: Int): MutableLiveData<MutableList<MultiList>> {

@@ -20,7 +20,4 @@ data class CardBinding(
     @ColumnInfo(name = "published") var published: Int?,
     @ColumnInfo(name = "url") var url: String?
 
-
 ) : Serializable
-
-//.apply( RequestOptions().circleCrop())

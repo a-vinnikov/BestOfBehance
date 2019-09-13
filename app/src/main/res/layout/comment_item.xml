@@ -6,7 +6,7 @@
 
     <data>
         <variable name="commentsView" type="com.example.bestofbehance.binding.CommentsBinding"/>
-        <import type="com.example.bestofbehance.binding.UnixDateConverter"/>
+        <import type="com.example.bestofbehance.classesToSupport.UnixDateConverter"/>
     </data>
 
 

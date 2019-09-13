@@ -1,11 +1,10 @@
 package com.example.bestofbehance.viewModels
 
-import android.content.Context
 import com.example.bestofbehance.retrofit.BehanceApiInterface
 import com.example.bestofbehance.binding.*
 import com.example.bestofbehance.dagger.NetworkModule
 import com.example.bestofbehance.gson.*
-import com.example.bestofbehance.fragments.MultiList
+import com.example.bestofbehance.classesToSupport.MultiList
 import org.jsoup.Jsoup
 import retrofit2.Call
 import retrofit2.Callback
@@ -18,8 +17,6 @@ class ParseForVM {
     private val iListCom: MutableList<MultiList> = mutableListOf()
     private val userList: MutableList<ProfileBinding> = mutableListOf()
     private val linksList: MutableMap<String, String?> = mutableMapOf()
-    //xMrW480v8SrR9J02koQXiIEEMr3uzIfd
-    //0QmPh684DRz1SpWHDikkyFCzLShGiHPi
 
     fun generalRetrofit(page: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit) {
 

@@ -1,11 +1,11 @@
-package com.example.bestofbehance.viewModels
+package com.example.bestofbehance.classesToSupport
 
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.module.AppGlideModule
 
 
 @GlideModule
-class CustomeGlideModule : AppGlideModule(){
+class CustomGlideModule : AppGlideModule(){
     override fun isManifestParsingEnabled(): Boolean {
         return false
     }

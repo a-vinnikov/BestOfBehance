@@ -1,4 +1,4 @@
-package com.example.bestofbehance.viewModels
+package com.example.bestofbehance.classesToSupport
 
 import android.app.Activity
 import android.content.Context
@@ -9,7 +9,7 @@ import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.fragments.*
 
 
-class NaviController(internal val activity: Context) {
+class NaviController(activity: Context) {
 
     lateinit var context: FragmentActivity
 

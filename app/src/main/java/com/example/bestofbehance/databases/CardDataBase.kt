@@ -1,4 +1,4 @@
-package com.example.bestofbehance.databases.forRoom
+package com.example.bestofbehance.databases
 
 import android.content.Context
 import androidx.room.*
@@ -58,7 +58,11 @@ abstract class CardDataBase : RoomDatabase() {
                             context.applicationContext,
                             CardDataBase::class.java,
                             DB_NAME
-                        ).addMigrations(migration_1_4, migration_4_5, migration_5_6).allowMainThreadQueries().build()
+                        ).addMigrations(
+                            migration_1_4,
+                            migration_4_5,
+                            migration_5_6
+                        ).allowMainThreadQueries().build()
                     }
                 }
             }

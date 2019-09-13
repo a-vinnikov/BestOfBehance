@@ -3,7 +3,7 @@ import android.content.Context
 import androidx.paging.PageKeyedDataSource
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.dagger.NetworkModule
-import com.example.bestofbehance.databases.forRoom.CardDataBase
+import com.example.bestofbehance.databases.CardDataBase
 import com.example.bestofbehance.gson.GeneralResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,7 +17,6 @@ class BestDataSource(val context: Context) : PageKeyedDataSource<Int, CardBindin
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, CardBinding>) {
         NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient().build())).getGeneral("appreciations", FIRST_PAGE).enqueue(object : Callback<GeneralResponse> {
-        //RetrofitClient.getInstance().getApi().getGeneral("appreciations", FIRST_PAGE).enqueue(object : Callback<GeneralResponse> {
             override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {}
 
             override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {

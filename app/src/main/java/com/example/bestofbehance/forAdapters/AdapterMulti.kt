@@ -1,4 +1,4 @@
-package com.example.bestofbehance.fragments
+package com.example.bestofbehance.forAdapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,10 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.binding.*
 import com.example.bestofbehance.dagger.NetworkModule
-import com.example.bestofbehance.databases.forRoom.PeopleDataBase
+import com.example.bestofbehance.databases.PeopleDataBase
 import com.example.bestofbehance.databinding.*
-import com.example.bestofbehance.viewModels.BookmarkClick
-import com.example.bestofbehance.viewModels.NaviController
+import com.example.bestofbehance.classesToSupport.BookmarkClick
+import com.example.bestofbehance.classesToSupport.MultiList
+import com.example.bestofbehance.classesToSupport.NaviController
 import kotlinx.android.synthetic.main.comment_item.view.*
 import kotlinx.android.synthetic.main.people_item.view.*
 
@@ -105,7 +106,9 @@ class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick
             binding.commentsView = comment
             binding.notifyPropertyChanged(BR._all)
 
-            itemView.commentAvatarView.setOnClickListener { NaviController(context).toProfileFromDetails(comment.commentatorUsername!!) }
+            itemView.commentAvatarView.setOnClickListener { NaviController(
+                context
+            ).toProfileFromDetails(comment.commentatorUsername!!) }
         }
 
     }
@@ -118,7 +121,9 @@ class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick
 
             itemView.bookmark_people.isChecked = PeopleDataBase.getDatabase(context)?.getPeopleDao()?.getByUsername(people.username!!) != null
             if (NetworkModule().hasNetwork(context)){
-                itemView.peopleLayout.setOnClickListener { NaviController(context).toProfileFromPeople(people.username!!) }
+                itemView.peopleLayout.setOnClickListener { NaviController(
+                    context
+                ).toProfileFromPeople(people.username!!) }
                 itemView.bookmark_people.setOnClickListener { bookmark.setPosition(adapterPosition) }
             }
         }

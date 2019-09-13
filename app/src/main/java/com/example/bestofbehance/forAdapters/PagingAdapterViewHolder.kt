@@ -1,7 +1,6 @@
-package com.example.bestofbehance.fragments
+package com.example.bestofbehance.forAdapters
 
 import android.content.Context
-import android.util.TypedValue
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View.GONE
@@ -12,17 +11,15 @@ import androidx.recyclerview.widget.DiffUtil
 import kotlinx.android.synthetic.main.list_item.view.*
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.databinding.ListItemBinding
-import com.example.bestofbehance.viewModels.InClick
+import com.example.bestofbehance.classesToSupport.InClick
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import com.example.bestofbehance.BR
-import com.example.bestofbehance.R
-import com.example.bestofbehance.databases.SharedPreferenceObject
-import com.example.bestofbehance.databases.SharedPreferenceObject.sharedCurrentViewMode
-import com.example.bestofbehance.databases.forRoom.ProjectsDataBase
-import com.example.bestofbehance.viewModels.BookmarkClick
-import com.example.bestofbehance.viewModels.NaviController
-import timber.log.Timber
+import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.sharedCurrentViewMode
+import com.example.bestofbehance.databases.ProjectsDataBase
+import com.example.bestofbehance.classesToSupport.BookmarkClick
+import com.example.bestofbehance.classesToSupport.MathObject
+import com.example.bestofbehance.classesToSupport.NaviController
 
 
 class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkClick, val layout: String) :
@@ -80,9 +77,9 @@ class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkC
                 val floatResources = tValue.float
                 holder.itemView.bigImageView.layoutParams.height = floatResources.toInt()*/
 
-                copyList.views = holder.decimal(copyList.views.toString())
-                copyList.appreciations = holder.decimal(copyList.appreciations.toString())
-                copyList.comments = holder.decimal(copyList.comments.toString())
+                copyList.views = MathObject.decimal(copyList.views.toString())
+                copyList.appreciations = MathObject.decimal(copyList.appreciations.toString())
+                copyList.comments = MathObject.decimal(copyList.comments.toString())
             }
 
             "list" -> {
@@ -100,18 +97,6 @@ class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkC
         fun bind(Api: CardBinding) {
             binding.cardView = Api
             binding.notifyPropertyChanged(BR._all)
-        }
-
-        fun decimal(numberString: String): String {
-            var number = numberString
-            if (number.toInt() > 1000) {
-                var round = number.toInt()
-                val df = DecimalFormat("#.#")
-                round /= 1000
-                df.roundingMode = RoundingMode.CEILING
-                number = (df.format(round) + "k")
-            }
-            return number
         }
 
     }
