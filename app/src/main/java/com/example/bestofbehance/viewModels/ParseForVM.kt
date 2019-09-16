@@ -1,11 +1,11 @@
 package com.example.bestofbehance.viewModels
 
+import androidx.core.text.HtmlCompat
 import com.example.bestofbehance.retrofit.BehanceApiInterface
 import com.example.bestofbehance.binding.*
 import com.example.bestofbehance.dagger.NetworkModule
 import com.example.bestofbehance.gson.*
 import com.example.bestofbehance.classesToSupport.MultiList
-import org.jsoup.Jsoup
 import retrofit2.Call
 import retrofit2.Callback
 import java.lang.StringBuilder
@@ -17,61 +17,6 @@ class ParseForVM {
     private val iListCom: MutableList<MultiList> = mutableListOf()
     private val userList: MutableList<ProfileBinding> = mutableListOf()
     private val linksList: MutableMap<String, String?> = mutableMapOf()
-
-    fun generalRetrofit(page: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit) {
-
-        val call = service()?.getGeneral("appreciations", page)
-
-        call?.enqueue(object : Callback<GeneralResponse> {
-            override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
-
-            }
-
-            override fun onResponse(
-                call: Call<GeneralResponse>,
-                response: retrofit2.Response<GeneralResponse>
-            ) {
-                val listResponse = response.body()?.projects
-
-
-                if (listResponse != null) for (i in listResponse.indices) {
-
-                    val art = listResponse[i]?.covers?.original
-                    val thumbnail = listResponse[i]?.covers?.jsonMember115
-                    val artistName = listResponse[i]?.owners?.get(0)?.displayName
-                    val avatar = listResponse[i]?.owners?.get(0)?.images?.jsonMember138
-                    val appreciations = listResponse[i]?.stats?.appreciations
-                    val views = listResponse[i]?.stats?.views
-                    val comments = listResponse[i]?.stats?.comments
-                    val artName = listResponse[i]?.name
-                    val id = listResponse[i]?.id
-                    val username = listResponse[i]?.owners?.get(0)?.username
-                    val published = listResponse[i]?.publishedOn
-                    val url = listResponse[i]?.url
-
-                    recList.add(
-                        CardBinding(
-                            id!!,
-                            art,
-                            thumbnail,
-                            avatar,
-                            artistName,
-                            artName,
-                            views.toString(),
-                            appreciations.toString(),
-                            comments.toString(),
-                            username,
-                            published,
-                            url
-                        )
-                    )
-                    i + 1
-                }
-                myCallBack.invoke(recList)
-            }
-
-        })
-    }
 
 
     fun projectRetrofit(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit) {
@@ -99,8 +44,8 @@ class ParseForVM {
                         }
                         "text" -> {
                             val text = listResponse[i]?.text.toString()
-                            val text1 = Jsoup.parse(text).text()
-                            iListCon.add(MultiList.TextList(TextBinding(text1)))
+                            val textFormatted = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().trimStart().trimEnd()
+                            iListCon.add(MultiList.TextList(TextBinding(textFormatted)))
                         }
                         "media_collection" -> {
                             for (element in listResponse[i]?.components!!) {
@@ -160,8 +105,8 @@ class ParseForVM {
                         )
                         i + 1
                     }
-                    myCallBack.invoke(iListCom)
                 }
+                myCallBack.invoke(iListCom)
             }
 
         })

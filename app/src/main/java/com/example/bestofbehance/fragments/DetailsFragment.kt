@@ -128,9 +128,10 @@ class DetailsFragment : Fragment() {
 
                     comments.setOnClickListener {
                         if (commentsItems!!.size < 7){
+                            details_card.setExpanded(false, true)
                             (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPosition(temp.size - 1)
                         } else {
-                            details_card.setExpanded(false)
+                            details_card.setExpanded(false, true)
                             (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(imageItems!!.lastIndex + 1 , 0)
                         }
 

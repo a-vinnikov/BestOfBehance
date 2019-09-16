@@ -146,7 +146,7 @@ class ProfileFragment : Fragment() {
             binding.cardViewProfile = list[0]
             binding.notifyPropertyChanged(BR._all)
 
-            if (list[0].aboutMe != "No information" || list[0].aboutMe!!.length > 100) {
+            if (list[0].aboutMe != "No information" && list[0].aboutMe!!.length > 200) {
                 more.visibility = VISIBLE
             }
         }
