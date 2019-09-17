@@ -10,20 +10,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 import android.net.ConnectivityManager
 import okhttp3.*
-import timber.log.Timber
 import java.io.IOException
 import java.util.concurrent.TimeUnit
-import android.R.string
-import android.os.AsyncTask.execute
-
-
-
-var API_KEY = "xMrW480v8SrR9J02koQXiIEEMr3uzIfd"
-//xMrW480v8SrR9J02koQXiIEEMr3uzIfd
-//0QmPh684DRz1SpWHDikkyFCzLShGiHPi
+import android.content.res.Resources
+import androidx.appcompat.app.AppCompatActivity
+import com.example.bestofbehance.R
 
 @Module
-class NetworkModule {
+class NetworkModule(val context: Context) {
 
     @Singleton
     @Provides
@@ -34,7 +28,7 @@ class NetworkModule {
     @Provides
     fun providesRetrofit(okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
-            .baseUrl("https://api.behance.net/v2/")
+            .baseUrl(context.resources.getString(R.string.baseUrl))
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
@@ -43,6 +37,7 @@ class NetworkModule {
     @Singleton
     @Provides
     fun providesOkHttpClient(): OkHttpClient.Builder {
+        var api_key: String = context.resources.getString(R.string.firstKey)
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.HEADERS
 
@@ -54,7 +49,7 @@ class NetworkModule {
                 val originalHttpUrl = original.url
 
                 val url = originalHttpUrl.newBuilder()
-                    .addQueryParameter("api_key", API_KEY)
+                    .addQueryParameter("api_key", api_key)
                     .build()
 
                 val requestBuilder = original.newBuilder().url(url)
@@ -64,9 +59,9 @@ class NetworkModule {
                 val response = chain.proceed(request)
 
                 if (!response.isSuccessful && response.code == 429) {
-                    when (API_KEY){
-                        "xMrW480v8SrR9J02koQXiIEEMr3uzIfd" -> API_KEY = "0QmPh684DRz1SpWHDikkyFCzLShGiHPi"
-                        "0QmPh684DRz1SpWHDikkyFCzLShGiHPi" -> API_KEY = "xMrW480v8SrR9J02koQXiIEEMr3uzIfd"
+                    when (api_key){
+                        context.resources.getString(R.string.firstKey) -> api_key = context.resources.getString(R.string.secondKey)
+                        context.resources.getString(R.string.secondKey) -> api_key = context.resources.getString(R.string.firstKey)
                     }
                 }
 
@@ -83,7 +78,7 @@ class NetworkModule {
         return httpClient
     }
 
-    fun hasNetwork(context: Context): Boolean {
+    fun hasNetwork(): Boolean {
         val con = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val ni = con.activeNetworkInfo
         return !(ni == null || !ni.isConnected)

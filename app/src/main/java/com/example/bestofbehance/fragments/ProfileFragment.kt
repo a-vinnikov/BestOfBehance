@@ -75,7 +75,7 @@ class ProfileFragment : Fragment() {
                     nameProfile.text == null -> item.isCheckable = false
                     PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.getByUsername(args.cardBindingProfile) == null -> {
 
-                        jsonModel.setUser(args.cardBindingProfile)
+                        jsonModel.setUser(args.cardBindingProfile, context!!)
                         val observerGSON = Observer<MutableList<ProfileBinding>> { list ->
                             PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.insert(
                                 PeopleBinding(
@@ -136,7 +136,7 @@ class ProfileFragment : Fragment() {
 
         jsonModel = ViewModelProviders.of(this, ViewModelFactory()).get(VMForParse::class.java)
 
-        jsonModel.setUser(args.cardBindingProfile)
+        jsonModel.setUser(args.cardBindingProfile, context!!)
 
         val observerGSON = Observer<MutableList<ProfileBinding>> { list ->
 
@@ -146,7 +146,7 @@ class ProfileFragment : Fragment() {
             binding.cardViewProfile = list[0]
             binding.notifyPropertyChanged(BR._all)
 
-            if (list[0].aboutMe != "No information" && list[0].aboutMe!!.length > 200) {
+            if (list[0].aboutMe != "No information" && list[0].aboutMe!!.length > resources.getInteger(R.integer.lengthOfAboutMe)) {
                 more.visibility = VISIBLE
             }
         }
@@ -241,7 +241,7 @@ class ProfileFragment : Fragment() {
 
     private fun createRecyclerView() {
         if (jsonModel.profilePagedList?.value == null) {
-            jsonModel.setUserProjects(args.cardBindingProfile)
+            jsonModel.setUserProjects(args.cardBindingProfile, context!!)
         }
 
         jsonModel.profilePagedList?.observe(viewLifecycleOwner,

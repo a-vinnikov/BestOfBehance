@@ -7,7 +7,6 @@ import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.request.RequestOptions
-import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.GlideApp
 import com.example.bestofbehance.classesToSupport.GlideOptions.circleCropTransform
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
@@ -16,14 +15,14 @@ object BindingAdapters{
     @JvmStatic
     @BindingAdapter("loadingImage")
     fun setImageUrl(view: ImageView, url: String?) {
-        GlideApp.with(view.context).load(url).placeholder(R.color.colorMain).into(view)
+        GlideApp.with(view.context).load(url).thumbnail(0.1f).diskCacheStrategy(DiskCacheStrategy.ALL).into(view)
     }
 
     @JvmStatic
     @BindingAdapter(value = ["loadingRoundedImage", "loadingThumbnail"])
     fun setRoundedImageUrl(view: ImageView, url: String?, thumbnail: String?) {
         val options = RequestOptions().transform(MultiTransformation(CenterCrop(), RoundedCornersTransformation(15, 0)))
-        GlideApp.with(view.context).load(url).thumbnail(Glide.with(view.context).load(thumbnail).apply(options)).apply(options).diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(view)
+        GlideApp.with(view.context).load(url).thumbnail(Glide.with(view.context).load(thumbnail).apply(options)).apply(options).diskCacheStrategy(DiskCacheStrategy.ALL).into(view)
     }
 
     @JvmStatic
@@ -39,3 +38,6 @@ object BindingAdapters{
     }
 
 }
+
+
+//doAsync { GlideApp.get(context!!).clearDiskCache()}

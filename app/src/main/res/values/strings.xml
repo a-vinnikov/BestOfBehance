@@ -26,4 +26,8 @@
         <item quantity="other">COMMENTS (%d)</item>
     </plurals>
 
+    <string name="firstKey">xMrW480v8SrR9J02koQXiIEEMr3uzIfd</string>
+    <string name="secondKey">0QmPh684DRz1SpWHDikkyFCzLShGiHPi</string>
+    <string name="baseUrl">https://api.behance.net/v2/</string>
+
 </resources>

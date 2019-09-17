@@ -120,7 +120,7 @@ class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick
             binding.notifyPropertyChanged(BR._all)
 
             itemView.bookmark_people.isChecked = PeopleDataBase.getDatabase(context)?.getPeopleDao()?.getByUsername(people.username!!) != null
-            if (NetworkModule().hasNetwork(context)){
+            if (NetworkModule(context).hasNetwork()){
                 itemView.peopleLayout.setOnClickListener { NaviController(
                     context
                 ).toProfileFromPeople(people.username!!) }

@@ -1,6 +1,8 @@
 package com.example.bestofbehance.paging
 
+import android.content.Context
 import androidx.paging.PageKeyedDataSource
+import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.dagger.NetworkModule
 import com.example.bestofbehance.gson.GeneralResponse
@@ -8,19 +10,19 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding>() {
+class ProfileDataSource(val user: String, val context: Context) : PageKeyedDataSource<Int, CardBinding>() {
 
     private val recList: MutableList<CardBinding> = mutableListOf()
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, CardBinding>) {
-        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient().build())).getUserProjects(user, FIRST_PAGE).enqueue(object : Callback<GeneralResponse> {
+        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getUserProjects(user, FIRST_PAGE)}.enqueue(object : Callback<GeneralResponse> {
             override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {}
 
             override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
                 response.body()?.run {
                     projects(user,this){ result ->
                         val firstResponse = result.sortedByDescending { it.published }
-                        if (firstResponse.size < 48){
+                        if (firstResponse.size < context.resources.getInteger(R.integer.responseSize)){
                             callback.onResult(firstResponse, null, FIRST_PAGE)
                         } else {
                             callback.onResult(firstResponse, null, FIRST_PAGE + 1)
@@ -33,7 +35,7 @@ class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
         if(params.key != 1){
-            NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient().build())).getUserProjects(user, params.key)
+            with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getUserProjects(user, params.key)}
                 .enqueue(object : Callback<GeneralResponse> {
                     override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
                     }
@@ -51,7 +53,7 @@ class ProfileDataSource(val user: String) : PageKeyedDataSource<Int, CardBinding
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient().build())).getUserProjects(user, params.key)
+        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getUserProjects(user, params.key)}
             .enqueue(object : Callback<GeneralResponse> {
                 override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
                 }

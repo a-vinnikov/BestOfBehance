@@ -16,7 +16,7 @@ class BestDataSource(val context: Context) : PageKeyedDataSource<Int, CardBindin
     private val recList: MutableList<CardBinding> = mutableListOf()
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, CardBinding>) {
-        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient().build())).getGeneral("appreciations", FIRST_PAGE).enqueue(object : Callback<GeneralResponse> {
+        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getGeneral("appreciations", FIRST_PAGE)}.enqueue(object : Callback<GeneralResponse> {
             override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {}
 
             override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
@@ -32,7 +32,7 @@ class BestDataSource(val context: Context) : PageKeyedDataSource<Int, CardBindin
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient().build())).getGeneral("appreciations", params.key)
+        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getGeneral("appreciations", params.key)}
             .enqueue(object : Callback<GeneralResponse> {
                 override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
                 }
@@ -52,7 +52,7 @@ class BestDataSource(val context: Context) : PageKeyedDataSource<Int, CardBindin
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        NetworkModule().providesBehanceApi(NetworkModule().providesRetrofit(NetworkModule().providesOkHttpClient().build())).getGeneral("appreciations", params.key)
+        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getGeneral("appreciations", params.key)}
             .enqueue(object : Callback<GeneralResponse> {
                 override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
                 }

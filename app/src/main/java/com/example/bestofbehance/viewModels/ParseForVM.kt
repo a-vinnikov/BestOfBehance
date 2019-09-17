@@ -1,5 +1,6 @@
 package com.example.bestofbehance.viewModels
 
+import android.content.Context
 import androidx.core.text.HtmlCompat
 import com.example.bestofbehance.retrofit.BehanceApiInterface
 import com.example.bestofbehance.binding.*
@@ -10,7 +11,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import java.lang.StringBuilder
 
-class ParseForVM {
+class ParseForVM(val context: Context) {
 
     private val recList: MutableList<CardBinding> = mutableListOf()
     private val iListCon: MutableList<MultiList> = mutableListOf()
@@ -21,7 +22,7 @@ class ParseForVM {
 
     fun projectRetrofit(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit) {
 
-        val call = service()?.getProject(projectId.toString())
+        val call = service(context)?.getProject(projectId.toString())
 
         call?.enqueue(object : Callback<ImageResponse> {
             override fun onFailure(call: Call<ImageResponse>, t: Throwable) {
@@ -44,7 +45,7 @@ class ParseForVM {
                         }
                         "text" -> {
                             val text = listResponse[i]?.text.toString()
-                            val textFormatted = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().trimStart().trimEnd()
+                            val textFormatted = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().trim()
                             iListCon.add(MultiList.TextList(TextBinding(textFormatted)))
                         }
                         "media_collection" -> {
@@ -63,7 +64,7 @@ class ParseForVM {
 
     fun commentsRetrofit(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit) {
 
-        val call = service()?.getComments(projectId.toString())
+        val call = service(context)?.getComments(projectId.toString())
 
         call?.enqueue(object : Callback<CommentsMain> {
             override fun onFailure(call: Call<CommentsMain>, t: Throwable) {
@@ -118,7 +119,7 @@ class ParseForVM {
         myCallBack: (result: MutableList<ProfileBinding>, links: MutableMap<String, String?>) -> Unit
     ) {
 
-        val call = service()?.getUser(username)
+        val call = service(context)?.getUser(username)
 
         call?.enqueue(object : Callback<UserResponse> {
             override fun onFailure(call: Call<UserResponse>, t: Throwable) {
@@ -219,8 +220,8 @@ class ParseForVM {
 
     }
 
-    private fun service(): BehanceApiInterface? {
-        return with(NetworkModule()) { providesBehanceApi(providesRetrofit(providesOkHttpClient().build())) }
+    private fun service(context: Context): BehanceApiInterface? {
+        return with(NetworkModule(context)) { providesBehanceApi(providesRetrofit(providesOkHttpClient().build())) }
     }
 
 }

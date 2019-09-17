@@ -132,7 +132,8 @@ class DetailsFragment : Fragment() {
                             (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPosition(temp.size - 1)
                         } else {
                             details_card.setExpanded(false, true)
-                            (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(imageItems!!.lastIndex + 1 , 0)
+                            (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(imageItems!!.lastIndex + 1 , resources.getInteger(R.integer.offsetComments)
+                            )
                         }
 
                     }
@@ -148,8 +149,8 @@ class DetailsFragment : Fragment() {
 
     private fun fetchData(): MediatorLiveData<MutableList<MultiList>> {
         val liveDataMulti = MediatorLiveData<MutableList<MultiList>>()
-        mediatorAdd(liveDataMulti, jsonModel.setContent(args.cardBindingArg.id!!))
-        mediatorAdd(liveDataMulti, jsonModel.setComments(args.cardBindingArg.id!!))
+        mediatorAdd(liveDataMulti, jsonModel.setContent(args.cardBindingArg.id!!, context!!))
+        mediatorAdd(liveDataMulti, jsonModel.setComments(args.cardBindingArg.id!!, context!!))
         return liveDataMulti
     }
 
