@@ -13,12 +13,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuInflater
 import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
-import com.bumptech.glide.Glide
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.binding.ProjectsBinding
 import com.example.bestofbehance.classesToSupport.BookmarkClick
-import com.example.bestofbehance.classesToSupport.GlideApp
+import com.example.bestofbehance.classesToSupport.CurrentDate
 import com.example.bestofbehance.classesToSupport.InClick
 import com.example.bestofbehance.classesToSupport.NaviController
 import com.example.bestofbehance.dagger.NetworkModule
@@ -29,7 +28,6 @@ import com.example.bestofbehance.databases.ProjectsDataBase
 import com.example.bestofbehance.forAdapters.AdapterNonPaging
 import com.example.bestofbehance.forAdapters.PagingAdapterViewHolder
 import com.example.bestofbehance.viewModels.*
-import org.jetbrains.anko.doAsync
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -49,11 +47,11 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         when (currentViewMode) {
             "list" -> {
                 menu.findItem(R.id.menu_switcher)
-                    ?.setIcon(R.drawable.list)
+                    ?.setIcon(R.drawable.tile)
             }
             "tile" -> {
                 menu.findItem(R.id.menu_switcher)
-                    ?.setIcon(R.drawable.tile)
+                    ?.setIcon(R.drawable.list)
             }
         }
 
@@ -69,12 +67,12 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     "tile" -> {
                         editorSharedPreference(context!!, "currentViewMode", VIEW_MODE_LISTVIEW)
                         recycler_view.layoutManager = LinearLayoutManager(activity)
-                        item.setIcon(R.drawable.list)
+                        item.setIcon(R.drawable.tile)
                     }
                     "list" -> {
                         editorSharedPreference(context!!, "currentViewMode", VIEW_MODE_GRIDVIEW)
                         recycler_view.layoutManager = GridLayoutManager(activity, 2)
-                        item.setIcon(R.drawable.tile)
+                        item.setIcon(R.drawable.list)
                     }
                 }
                 recycler_view.adapter?.notifyDataSetChanged()
@@ -106,7 +104,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         swipe.setOnRefreshListener(this)
-        jsonModel = ViewModelProviders.of(this, ViewModelFactory()).get(VMForParse::class.java)
+        jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(VMForParse::class.java)
 
         currentViewMode = sharedCurrentViewMode(context!!, "currentViewMode", currentViewMode)
         if (recycler_view.adapter == null) {
@@ -128,7 +126,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             when (it) {
                 true -> {
                     if (swipe.isRefreshing || jsonModel.itemPagedList?.value?.size == null) {
-                        jsonModel.setGeneral(context!!)
+                        jsonModel.setGeneral()
                     }
 
                     jsonModel.itemPagedList?.observe(viewLifecycleOwner,
@@ -179,7 +177,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                             list[position].artName, list[position].views,
                             list[position].appreciations, list[position].comments,
                             list[position].username, list[position].published, list[position].url,
-                            getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss")
+                            CurrentDate.getCurrentDateTime().toString()
                         )
                     )
                 } else {
@@ -198,15 +196,6 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {}
         }, "Best")
-    }
-
-    fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
-        val formatter = SimpleDateFormat(format, locale)
-        return formatter.format(this)
-    }
-
-    fun getCurrentDateTime(): Date {
-        return Calendar.getInstance().time
     }
 
 }

@@ -34,10 +34,10 @@ class ProjectsFragment : Fragment() {
 
         when (currentViewMode) {
             "list" -> {
-                menu.findItem(R.id.menu_switcher)?.setIcon(R.drawable.list)
+                menu.findItem(R.id.menu_switcher)?.setIcon(R.drawable.tile)
             }
             "tile" -> {
-                menu.findItem(R.id.menu_switcher)?.setIcon(R.drawable.tile)
+                menu.findItem(R.id.menu_switcher)?.setIcon(R.drawable.list)
             }
         }
     }
@@ -47,13 +47,11 @@ class ProjectsFragment : Fragment() {
         when (item.itemId) {
             R.id.menu_switcher -> {
                 if (currentViewMode == "tile") {
-                    item.setIcon(R.drawable.list)
-                    //createRecyclerView(VIEW_MODE_LISTVIEW)
+                    item.setIcon(R.drawable.tile)
                     SharedPreferenceObject.editorSharedPreference(context!!, "currentViewModeProjects", VIEW_MODE_LISTVIEW)
                     recycler_view_projects.layoutManager = LinearLayoutManager(activity)
                 } else if (currentViewMode == "list") {
-                    item.setIcon(R.drawable.tile)
-                    //createRecyclerView(VIEW_MODE_GRIDVIEW)
+                    item.setIcon(R.drawable.list)
                     SharedPreferenceObject.editorSharedPreference(context!!, "currentViewModeProjects", VIEW_MODE_GRIDVIEW)
                     recycler_view_projects.layoutManager = GridLayoutManager(activity, 2)
                 }
@@ -75,7 +73,7 @@ class ProjectsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        jsonModel = ViewModelProviders.of(this, ViewModelFactory()).get(VMForParse::class.java)
+        jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(VMForParse::class.java)
         currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context!!, "currentViewModeProjects", currentViewMode)
 
         if (recycler_view_projects.adapter == null) {

@@ -14,7 +14,7 @@ import com.example.bestofbehance.paging.DataSourceFactory
 
 const val PAGING_PAGE_SIZE = 10
 
-class VMForParse : AndroidViewModel(Application()) {
+class VMForParse(val context: Context) : AndroidViewModel(Application()) {
 
     val listForContents: MutableLiveData<MutableList<MultiList>> by lazy { MutableLiveData<MutableList<MultiList>>() }
     val listForComments: MutableLiveData<MutableList<MultiList>> by lazy { MutableLiveData<MutableList<MultiList>>() }
@@ -26,7 +26,7 @@ class VMForParse : AndroidViewModel(Application()) {
 
 
 
-    fun setGeneral(context: Context){
+    fun setGeneral(){
         val itemDataSourceFactory = DataSourceFactory(BestDataSource(context))
         val config =
             PagedList.Config.Builder().setEnablePlaceholders(true).setPageSize(PAGING_PAGE_SIZE).build()
@@ -34,23 +34,23 @@ class VMForParse : AndroidViewModel(Application()) {
         itemPagedList = LivePagedListBuilder(itemDataSourceFactory, config).build()
     }
 
-    fun setContent(id: Int, context: Context): MutableLiveData<MutableList<MultiList>> {
+    fun setContent(id: Int): MutableLiveData<MutableList<MultiList>> {
         ParseForVM(context).projectRetrofit(id) { result -> listForContents.postValue(result) }
         return listForContents
     }
 
-    fun setComments(id: Int, context: Context): MutableLiveData<MutableList<MultiList>> {
+    fun setComments(id: Int): MutableLiveData<MutableList<MultiList>> {
         ParseForVM(context).commentsRetrofit(id) { result -> listForComments.postValue(result) }
         return listForComments
     }
 
-    fun setUser(username: String, context: Context): Pair<MutableLiveData<MutableList<ProfileBinding>>, MutableLiveData<MutableMap<String, String?>>> {
+    fun setUser(username: String): Pair<MutableLiveData<MutableList<ProfileBinding>>, MutableLiveData<MutableMap<String, String?>>> {
         ParseForVM(context).userRetrofit(username) { result, links -> listForUser.postValue(result)
             listForLinks.postValue(links)}
         return Pair(listForUser, listForLinks)
     }
 
-    fun setUserProjects(username: String, context: Context){
+    fun setUserProjects(username: String){
         profilePagedList?.value?.clear()
         val itemDataSourceFactory = DataSourceFactory(ProfileDataSource(username, context))
         val config =

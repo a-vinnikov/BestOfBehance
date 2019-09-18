@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.ProjectsBinding
+import com.example.bestofbehance.classesToSupport.CurrentDate
 import com.example.bestofbehance.classesToSupport.MultiList
 import com.example.bestofbehance.databases.ProjectsDataBase
 import com.example.bestofbehance.classesToSupport.NaviController
@@ -57,7 +58,7 @@ class DetailsFragment : Fragment() {
                             args.cardBindingArg.artName, args.cardBindingArg.views,
                             args.cardBindingArg.appreciations, args.cardBindingArg.comments,
                             args.cardBindingArg.username, args.cardBindingArg.published, args.cardBindingArg.url,
-                            getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss"))
+                            CurrentDate.getCurrentDateTime().toString())
                     )
                     item.setIcon(R.drawable.ic_bookmarks_pressed)
                 } else {
@@ -93,7 +94,7 @@ class DetailsFragment : Fragment() {
         binding.cardViewDetails = args.cardBindingArg
         binding.notifyPropertyChanged(BR._all)
 
-        jsonModel = ViewModelProviders.of(this, ViewModelFactory()).get(VMForParse::class.java)
+        jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(VMForParse::class.java)
 
         return fragmentDetailsView
     }
@@ -149,8 +150,8 @@ class DetailsFragment : Fragment() {
 
     private fun fetchData(): MediatorLiveData<MutableList<MultiList>> {
         val liveDataMulti = MediatorLiveData<MutableList<MultiList>>()
-        mediatorAdd(liveDataMulti, jsonModel.setContent(args.cardBindingArg.id!!, context!!))
-        mediatorAdd(liveDataMulti, jsonModel.setComments(args.cardBindingArg.id!!, context!!))
+        mediatorAdd(liveDataMulti, jsonModel.setContent(args.cardBindingArg.id!!))
+        mediatorAdd(liveDataMulti, jsonModel.setComments(args.cardBindingArg.id!!))
         return liveDataMulti
     }
 
@@ -160,14 +161,5 @@ class DetailsFragment : Fragment() {
                 mediator.value = it
             }
         }
-    }
-
-    fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
-        val formatter = SimpleDateFormat(format, locale)
-        return formatter.format(this)
-    }
-
-    fun getCurrentDateTime(): Date {
-        return Calendar.getInstance().time
     }
 }

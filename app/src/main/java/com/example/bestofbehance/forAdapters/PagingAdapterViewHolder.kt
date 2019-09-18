@@ -28,8 +28,6 @@ class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkC
     lateinit var context: Context
     var position = 0
 
-    //RecyclerView.Adapter<AdapterViewHolder.ViewHolder>() {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ListItemBinding.inflate(inflater)
@@ -49,7 +47,6 @@ class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkC
 
         holder.itemView.avatarView.setOnClickListener {
             NaviController(context).toProfileFromBest(getItem(holder.adapterPosition)?.username!!)
-            //SharedPreferenceObject.editorSharedPreference(context, "position", holder.adapterPosition.toString())
         }
 
         holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(getItem(position)!!.id!!) != null
@@ -72,10 +69,6 @@ class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkC
         when (currentViewMode) {
             "tile" -> {
                 holder.itemView.avatarView.visibility = GONE
-                /*val tValue = TypedValue()
-                context.resources.getValue(R.dimen.height_of_grid, tValue, true)
-                val floatResources = tValue.float
-                holder.itemView.bigImageView.layoutParams.height = floatResources.toInt()*/
 
                 copyList.views = MathObject.decimal(copyList.views.toString())
                 copyList.appreciations = MathObject.decimal(copyList.appreciations.toString())

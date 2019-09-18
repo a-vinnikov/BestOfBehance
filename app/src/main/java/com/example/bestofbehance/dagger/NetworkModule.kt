@@ -12,8 +12,6 @@ import android.net.ConnectivityManager
 import okhttp3.*
 import java.io.IOException
 import java.util.concurrent.TimeUnit
-import android.content.res.Resources
-import androidx.appcompat.app.AppCompatActivity
 import com.example.bestofbehance.R
 
 @Module

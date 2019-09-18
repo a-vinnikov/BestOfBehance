@@ -25,10 +25,7 @@ import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.binding.PeopleBinding
 import com.example.bestofbehance.binding.ProfileBinding
 import com.example.bestofbehance.binding.ProjectsBinding
-import com.example.bestofbehance.classesToSupport.BookmarkClick
-import com.example.bestofbehance.classesToSupport.InClick
-import com.example.bestofbehance.classesToSupport.NaviController
-import com.example.bestofbehance.classesToSupport.SharedPreferenceObject
+import com.example.bestofbehance.classesToSupport.*
 import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.editorSharedPreference
 import com.example.bestofbehance.databases.PeopleDataBase
 import com.example.bestofbehance.databases.ProjectsDataBase
@@ -75,7 +72,7 @@ class ProfileFragment : Fragment() {
                     nameProfile.text == null -> item.isCheckable = false
                     PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.getByUsername(args.cardBindingProfile) == null -> {
 
-                        jsonModel.setUser(args.cardBindingProfile, context!!)
+                        jsonModel.setUser(args.cardBindingProfile)
                         val observerGSON = Observer<MutableList<ProfileBinding>> { list ->
                             PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.insert(
                                 PeopleBinding(
@@ -88,7 +85,7 @@ class ProfileFragment : Fragment() {
                                     list[0].appreciations,
                                     list[0].followers,
                                     list[0].following,
-                                    getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss")
+                                    CurrentDate.getCurrentDateTime().toString()
                                 )
                             )
                         }
@@ -134,9 +131,9 @@ class ProfileFragment : Fragment() {
         val binding = FragmentProfileBinding.inflate(inflater)
         val fragmentDetailsView: View = binding.root
 
-        jsonModel = ViewModelProviders.of(this, ViewModelFactory()).get(VMForParse::class.java)
+        jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(VMForParse::class.java)
 
-        jsonModel.setUser(args.cardBindingProfile, context!!)
+        jsonModel.setUser(args.cardBindingProfile)
 
         val observerGSON = Observer<MutableList<ProfileBinding>> { list ->
 
@@ -241,7 +238,7 @@ class ProfileFragment : Fragment() {
 
     private fun createRecyclerView() {
         if (jsonModel.profilePagedList?.value == null) {
-            jsonModel.setUserProjects(args.cardBindingProfile, context!!)
+            jsonModel.setUserProjects(args.cardBindingProfile)
         }
 
         jsonModel.profilePagedList?.observe(viewLifecycleOwner,
@@ -269,7 +266,7 @@ class ProfileFragment : Fragment() {
                             list[position].artName, list[position].views,
                             list[position].appreciations, list[position].comments,
                             list[position].username, list[position].published, list[position].url,
-                            getCurrentDateTime().toString("yyyy/MM/dd HH:mm:ss")
+                            CurrentDate.getCurrentDateTime().toString()
                         )
                     )
                 } else {
@@ -278,15 +275,6 @@ class ProfileFragment : Fragment() {
                 }
             }
         }, "Profile")
-    }
-
-    fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
-        val formatter = SimpleDateFormat(format, locale)
-        return formatter.format(this)
-    }
-
-    fun getCurrentDateTime(): Date {
-        return Calendar.getInstance().time
     }
 
     private fun webPageOpen(url: String) {

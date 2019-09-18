@@ -36,7 +36,6 @@ object BindingAdapters{
     fun setBigCircleImageUrl(view: ImageView, url: String?, thumbnail: String?) {
         GlideApp.with(view.context).load(url).thumbnail(Glide.with(view.context).load(thumbnail).apply(circleCropTransform())).apply(circleCropTransform()).into(view)
     }
-
 }
 
 
