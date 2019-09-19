@@ -28,8 +28,6 @@ import com.example.bestofbehance.databases.ProjectsDataBase
 import com.example.bestofbehance.forAdapters.AdapterNonPaging
 import com.example.bestofbehance.forAdapters.PagingAdapterViewHolder
 import com.example.bestofbehance.viewModels.*
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 const val VIEW_MODE_LISTVIEW = "list"
@@ -38,18 +36,18 @@ const val VIEW_MODE_GRIDVIEW = "tile"
 class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     lateinit var jsonModel: VMForParse
-    private var currentViewMode = "list"
+    private var currentViewMode = VIEW_MODE_LISTVIEW
     lateinit var adapterBest: PagingAdapterViewHolder
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.one_button_toolbar, menu)
 
         when (currentViewMode) {
-            "list" -> {
+            VIEW_MODE_LISTVIEW-> {
                 menu.findItem(R.id.menu_switcher)
                     ?.setIcon(R.drawable.tile)
             }
-            "tile" -> {
+            VIEW_MODE_GRIDVIEW -> {
                 menu.findItem(R.id.menu_switcher)
                     ?.setIcon(R.drawable.list)
             }
@@ -59,18 +57,18 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        currentViewMode = sharedCurrentViewMode(context!!, "currentViewMode", currentViewMode)
+        currentViewMode = sharedCurrentViewMode(context!!, resources.getString(R.string.currentViewMode), currentViewMode)
         when (item.itemId) {
             R.id.menu_switcher -> {
 
                 when(currentViewMode){
-                    "tile" -> {
-                        editorSharedPreference(context!!, "currentViewMode", VIEW_MODE_LISTVIEW)
+                    VIEW_MODE_GRIDVIEW -> {
+                        editorSharedPreference(context!!, resources.getString(R.string.currentViewMode), VIEW_MODE_LISTVIEW)
                         recycler_view.layoutManager = LinearLayoutManager(activity)
                         item.setIcon(R.drawable.tile)
                     }
-                    "list" -> {
-                        editorSharedPreference(context!!, "currentViewMode", VIEW_MODE_GRIDVIEW)
+                    VIEW_MODE_LISTVIEW -> {
+                        editorSharedPreference(context!!, resources.getString(R.string.currentViewMode), VIEW_MODE_GRIDVIEW)
                         recycler_view.layoutManager = GridLayoutManager(activity, 2)
                         item.setIcon(R.drawable.list)
                     }
@@ -88,7 +86,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
-        currentViewMode = sharedCurrentViewMode(context!!, "currentViewMode", currentViewMode)
+        currentViewMode = sharedCurrentViewMode(context!!, resources.getString(R.string.currentViewMode), currentViewMode)
         createRecyclerView(currentViewMode)
         swipe.isRefreshing = false
     }
@@ -106,11 +104,11 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         swipe.setOnRefreshListener(this)
         jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(VMForParse::class.java)
 
-        currentViewMode = sharedCurrentViewMode(context!!, "currentViewMode", currentViewMode)
+        currentViewMode = sharedCurrentViewMode(context!!, resources.getString(R.string.currentViewMode), currentViewMode)
         if (recycler_view.adapter == null) {
             when(currentViewMode){
-                "list" -> {recycler_view.layoutManager = LinearLayoutManager(activity)}
-                "tile" -> {recycler_view.layoutManager = GridLayoutManager(activity, 2)}
+                VIEW_MODE_LISTVIEW -> {recycler_view.layoutManager = LinearLayoutManager(activity)}
+                VIEW_MODE_GRIDVIEW -> {recycler_view.layoutManager = GridLayoutManager(activity, 2)}
             }
             createRecyclerView(currentViewMode)
         }
@@ -141,12 +139,12 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 false -> {
                     recycler_view.apply {
                         when (currentViewMode) {
-                            "list" -> {
+                            VIEW_MODE_LISTVIEW -> {
                                 adapter = adapterOffline(
                                     CardDataBase.getDatabase(context!!)?.getCardDao()?.all!!)
                                 layoutManager = LinearLayoutManager(activity)
                             }
-                            "tile" -> {
+                            VIEW_MODE_GRIDVIEW -> {
                                 adapter = adapterOffline(
                                     CardDataBase.getDatabase(context!!)?.getCardDao()?.all!!)
                                 layoutManager = GridLayoutManager(activity, 2)
@@ -185,7 +183,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                         ?.deleteById(list[position].id!!)
                 }
             }
-        }, "Best")
+        }, resources.getString(R.string.best))
     }
 
     private fun adapterOffline(list: MutableList<CardBinding>): AdapterNonPaging {
@@ -195,7 +193,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {}
-        }, "Best")
+        }, resources.getString(R.string.best))
     }
 
 }

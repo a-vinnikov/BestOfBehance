@@ -15,11 +15,14 @@ import com.example.bestofbehance.classesToSupport.InClick
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import com.example.bestofbehance.BR
+import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.sharedCurrentViewMode
 import com.example.bestofbehance.databases.ProjectsDataBase
 import com.example.bestofbehance.classesToSupport.BookmarkClick
 import com.example.bestofbehance.classesToSupport.MathObject
 import com.example.bestofbehance.classesToSupport.NaviController
+import com.example.bestofbehance.fragments.VIEW_MODE_GRIDVIEW
+import com.example.bestofbehance.fragments.VIEW_MODE_LISTVIEW
 
 
 class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkClick, val layout: String) :
@@ -40,8 +43,8 @@ class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkC
         var currentViewMode = ""
 
         when(layout){
-            "Best" -> { currentViewMode = sharedCurrentViewMode(context, "currentViewMode", currentViewMode)}
-            "Profile" -> {currentViewMode = sharedCurrentViewMode(context, "currentViewModeProfile", currentViewMode)}
+            context.resources.getString(R.string.best) -> { currentViewMode = sharedCurrentViewMode(context, context.resources.getString(R.string.currentViewMode), currentViewMode)}
+            context.resources.getString(R.string.profile_title) -> {currentViewMode = sharedCurrentViewMode(context, context.resources.getString(R.string.currentViewModeProfile), currentViewMode)}
         }
 
 
@@ -59,7 +62,7 @@ class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkC
             inClick.onItemClick(getItem(holder.adapterPosition)!!, holder.adapterPosition)
         }
 
-        if (layout == "Profile"){
+        if (layout == context.resources.getString(R.string.profile_title)){
             holder.itemView.avatarView.visibility = GONE
             holder.itemView.artistName.visibility = GONE
         }
@@ -67,7 +70,7 @@ class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkC
         var copyList = getItem(holder.adapterPosition)!!.copy()
 
         when (currentViewMode) {
-            "tile" -> {
+            VIEW_MODE_GRIDVIEW -> {
                 holder.itemView.avatarView.visibility = GONE
 
                 copyList.views = MathObject.decimal(copyList.views.toString())
@@ -75,8 +78,8 @@ class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkC
                 copyList.comments = MathObject.decimal(copyList.comments.toString())
             }
 
-            "list" -> {
-                if (layout == "Best") holder.itemView.avatarView.visibility = VISIBLE
+            VIEW_MODE_LISTVIEW -> {
+                if (layout == context.resources.getString(R.string.best)) holder.itemView.avatarView.visibility = VISIBLE
                 copyList = getItem(holder.adapterPosition)!!.copy()
             }
         }

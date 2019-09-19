@@ -12,9 +12,6 @@ interface PeopleDao {
     @Query("SELECT * FROM PeopleData WHERE username = :username")
     fun getByUsername(username: String): PeopleBinding
 
-    @Update
-    fun update(cardBinding: PeopleBinding)
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(cardBinding: PeopleBinding)
 

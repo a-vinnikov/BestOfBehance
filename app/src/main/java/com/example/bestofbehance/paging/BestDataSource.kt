@@ -23,8 +23,8 @@ class BestDataSource(val context: Context) : PageKeyedDataSource<Int, CardBindin
                 response.body()?.run {
                     general(this){result ->
                         dbFill(result)
-                        val abc = result.sortedByDescending { it.published }.toMutableList()
-                        callback.onResult(abc, null, FIRST_PAGE + 1)}
+                        val listSorting = result.sortedByDescending { it.published }.toMutableList()
+                        callback.onResult(listSorting, null, FIRST_PAGE + 1)}
                         Timber.d("Loaded first page")
                 }
             }

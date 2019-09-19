@@ -27,19 +27,13 @@ abstract class CardDataBase : RoomDatabase() {
 
     class Migration4to5: Migration(4, 5){
         override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("CREATE TABLE CardData_new (id integer, bigImage text, thumbnail text, avatar text,artistName text,artName text,views text,appreciations text,comments text,username text,published integer, PRIMARY KEY(id))")
-            database.execSQL("INSERT INTO CardData_new SELECT id, bigImage, null, avatar, artistName, artName, views, appreciations, comments, username, published FROM CardData")
-            database.execSQL("DROP TABLE CardData")
-            database.execSQL("ALTER TABLE CardData_new RENAME TO CardData")
+            database.execSQL("ALTER TABLE CardData ADD COLUMN thumbnail TEXT DEFAULT ''")
         }
     }
 
     class Migration5to6: Migration(5, 6){
         override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("CREATE TABLE CardData_new (id integer, bigImage text, thumbnail text, avatar text,artistName text,artName text,views text,appreciations text,comments text,username text,published integer,url text, PRIMARY KEY(id))")
-            database.execSQL("INSERT INTO CardData_new SELECT id, bigImage, thumbnail, avatar, artistName, artName, views, appreciations, comments, username, published, null FROM CardData")
-            database.execSQL("DROP TABLE CardData")
-            database.execSQL("ALTER TABLE CardData_new RENAME TO CardData")
+            database.execSQL("ALTER TABLE CardData ADD COLUMN url TEXT DEFAULT ''")
         }
     }
 

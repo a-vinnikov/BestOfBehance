@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_projects.*
 
 class ProjectsFragment : Fragment() {
 
-    private var currentViewMode = "list"
+    private var currentViewMode = VIEW_MODE_LISTVIEW
 
     lateinit var jsonModel: VMForParse
     lateinit var adapterProjects: AdapterNonPaging
@@ -33,26 +33,26 @@ class ProjectsFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
 
         when (currentViewMode) {
-            "list" -> {
+            VIEW_MODE_LISTVIEW -> {
                 menu.findItem(R.id.menu_switcher)?.setIcon(R.drawable.tile)
             }
-            "tile" -> {
+            VIEW_MODE_GRIDVIEW -> {
                 menu.findItem(R.id.menu_switcher)?.setIcon(R.drawable.list)
             }
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context!!, "currentViewModeProjects", currentViewMode)
+        currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context!!, resources.getString(R.string.currentViewModeProjects), currentViewMode)
         when (item.itemId) {
             R.id.menu_switcher -> {
-                if (currentViewMode == "tile") {
+                if (currentViewMode == VIEW_MODE_GRIDVIEW) {
                     item.setIcon(R.drawable.tile)
-                    SharedPreferenceObject.editorSharedPreference(context!!, "currentViewModeProjects", VIEW_MODE_LISTVIEW)
+                    SharedPreferenceObject.editorSharedPreference(context!!, resources.getString(R.string.currentViewModeProjects), VIEW_MODE_LISTVIEW)
                     recycler_view_projects.layoutManager = LinearLayoutManager(activity)
-                } else if (currentViewMode == "list") {
+                } else if (currentViewMode == VIEW_MODE_LISTVIEW) {
                     item.setIcon(R.drawable.list)
-                    SharedPreferenceObject.editorSharedPreference(context!!, "currentViewModeProjects", VIEW_MODE_GRIDVIEW)
+                    SharedPreferenceObject.editorSharedPreference(context!!, resources.getString(R.string.currentViewModeProjects), VIEW_MODE_GRIDVIEW)
                     recycler_view_projects.layoutManager = GridLayoutManager(activity, 2)
                 }
             }
@@ -74,14 +74,14 @@ class ProjectsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(VMForParse::class.java)
-        currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context!!, "currentViewModeProjects", currentViewMode)
+        currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context!!, resources.getString(R.string.currentViewModeProjects), currentViewMode)
 
         if (recycler_view_projects.adapter == null) {
             when (currentViewMode) {
-                "list" -> {
+                VIEW_MODE_LISTVIEW -> {
                     recycler_view_projects.layoutManager = LinearLayoutManager(activity)
                 }
-                "tile" -> {
+                VIEW_MODE_GRIDVIEW -> {
                     recycler_view_projects.layoutManager = GridLayoutManager(activity, 2)
                 }
             }
@@ -124,7 +124,7 @@ class ProjectsFragment : Fragment() {
                         }
                 }
             }
-        }, "Projects")
+        }, resources.getString(R.string.projects_title))
     }
 
     private fun convertProjectsToCard(myCallBack: (result: MutableList<CardBinding>) -> Unit){

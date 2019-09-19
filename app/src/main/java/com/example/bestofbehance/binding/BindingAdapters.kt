@@ -39,4 +39,4 @@ object BindingAdapters{
 }
 
 
-//doAsync { GlideApp.get(context!!).clearDiskCache()}
+//doAsync { GlideApp.get(context).clearDiskCache()}

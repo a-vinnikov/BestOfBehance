@@ -5,6 +5,7 @@
     <string name="people_title">People</string>
     <string name="profile_title">Profile</string>
     <string name="detail_title">Details</string>
+    <string name="best">Best</string>
     <string name="name">Name</string>
     <string name="post">Post</string>
     <string name="zero">0</string>
@@ -15,6 +16,7 @@
     <string name="no_bookmarks">No bookmarks</string>
     <string name="projects">Projects</string>
     <string name="more">More</string>
+    <string name="minimize">Minimize</string>
 
     <plurals name="commentsCount">
         <item quantity="one">Comment(%d)</item>
@@ -29,5 +31,15 @@
     <string name="firstKey">xMrW480v8SrR9J02koQXiIEEMr3uzIfd</string>
     <string name="secondKey">0QmPh684DRz1SpWHDikkyFCzLShGiHPi</string>
     <string name="baseUrl">https://api.behance.net/v2/</string>
+
+    <string name="list">list</string>
+    <string name="tile">tile</string>
+    <string name="share">Share to :</string>
+    <string name="currentViewMode">currentViewMode</string>
+    <string name="currentViewModeProfile">currentViewModeProfile</string>
+    <string name="currentViewModeProjects">currentViewModeProjects</string>
+    <string name="noInformation">No information</string>
+    <string name="intentType">text/plain</string>
+
 
 </resources>

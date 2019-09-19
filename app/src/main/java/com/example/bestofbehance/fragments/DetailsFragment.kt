@@ -23,9 +23,6 @@ import com.example.bestofbehance.viewModels.VMForParse
 import com.example.bestofbehance.viewModels.ViewModelFactory
 import kotlinx.android.synthetic.main.details_card.*
 import kotlinx.android.synthetic.main.fragment_details.*
-import java.text.SimpleDateFormat
-import java.util.*
-
 
 class DetailsFragment : Fragment() {
 
@@ -71,9 +68,9 @@ class DetailsFragment : Fragment() {
                 val intent = Intent()
                 intent.action = Intent.ACTION_SEND
                 intent.putExtra(Intent.EXTRA_TEXT, args.cardBindingArg.url)
-                intent.type = "text/plain"
+                intent.type = resources.getString(R.string.intentType)
 
-                startActivity(Intent.createChooser(intent, "Share to : "))
+                startActivity(Intent.createChooser(intent, resources.getString(R.string.share)))
             }
         }
         return super.onOptionsItemSelected(item)
@@ -133,7 +130,8 @@ class DetailsFragment : Fragment() {
                             (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPosition(temp.size - 1)
                         } else {
                             details_card.setExpanded(false, true)
-                            (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(imageItems!!.lastIndex + 1 , resources.getInteger(R.integer.offsetComments)
+                            (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(imageItems!!.lastIndex + 1 ,
+                                resources.getDimension(R.dimen.offset).toInt()
                             )
                         }
 

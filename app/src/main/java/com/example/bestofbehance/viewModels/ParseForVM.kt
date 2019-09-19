@@ -2,6 +2,7 @@ package com.example.bestofbehance.viewModels
 
 import android.content.Context
 import androidx.core.text.HtmlCompat
+import com.example.bestofbehance.R
 import com.example.bestofbehance.retrofit.BehanceApiInterface
 import com.example.bestofbehance.binding.*
 import com.example.bestofbehance.dagger.NetworkModule
@@ -13,7 +14,6 @@ import java.lang.StringBuilder
 
 class ParseForVM(val context: Context) {
 
-    private val recList: MutableList<CardBinding> = mutableListOf()
     private val iListCon: MutableList<MultiList> = mutableListOf()
     private val iListCom: MutableList<MultiList> = mutableListOf()
     private val userList: MutableList<ProfileBinding> = mutableListOf()
@@ -144,7 +144,7 @@ class ParseForVM(val context: Context) {
                 var aboutArtist = listResponse?.sections?.aboutMe?.replace("\n", "")
                 val post = with(StringBuilder()) {
                     if (listResponse != null) if (listResponse.fields?.size!! == 0) {
-                        append("Nothing here")
+                        append(context.resources.getString(R.string.noInformation))
                     } else {
                         (listResponse.fields.indices).forEach { i ->
                             if (i == listResponse.fields.size - 1) {
@@ -195,7 +195,7 @@ class ParseForVM(val context: Context) {
                 }
 
 
-                if (aboutArtist == null) aboutArtist = "No information"
+                if (aboutArtist == null) aboutArtist = context.resources.getString(R.string.noInformation)
 
                 userList.add(
                     ProfileBinding(

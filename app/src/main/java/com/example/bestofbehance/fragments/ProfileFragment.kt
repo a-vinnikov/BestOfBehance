@@ -1,16 +1,12 @@
 package com.example.bestofbehance.fragments
 
 import android.annotation.SuppressLint
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
 import android.view.View.VISIBLE
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -34,16 +30,13 @@ import com.example.bestofbehance.forAdapters.PagingAdapterViewHolder
 import com.example.bestofbehance.viewModels.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.profile_card.*
-import java.text.SimpleDateFormat
-import java.util.*
-
 
 class ProfileFragment : Fragment() {
 
     private val args: ProfileFragmentArgs by navArgs()
     lateinit var jsonModel: VMForParse
 
-    private var currentViewMode = "list"
+    private var currentViewMode = VIEW_MODE_LISTVIEW
     lateinit var adapterProfile: PagingAdapterViewHolder
     lateinit var url: String
     var userId = 0
@@ -107,9 +100,9 @@ class ProfileFragment : Fragment() {
                 intent.putExtra(
                     Intent.EXTRA_TEXT, url
                 )
-                intent.type = "text/plain"
+                intent.type = resources.getString(R.string.intentType)
 
-                startActivity(Intent.createChooser(intent, "Share to : "))
+                startActivity(Intent.createChooser(intent, resources.getString(R.string.share)))
             }
         }
 
@@ -143,7 +136,7 @@ class ProfileFragment : Fragment() {
             binding.cardViewProfile = list[0]
             binding.notifyPropertyChanged(BR._all)
 
-            if (list[0].aboutMe != "No information" && list[0].aboutMe!!.length > resources.getInteger(R.integer.lengthOfAboutMe)) {
+            if (list[0].aboutMe != resources.getString(R.string.noInformation) && list[0].aboutMe!!.length > resources.getInteger(R.integer.lengthOfAboutMe)) {
                 more.visibility = VISIBLE
             }
         }
@@ -187,26 +180,25 @@ class ProfileFragment : Fragment() {
         return fragmentDetailsView
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context!!, "currentViewModeProfile", currentViewMode
+        currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context!!, resources.getString(R.string.currentViewModeProfile), currentViewMode
         )
 
         when (currentViewMode) {
-            "list" -> viewModeProfile.isChecked = false
-            "tile" -> viewModeProfile.isChecked = true
+            VIEW_MODE_LISTVIEW -> viewModeProfile.isChecked = false
+            VIEW_MODE_GRIDVIEW -> viewModeProfile.isChecked = true
         }
 
         viewModeProfile.setOnClickListener {
             when(viewModeProfile.isChecked){
                 false -> {
-                editorSharedPreference(context!!, "currentViewModeProfile", VIEW_MODE_LISTVIEW)
+                editorSharedPreference(context!!, resources.getString(R.string.currentViewModeProfile), VIEW_MODE_LISTVIEW)
                 recycler_view_profile.layoutManager = LinearLayoutManager(activity)
             }
                 true -> {
-                editorSharedPreference(context!!, "currentViewModeProfile", VIEW_MODE_GRIDVIEW)
+                editorSharedPreference(context!!, resources.getString(R.string.currentViewModeProfile), VIEW_MODE_GRIDVIEW)
                 recycler_view_profile.layoutManager = GridLayoutManager(activity, 2)
             }
         }
@@ -215,8 +207,8 @@ class ProfileFragment : Fragment() {
 
         if (recycler_view_profile.adapter == null) {
             when(currentViewMode){
-                "list" -> {recycler_view_profile.layoutManager = LinearLayoutManager(activity)}
-                "tile" -> {recycler_view_profile.layoutManager = GridLayoutManager(activity, 2)}
+                VIEW_MODE_LISTVIEW -> {recycler_view_profile.layoutManager = LinearLayoutManager(activity)}
+                VIEW_MODE_GRIDVIEW -> {recycler_view_profile.layoutManager = GridLayoutManager(activity, 2)}
             }
             createRecyclerView()
         }
@@ -225,11 +217,11 @@ class ProfileFragment : Fragment() {
             when (about_me.lineCount) {
                 3 -> {
                     about_me.maxLines = Integer.MAX_VALUE; about_me.ellipsize = null; more.text =
-                        "Minimize"
+                        resources.getString(R.string.minimize)
                 }
                 in 3..Integer.MAX_VALUE -> {
                     about_me.maxLines = 3; about_me.ellipsize =
-                        TextUtils.TruncateAt.END; more.text = "More"
+                        TextUtils.TruncateAt.END; more.text = resources.getString(R.string.more)
                 }
             }
         }
@@ -274,7 +266,7 @@ class ProfileFragment : Fragment() {
                         ?.deleteById(list[position].id!!)
                 }
             }
-        }, "Profile")
+        }, resources.getString(R.string.profile_title))
     }
 
     private fun webPageOpen(url: String) {

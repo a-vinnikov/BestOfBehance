@@ -10,8 +10,11 @@ import kotlinx.android.synthetic.main.list_item.view.*
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.databinding.ListItemBinding
 import com.example.bestofbehance.BR
+import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.*
 import com.example.bestofbehance.databases.ProjectsDataBase
+import com.example.bestofbehance.fragments.VIEW_MODE_GRIDVIEW
+import com.example.bestofbehance.fragments.VIEW_MODE_LISTVIEW
 
 
 class AdapterNonPaging(var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick, val layout: String) : RecyclerView.Adapter<AdapterNonPaging.ViewHolder>() {
@@ -31,18 +34,18 @@ class AdapterNonPaging(var list: MutableList<CardBinding>, val inClick: InClick,
         var currentViewMode = ""
 
         when(layout){
-            "Best" -> { currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context, "currentViewMode", currentViewMode)
+            context.resources.getString(R.string.best) -> { currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context, context.resources.getString(R.string.currentViewMode), currentViewMode)
             }
-            "Projects" -> {currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context, "currentViewModeProjects", currentViewMode)
+            context.resources.getString(R.string.projects_title) -> {currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context, context.resources.getString(R.string.currentViewModeProjects), currentViewMode)
             }
         }
 
 
         holder.itemView.avatarView.setOnClickListener {
             when(layout){
-                "Best" -> {
+                context.resources.getString(R.string.best) -> {
                     NaviController(context).toProfileFromBest(list[holder.adapterPosition].username!!) }
-                "Projects" -> {
+                context.resources.getString(R.string.projects_title) -> {
                     NaviController(context).toProfileFromProjects(list[holder.adapterPosition].username!!) }
             }
         }
@@ -60,7 +63,7 @@ class AdapterNonPaging(var list: MutableList<CardBinding>, val inClick: InClick,
         var copyList = list[holder.adapterPosition].copy()
 
         when (currentViewMode) {
-            "tile" -> {
+            VIEW_MODE_GRIDVIEW -> {
                 holder.itemView.avatarView.visibility = GONE
 
                 copyList.views = MathObject.decimal(copyList.views.toString())
@@ -68,7 +71,7 @@ class AdapterNonPaging(var list: MutableList<CardBinding>, val inClick: InClick,
                 copyList.comments = MathObject.decimal(copyList.comments.toString())
             }
 
-            "list" -> {
+            VIEW_MODE_LISTVIEW -> {
                 holder.itemView.avatarView.visibility = View.VISIBLE
                 copyList = list[holder.adapterPosition].copy()
             }
