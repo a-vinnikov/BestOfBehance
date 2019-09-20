@@ -12,6 +12,7 @@ import android.net.NetworkInfo
 import android.net.NetworkRequest
 import android.os.Build
 import androidx.lifecycle.LiveData
+import com.example.bestofbehance.R
 
 class ConnectionLiveData(val context: Context) : LiveData<Boolean>() {
 
@@ -25,7 +26,7 @@ class ConnectionLiveData(val context: Context) : LiveData<Boolean>() {
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> connectivityManager.registerDefaultNetworkCallback(getConnectivityManagerCallback())
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> lollipopNetworkAvailableRequest()
-            else -> { context.registerReceiver(networkReceiver, IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")) }
+            else -> { context.registerReceiver(networkReceiver, IntentFilter(context.resources.getString(R.string.intentFilter))) }
         }
     }
 
@@ -60,7 +61,7 @@ class ConnectionLiveData(val context: Context) : LiveData<Boolean>() {
             }
             return connectivityManagerCallback
         } else {
-            throw IllegalAccessError("Should not happened")
+            throw IllegalAccessError(context.resources.getString(R.string.illegalAccessError))
         }
     }
 

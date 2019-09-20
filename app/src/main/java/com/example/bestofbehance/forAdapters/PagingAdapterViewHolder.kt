@@ -12,11 +12,9 @@ import kotlinx.android.synthetic.main.list_item.view.*
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.databinding.ListItemBinding
 import com.example.bestofbehance.classesToSupport.InClick
-import java.math.RoundingMode
-import java.text.DecimalFormat
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
-import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.sharedCurrentViewMode
+import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.getSharedPreference
 import com.example.bestofbehance.databases.ProjectsDataBase
 import com.example.bestofbehance.classesToSupport.BookmarkClick
 import com.example.bestofbehance.classesToSupport.MathObject
@@ -43,8 +41,8 @@ class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkC
         var currentViewMode = ""
 
         when(layout){
-            context.resources.getString(R.string.best) -> { currentViewMode = sharedCurrentViewMode(context, context.resources.getString(R.string.currentViewMode), currentViewMode)}
-            context.resources.getString(R.string.profile_title) -> {currentViewMode = sharedCurrentViewMode(context, context.resources.getString(R.string.currentViewModeProfile), currentViewMode)}
+            context.resources.getString(R.string.best) -> { currentViewMode = getSharedPreference(context, context.resources.getString(R.string.currentViewMode), currentViewMode)}
+            context.resources.getString(R.string.profile_title) -> {currentViewMode = getSharedPreference(context, context.resources.getString(R.string.currentViewModeProfile), currentViewMode)}
         }
 
 

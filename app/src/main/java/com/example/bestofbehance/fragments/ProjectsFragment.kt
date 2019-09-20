@@ -43,7 +43,7 @@ class ProjectsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context!!, resources.getString(R.string.currentViewModeProjects), currentViewMode)
+        currentViewMode = SharedPreferenceObject.getSharedPreference(context!!, resources.getString(R.string.currentViewModeProjects), currentViewMode)
         when (item.itemId) {
             R.id.menu_switcher -> {
                 if (currentViewMode == VIEW_MODE_GRIDVIEW) {
@@ -74,7 +74,7 @@ class ProjectsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(VMForParse::class.java)
-        currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context!!, resources.getString(R.string.currentViewModeProjects), currentViewMode)
+        currentViewMode = SharedPreferenceObject.getSharedPreference(context!!, resources.getString(R.string.currentViewModeProjects), currentViewMode)
 
         if (recycler_view_projects.adapter == null) {
             when (currentViewMode) {

@@ -39,16 +39,16 @@ class ParseForVM(val context: Context) {
                 if (listResponse != null) for (i in listResponse.indices) {
 
                     when (listResponse[i]!!.type) {
-                        "image" -> {
+                        context.resources.getString(R.string.image) -> {
                             val image = listResponse[i]?.src
                             iListCon.add(MultiList.ImageList(ImageBinding(image)))
                         }
-                        "text" -> {
+                        context.resources.getString(R.string.text) -> {
                             val text = listResponse[i]?.text.toString()
                             val textFormatted = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().trim()
                             iListCon.add(MultiList.TextList(TextBinding(textFormatted)))
                         }
-                        "media_collection" -> {
+                        context.resources.getString(R.string.media_collection) -> {
                             for (element in listResponse[i]?.components!!) {
                                 val collectionItem = element?.src
                                 iListCon.add(MultiList.ImageList(ImageBinding(collectionItem)))
@@ -163,29 +163,29 @@ class ParseForVM(val context: Context) {
                     for (i in listResponse.socialLinks!!.indices) {
                         with(listResponse.socialLinks[i]) {
                             when (this?.serviceName) {
-                                "Pinterest" -> {
-                                    val pinterest = this.url
-                                    linksList.put("Pinterest", pinterest)
+                                context.resources.getString(R.string.pinterest) -> {
+                                    val pinterest = this?.url
+                                    linksList.put(context.resources.getString(R.string.pinterest), pinterest)
                                 }
-                                "Instagram" -> {
-                                    val instagram = this.url
-                                    linksList.put("Instagram", instagram)
+                                context.resources.getString(R.string.instagram) -> {
+                                    val instagram = this?.url
+                                    linksList.put(context.resources.getString(R.string.instagram), instagram)
                                 }
-                                "Facebook" -> {
-                                    val facebook = this.url
-                                    linksList.put("Facebook", facebook)
+                                context.resources.getString(R.string.facebook) -> {
+                                    val facebook = this?.url
+                                    linksList.put(context.resources.getString(R.string.facebook), facebook)
                                 }
-                                "Behance" -> {
-                                    val behance = this.url
-                                    linksList.put("Behance", behance)
+                                context.resources.getString(R.string.behance) -> {
+                                    val behance = this?.url
+                                    linksList.put(context.resources.getString(R.string.behance), behance)
                                 }
-                                "Dribbble" -> {
-                                    val dribbble = this.url
-                                    linksList.put("Dribbble", dribbble)
+                                context.resources.getString(R.string.dribbble) -> {
+                                    val dribbble = this?.url
+                                    linksList.put(context.resources.getString(R.string.dribbble), dribbble)
                                 }
-                                "Twitter" -> {
-                                    val twitter = this.url
-                                    linksList.put("Twitter", twitter)
+                                context.resources.getString(R.string.twitter) -> {
+                                    val twitter = this?.url
+                                    linksList.put(context.resources.getString(R.string.twitter), twitter)
                                 }
                                 else -> {
                                 }

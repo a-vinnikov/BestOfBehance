@@ -1,8 +1,8 @@
 package com.example.bestofbehance
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
@@ -40,7 +40,7 @@ open class MainActivity : AppCompatActivity() {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        snackBar = Snackbar.make(snack_coordinator, "No internet connection", Snackbar.LENGTH_INDEFINITE)
+        snackBar = Snackbar.make(snack_coordinator, resources.getString(R.string.noConnection), Snackbar.LENGTH_INDEFINITE)
         setupNavigation()
 
         val connectionLiveData = ConnectionLiveData(this)
@@ -51,11 +51,11 @@ open class MainActivity : AppCompatActivity() {
                         false -> {
                             val layout = snackBar.view as Snackbar.SnackbarLayout
                             layout.apply{
-                                setBackgroundColor(Color.parseColor("#43A6F6"))
+                                setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary))
                                 textView().textSize = 20F}
 
                             snackBar.apply{
-                                setActionTextColor(Color.parseColor("#FFFFFF"))
+                                setActionTextColor(ContextCompat.getColor(context, R.color.colorMain))
                                 show()}
                         }
                     }

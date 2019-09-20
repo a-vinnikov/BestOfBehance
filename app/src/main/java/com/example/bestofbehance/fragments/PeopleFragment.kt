@@ -62,7 +62,7 @@ class PeopleFragment : Fragment() {
 
     private fun createRecyclerView() {
 
-        convertProjectsToCard(PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.all) { result ->
+        convertProjectsToMulti(PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.all) { result ->
             if (result.size != 0){
                 val temp: MutableList<MultiList> = result
                  adapterPeople = AdapterMulti(temp, object :
@@ -85,10 +85,10 @@ class PeopleFragment : Fragment() {
         }
     }
 
-    private fun convertProjectsToCard(list: MutableList<PeopleBinding>?, myCallBack: (result: MutableList<MultiList>) -> Unit) {
-        val listCard: MutableList<MultiList> = mutableListOf()
+    private fun convertProjectsToMulti(list: MutableList<PeopleBinding>?, myCallBack: (result: MutableList<MultiList>) -> Unit) {
+        val listMulti: MutableList<MultiList> = mutableListOf()
         for (i in 0 until list!!.size) {
-            listCard.add(
+            listMulti.add(
                 MultiList.PeopleList(
                     PeopleBinding(
                         list[i].id,
@@ -105,7 +105,7 @@ class PeopleFragment : Fragment() {
                 )
             )
         }
-        myCallBack.invoke(listCard)
+        myCallBack.invoke(listMulti)
     }
 
 }

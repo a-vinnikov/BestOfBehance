@@ -9,10 +9,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 import android.net.ConnectivityManager
+import android.widget.Toast
 import okhttp3.*
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import com.example.bestofbehance.R
+import com.example.bestofbehance.classesToSupport.SharedPreferenceObject
 
 @Module
 class NetworkModule(val context: Context) {
@@ -35,7 +37,8 @@ class NetworkModule(val context: Context) {
     @Singleton
     @Provides
     fun providesOkHttpClient(): OkHttpClient.Builder {
-        var api_key: String = context.resources.getString(R.string.firstKey)
+        var api_key = context.resources.getString(R.string.firstKey)
+        api_key = SharedPreferenceObject.getSharedPreference(context, context.resources.getString(R.string.api_key),api_key)
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.HEADERS
 
@@ -47,7 +50,7 @@ class NetworkModule(val context: Context) {
                 val originalHttpUrl = original.url
 
                 val url = originalHttpUrl.newBuilder()
-                    .addQueryParameter("api_key", api_key)
+                    .addQueryParameter(context.resources.getString(R.string.api_key), api_key)
                     .build()
 
                 val requestBuilder = original.newBuilder().url(url)
@@ -57,9 +60,10 @@ class NetworkModule(val context: Context) {
                 val response = chain.proceed(request)
 
                 if (!response.isSuccessful && response.code == 429) {
+                    Toast.makeText(context, context.resources.getString(R.string.refreshMessage), Toast.LENGTH_SHORT).show()
                     when (api_key){
-                        context.resources.getString(R.string.firstKey) -> api_key = context.resources.getString(R.string.secondKey)
-                        context.resources.getString(R.string.secondKey) -> api_key = context.resources.getString(R.string.firstKey)
+                        context.resources.getString(R.string.firstKey) -> SharedPreferenceObject.editorSharedPreference(context, context.resources.getString(R.string.api_key), context.resources.getString(R.string.secondKey))
+                        context.resources.getString(R.string.secondKey) -> SharedPreferenceObject.editorSharedPreference(context, context.resources.getString(R.string.api_key), context.resources.getString(R.string.firstKey))
                     }
                 }
 
@@ -77,8 +81,8 @@ class NetworkModule(val context: Context) {
     }
 
     fun hasNetwork(): Boolean {
-        val con = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val ni = con.activeNetworkInfo
+        val conManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val ni = conManager.activeNetworkInfo
         return !(ni == null || !ni.isConnected)
     }
 }

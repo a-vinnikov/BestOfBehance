@@ -22,7 +22,7 @@ import com.example.bestofbehance.classesToSupport.InClick
 import com.example.bestofbehance.classesToSupport.NaviController
 import com.example.bestofbehance.dagger.NetworkModule
 import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.editorSharedPreference
-import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.sharedCurrentViewMode
+import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.getSharedPreference
 import com.example.bestofbehance.databases.CardDataBase
 import com.example.bestofbehance.databases.ProjectsDataBase
 import com.example.bestofbehance.forAdapters.AdapterNonPaging
@@ -57,7 +57,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        currentViewMode = sharedCurrentViewMode(context!!, resources.getString(R.string.currentViewMode), currentViewMode)
+        currentViewMode = getSharedPreference(context!!, resources.getString(R.string.currentViewMode), currentViewMode)
         when (item.itemId) {
             R.id.menu_switcher -> {
 
@@ -86,7 +86,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
-        currentViewMode = sharedCurrentViewMode(context!!, resources.getString(R.string.currentViewMode), currentViewMode)
+        currentViewMode = getSharedPreference(context!!, resources.getString(R.string.currentViewMode), currentViewMode)
         createRecyclerView(currentViewMode)
         swipe.isRefreshing = false
     }
@@ -104,7 +104,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         swipe.setOnRefreshListener(this)
         jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(VMForParse::class.java)
 
-        currentViewMode = sharedCurrentViewMode(context!!, resources.getString(R.string.currentViewMode), currentViewMode)
+        currentViewMode = getSharedPreference(context!!, resources.getString(R.string.currentViewMode), currentViewMode)
         if (recycler_view.adapter == null) {
             when(currentViewMode){
                 VIEW_MODE_LISTVIEW -> {recycler_view.layoutManager = LinearLayoutManager(activity)}

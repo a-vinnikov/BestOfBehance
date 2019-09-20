@@ -34,9 +34,9 @@ class AdapterNonPaging(var list: MutableList<CardBinding>, val inClick: InClick,
         var currentViewMode = ""
 
         when(layout){
-            context.resources.getString(R.string.best) -> { currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context, context.resources.getString(R.string.currentViewMode), currentViewMode)
+            context.resources.getString(R.string.best) -> { currentViewMode = SharedPreferenceObject.getSharedPreference(context, context.resources.getString(R.string.currentViewMode), currentViewMode)
             }
-            context.resources.getString(R.string.projects_title) -> {currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context, context.resources.getString(R.string.currentViewModeProjects), currentViewMode)
+            context.resources.getString(R.string.projects_title) -> {currentViewMode = SharedPreferenceObject.getSharedPreference(context, context.resources.getString(R.string.currentViewModeProjects), currentViewMode)
             }
         }
 

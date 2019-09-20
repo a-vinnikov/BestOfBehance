@@ -1,6 +1,5 @@
 package com.example.bestofbehance.fragments
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -147,29 +146,29 @@ class ProfileFragment : Fragment() {
             for (i in links.keys) {
                 if (links[i] != null) {
                     when (i) {
-                        "Pinterest" -> {
+                        resources.getString(R.string.pinterest) -> {
                             pinterest_image.visibility = VISIBLE
-                            pinterest_image.setOnClickListener { webPageOpen(links["Pinterest"]!!) }
+                            pinterest_image.setOnClickListener { webPageOpen(links[resources.getString(R.string.pinterest)]!!) }
                         }
-                        "Instagram" -> {
+                        resources.getString(R.string.instagram) -> {
                             instagram_image.visibility = VISIBLE
-                            instagram_image.setOnClickListener { webPageOpen(links["Instagram"]!!) }
+                            instagram_image.setOnClickListener { webPageOpen(links[resources.getString(R.string.instagram)]!!) }
                         }
-                        "Facebook" -> {
+                        resources.getString(R.string.facebook) -> {
                             facebook_image.visibility = VISIBLE
-                            facebook_image.setOnClickListener { webPageOpen(links["Facebook"]!!) }
+                            facebook_image.setOnClickListener { webPageOpen(links[resources.getString(R.string.facebook)]!!) }
                         }
-                        "Behance" -> {
+                        resources.getString(R.string.behance) -> {
                             be_image.visibility = VISIBLE
-                            instagram_image.setOnClickListener { webPageOpen(links["Behance"]!!) }
+                            instagram_image.setOnClickListener { webPageOpen(links[resources.getString(R.string.behance)]!!) }
                         }
-                        "Dribbble" -> {
+                        resources.getString(R.string.dribbble) -> {
                             dribbble_image.visibility = VISIBLE
-                            dribbble_image.setOnClickListener { webPageOpen(links["Dribbble"]!!) }
+                            dribbble_image.setOnClickListener { webPageOpen(links[resources.getString(R.string.dribbble)]!!) }
                         }
-                        "Twitter" -> {
+                        resources.getString(R.string.twitter) -> {
                             twitter_image.visibility = VISIBLE
-                            twitter_image.setOnClickListener { webPageOpen(links["Twitter"]!!) }
+                            twitter_image.setOnClickListener { webPageOpen(links[resources.getString(R.string.twitter)]!!) }
                         }
                     }
                 }
@@ -183,7 +182,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        currentViewMode = SharedPreferenceObject.sharedCurrentViewMode(context!!, resources.getString(R.string.currentViewModeProfile), currentViewMode
+        currentViewMode = SharedPreferenceObject.getSharedPreference(context!!, resources.getString(R.string.currentViewModeProfile), currentViewMode
         )
 
         when (currentViewMode) {
