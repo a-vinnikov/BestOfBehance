@@ -1,4 +1,4 @@
-package com.example.bestofbehance.viewModels
+package com.example.bestofbehance.viewModel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

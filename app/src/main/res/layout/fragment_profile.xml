@@ -3,7 +3,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:background="@color/colorMain"
-        tools:context=".fragments.ProfileFragment">
+        tools:context=".fragment.ProfileFragment">
 
     <data>
 
@@ -18,7 +18,7 @@
             android:orientation="vertical">
 
         <com.google.android.material.appbar.AppBarLayout
-                android:id="@+id/profile_card"
+                android:id="@+id/profileCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorMain"
@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content">
 
                 <View
-                        android:id="@+id/line_top"
+                        android:id="@+id/lineTop"
                         android:layout_width="0dp"
                         android:layout_height="1dp"
                         android:background="@color/colorPrimary"
@@ -52,23 +52,23 @@
                         android:layout_marginStart="16dp"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="16sp"
-                        app:layout_constraintBottom_toTopOf="@+id/line_bottom"
+                        app:layout_constraintBottom_toTopOf="@+id/lineBottom"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/line_top" />
+                        app:layout_constraintTop_toBottomOf="@+id/lineTop" />
 
                 <ToggleButton
                         android:id="@+id/viewModeProfile"
-                        style="@style/toggleButton"
+                        style="@style/viewButton"
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:layout_marginEnd="16dp"
                         android:background="@drawable/toolbar_toggle_bg"
-                        app:layout_constraintBottom_toTopOf="@id/line_bottom"
+                        app:layout_constraintBottom_toTopOf="@id/lineBottom"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/line_top" />
+                        app:layout_constraintTop_toBottomOf="@id/lineTop"/>
 
                 <View
-                        android:id="@+id/line_bottom"
+                        android:id="@+id/lineBottom"
                         android:layout_width="0dp"
                         android:layout_height="1dp"
                         android:layout_marginTop="16dp"
@@ -81,7 +81,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_view_profile"
+                android:id="@+id/recyclerViewProfile"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />

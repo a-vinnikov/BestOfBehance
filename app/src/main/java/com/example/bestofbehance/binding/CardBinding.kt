@@ -20,4 +20,8 @@ data class CardBinding(
     @ColumnInfo(name = "published") var published: Int?,
     @ColumnInfo(name = "url") var url: String?
 
-) : Serializable
+) : Serializable {
+    object ModelMapper {
+        fun from(form: ProjectsBinding) = CardBinding(form.id, form.bigImage, form.thumbnail, form.avatar, form.artistName, form.artName, form.views, form.appreciations, form.comments, form.username, form.published, form.url)
+    }
+}

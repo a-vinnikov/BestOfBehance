@@ -17,7 +17,7 @@
         android:orientation="vertical"
         android:paddingBottom="5dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/recycler_view_details"
+        app:layout_constraintBottom_toTopOf="@id/recyclerViewDetails"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_scrollFlags="scroll|snap">
@@ -70,7 +70,7 @@
               app:layout_constraintTop_toBottomOf="@id/postDetails"/>
 
         <ImageView
-                android:id="@+id/view_image_details"
+                android:id="@+id/viewImageDetails"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginTop="9dp"
@@ -81,11 +81,11 @@
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/lineDetails"
-                app:layout_constraintEnd_toStartOf="@id/view_text_details"
+                app:layout_constraintEnd_toStartOf="@id/viewTextDetails"
                 tools:ignore="ContentDescription"/>
 
         <TextView
-                android:id="@+id/view_text_details"
+                android:id="@+id/viewTextDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{cardViewDetails.views}"
@@ -93,25 +93,25 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="2dp"
-                app:layout_constraintStart_toEndOf="@id/view_image_details"
+                app:layout_constraintStart_toEndOf="@id/viewImageDetails"
                 app:layout_constraintTop_toBottomOf="@id/lineDetails"
-                app:layout_constraintEnd_toStartOf="@id/appreciation_image_details"/>
+                app:layout_constraintEnd_toStartOf="@id/appreciationImageDetails"/>
 
         <ImageView
-                android:id="@+id/appreciation_image_details"
+                android:id="@+id/appreciationImageDetails"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginTop="9dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="1dp"
                 android:src="@drawable/ic_appreciation"
-                app:layout_constraintStart_toEndOf="@id/view_text_details"
+                app:layout_constraintStart_toEndOf="@id/viewTextDetails"
                 app:layout_constraintTop_toBottomOf="@id/lineDetails"
-                app:layout_constraintEnd_toStartOf="@id/appreciation_text_details"
+                app:layout_constraintEnd_toStartOf="@id/appreciationTextDetails"
                 tools:ignore="ContentDescription"/>
 
         <TextView
-                android:id="@+id/appreciation_text_details"
+                android:id="@+id/appreciationTextDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{cardViewDetails.appreciations}"
@@ -119,33 +119,33 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="2dp"
-                app:layout_constraintStart_toEndOf="@id/appreciation_image_details"
+                app:layout_constraintStart_toEndOf="@id/appreciationImageDetails"
                 app:layout_constraintTop_toBottomOf="@id/lineDetails"
-                app:layout_constraintEnd_toStartOf="@id/comments_image_details"
+                app:layout_constraintEnd_toStartOf="@id/commentsImageDetails"
         />
 
         <ImageView
-                android:id="@+id/comments_image_details"
+                android:id="@+id/commentsImageDetails"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginTop="9dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="1dp"
                 android:src="@drawable/ic_comments"
-                app:layout_constraintStart_toEndOf="@id/appreciation_text_details"
+                app:layout_constraintStart_toEndOf="@id/appreciationTextDetails"
                 app:layout_constraintTop_toBottomOf="@id/lineDetails"
-                app:layout_constraintEnd_toStartOf="@id/comments_text_details"
+                app:layout_constraintEnd_toStartOf="@id/commentsTextDetails"
                 tools:ignore="ContentDescription"/>
 
         <TextView
-                android:id="@+id/comments_text_details"
+                android:id="@+id/commentsTextDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{cardViewDetails.comments}"
                 android:textSize="14sp"
                 android:layout_marginTop="5dp"
                 android:layout_marginStart="3dp"
-                app:layout_constraintStart_toEndOf="@id/comments_image_details"
+                app:layout_constraintStart_toEndOf="@id/commentsImageDetails"
                 app:layout_constraintTop_toBottomOf="@id/lineDetails"
         />
 

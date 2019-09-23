@@ -6,10 +6,10 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragments.ProjectsFragment">
+        tools:context=".fragment.ProjectsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_people"
+            android:id="@+id/recyclerViewPeople"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="4dp"
@@ -17,7 +17,7 @@
             android:clipToPadding = "false"/>
 
     <TextView
-            android:id="@+id/text_people"
+            android:id="@+id/textPeople"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/no_bookmarks"

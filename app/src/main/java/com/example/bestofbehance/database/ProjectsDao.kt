@@ -1,4 +1,4 @@
-package com.example.bestofbehance.databases
+package com.example.bestofbehance.database
 
 import androidx.room.*
 import com.example.bestofbehance.binding.ProjectsBinding

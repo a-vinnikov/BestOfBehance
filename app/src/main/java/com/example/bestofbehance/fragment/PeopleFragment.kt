@@ -1,4 +1,4 @@
-package com.example.bestofbehance.fragments
+package com.example.bestofbehance.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,12 +11,13 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.PeopleBinding
-import com.example.bestofbehance.databases.PeopleDataBase
+import com.example.bestofbehance.database.PeopleDataBase
 import com.example.bestofbehance.classesToSupport.BookmarkClick
 import com.example.bestofbehance.classesToSupport.MultiList
-import com.example.bestofbehance.forAdapters.AdapterMulti
-import com.example.bestofbehance.viewModels.VMForParse
-import com.example.bestofbehance.viewModels.ViewModelFactory
+import com.example.bestofbehance.adapter.AdapterMulti
+import com.example.bestofbehance.binding.ProjectsBinding
+import com.example.bestofbehance.viewModel.VMForParse
+import com.example.bestofbehance.viewModel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_people.*
 
@@ -43,9 +44,9 @@ class PeopleFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.all?.size != 0) {
-            text_people.visibility = GONE
+            textPeople.visibility = GONE
         } else {
-            text_people.visibility = VISIBLE
+            textPeople.visibility = VISIBLE
         }
         activity?.navigation?.menu?.findItem(R.id.people)?.isChecked = true
     }
@@ -55,7 +56,7 @@ class PeopleFragment : Fragment() {
 
         jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(VMForParse::class.java)
 
-        if (recycler_view_people.adapter == null) {
+        if (recyclerViewPeople.adapter == null) {
             createRecyclerView()
         }
     }
@@ -73,14 +74,14 @@ class PeopleFragment : Fragment() {
                              adapterPeople.list.removeAt(position)
                              adapterPeople.notifyDataSetChanged()
                              if (PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.all?.size == 0) {
-                                 text_people.visibility = VISIBLE
+                                 textPeople.visibility = VISIBLE
                              }
                          }
                      }
                  })
 
-                recycler_view_people.adapter = adapterPeople
-                recycler_view_people.layoutManager = LinearLayoutManager(activity)
+                recyclerViewPeople.adapter = adapterPeople
+                recyclerViewPeople.layoutManager = LinearLayoutManager(activity)
             }
         }
     }
@@ -89,20 +90,7 @@ class PeopleFragment : Fragment() {
         val listMulti: MutableList<MultiList> = mutableListOf()
         for (i in 0 until list!!.size) {
             listMulti.add(
-                MultiList.PeopleList(
-                    PeopleBinding(
-                        list[i].id,
-                        list[i].username,
-                        list[i].avatar,
-                        list[i].name,
-                        list[i].post,
-                        list[i].views,
-                        list[i].appreciations,
-                        list[i].followers,
-                        list[i].following,
-                        list[i].added
-                    )
-                )
+                MultiList.PeopleList.ModelMapper.from(list[i])
             )
         }
         myCallBack.invoke(listMulti)

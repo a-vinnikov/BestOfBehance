@@ -18,29 +18,29 @@
     <string name="more">More</string>
     <string name="minimize">Minimize</string>
 
-    <plurals name="commentsCount">
+    <plurals name="comments_count">
         <item quantity="one">Comment(%d)</item>
         <item quantity="other">Comments(%d)</item>
     </plurals>
 
-    <plurals name="commentsCount1">
+    <plurals name="big_comments_count">
         <item quantity="one">COMMENT (%d)</item>
         <item quantity="other">COMMENTS (%d)</item>
     </plurals>
 
-    <string name="firstKey">xMrW480v8SrR9J02koQXiIEEMr3uzIfd</string>
-    <string name="secondKey">0QmPh684DRz1SpWHDikkyFCzLShGiHPi</string>
-    <string name="baseUrl">https://api.behance.net/v2/</string>
+    <string name="first_key">xMrW480v8SrR9J02koQXiIEEMr3uzIfd</string>
+    <string name="second_key">0QmPh684DRz1SpWHDikkyFCzLShGiHPi</string>
+    <string name="base_url">https://api.behance.net/v2/</string>
 
     <string name="list">list</string>
     <string name="tile">tile</string>
     <string name="share">Share to :</string>
-    <string name="currentViewMode">currentViewMode</string>
-    <string name="currentViewModeProfile">currentViewModeProfile</string>
-    <string name="currentViewModeProjects">currentViewModeProjects</string>
-    <string name="noInformation">No information</string>
-    <string name="noConnection">No internet connection</string>
-    <string name="intentType">text/plain</string>
+    <string name="current_view_mode">currentViewMode</string>
+    <string name="current_view_mode_profile">currentViewModeProfile</string>
+    <string name="current_view_mode_projects">currentViewModeProjects</string>
+    <string name="no_information">No information</string>
+    <string name="no_connection">No internet connection</string>
+    <string name="intent_type">text/plain</string>
     <string name="image">image</string>
     <string name="text">text</string>
     <string name="media_collection">media_collection</string>
@@ -52,8 +52,8 @@
     <string name="dribbble">Dribbble</string>
     <string name="twitter">Twitter</string>
     <string name="api_key">api_key</string>
-    <string name="intentFilter">android.net.conn.CONNECTIVITY_CHANGE</string>
-    <string name="illegalAccessError">Should not happened</string>
-    <string name="refreshMessage">Please, refresh the page</string>
+    <string name="intent_filter">android.net.conn.CONNECTIVITY_CHANGE</string>
+    <string name="illegal_access_error">Should not happened</string>
+    <string name="refresh_message">Please, refresh the page</string>
 
 </resources>

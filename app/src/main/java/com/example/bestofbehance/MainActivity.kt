@@ -7,7 +7,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.example.bestofbehance.classesToSupport.ConnectionLiveData
-import com.example.bestofbehance.classesToSupport.NaviController
+import com.example.bestofbehance.dagger.NaviController
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.textView
@@ -40,7 +40,7 @@ open class MainActivity : AppCompatActivity() {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        snackBar = Snackbar.make(snack_coordinator, resources.getString(R.string.noConnection), Snackbar.LENGTH_INDEFINITE)
+        snackBar = Snackbar.make(snackCoordinator, resources.getString(R.string.no_connection), Snackbar.LENGTH_INDEFINITE)
         setupNavigation()
 
         val connectionLiveData = ConnectionLiveData(this)

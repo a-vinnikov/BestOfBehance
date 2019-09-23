@@ -1,4 +1,4 @@
-package com.example.bestofbehance.viewModels
+package com.example.bestofbehance.viewModel
 
 import android.content.Context
 import androidx.core.text.HtmlCompat
@@ -20,7 +20,7 @@ class ParseForVM(val context: Context) {
     private val linksList: MutableMap<String, String?> = mutableMapOf()
 
 
-    fun projectRetrofit(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit) {
+    fun fetchProject(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit) {
 
         val call = service(context)?.getProject(projectId.toString())
 
@@ -45,7 +45,9 @@ class ParseForVM(val context: Context) {
                         }
                         context.resources.getString(R.string.text) -> {
                             val text = listResponse[i]?.text.toString()
-                            val textFormatted = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().trim()
+                            val textFormatted =
+                                HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                                    .toString().trim()
                             iListCon.add(MultiList.TextList(TextBinding(textFormatted)))
                         }
                         context.resources.getString(R.string.media_collection) -> {
@@ -62,7 +64,7 @@ class ParseForVM(val context: Context) {
         })
     }
 
-    fun commentsRetrofit(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit) {
+    fun fetchComments(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit) {
 
         val call = service(context)?.getComments(projectId.toString())
 
@@ -82,29 +84,31 @@ class ParseForVM(val context: Context) {
                 if (numberOfComments == 0) {
                     iListCom.add(MultiList.CountList(CountBinding(numberOfComments.toInt())))
                 } else {
-                    if (listResponse != null) for (i in 0 until numberOfComments!!) {
+                    listResponse.let {
+                        for (i in 0 until numberOfComments!!) {
 
-                        val commentsAvatarView = listResponse[i]?.user?.images?.jsonMember138
-                        val commentatorName = listResponse[i]?.user?.displayName
-                        val commentatorUsername = listResponse[i]?.user?.username
-                        val comment = listResponse[i]?.comment
-                        val date = listResponse[i]?.createdOn.toString()
+                            val commentsAvatarView = it?.get(i)?.user?.images?.jsonMember138
+                            val commentatorName = it?.get(i)?.user?.displayName
+                            val commentatorUsername = it?.get(i)?.user?.username
+                            val comment = it?.get(i)?.comment
+                            val date = it?.get(i)?.createdOn.toString()
 
-                        if (i == 0) {
-                            iListCom.add(MultiList.CountList(CountBinding(numberOfComments)))
-                        }
-                        iListCom.add(
-                            MultiList.CommentsList(
-                                CommentsBinding(
-                                    commentsAvatarView,
-                                    commentatorName,
-                                    commentatorUsername,
-                                    comment,
-                                    date
+                            if (i == 0) {
+                                iListCom.add(MultiList.CountList(CountBinding(numberOfComments)))
+                            }
+                            iListCom.add(
+                                MultiList.CommentsList(
+                                    CommentsBinding(
+                                        commentsAvatarView,
+                                        commentatorName,
+                                        commentatorUsername,
+                                        comment,
+                                        date
+                                    )
                                 )
                             )
-                        )
-                        i + 1
+                            i + 1
+                        }
                     }
                 }
                 myCallBack.invoke(iListCom)
@@ -114,7 +118,7 @@ class ParseForVM(val context: Context) {
 
     }
 
-    fun userRetrofit(
+    fun fetchUser(
         username: String,
         myCallBack: (result: MutableList<ProfileBinding>, links: MutableMap<String, String?>) -> Unit
     ) {
@@ -144,7 +148,7 @@ class ParseForVM(val context: Context) {
                 var aboutArtist = listResponse?.sections?.aboutMe?.replace("\n", "")
                 val post = with(StringBuilder()) {
                     if (listResponse != null) if (listResponse.fields?.size!! == 0) {
-                        append(context.resources.getString(R.string.noInformation))
+                        append(context.resources.getString(R.string.no_information))
                     } else {
                         (listResponse.fields.indices).forEach { i ->
                             if (i == listResponse.fields.size - 1) {
@@ -165,27 +169,45 @@ class ParseForVM(val context: Context) {
                             when (this?.serviceName) {
                                 context.resources.getString(R.string.pinterest) -> {
                                     val pinterest = this?.url
-                                    linksList.put(context.resources.getString(R.string.pinterest), pinterest)
+                                    linksList.put(
+                                        context.resources.getString(R.string.pinterest),
+                                        pinterest
+                                    )
                                 }
                                 context.resources.getString(R.string.instagram) -> {
                                     val instagram = this?.url
-                                    linksList.put(context.resources.getString(R.string.instagram), instagram)
+                                    linksList.put(
+                                        context.resources.getString(R.string.instagram),
+                                        instagram
+                                    )
                                 }
                                 context.resources.getString(R.string.facebook) -> {
                                     val facebook = this?.url
-                                    linksList.put(context.resources.getString(R.string.facebook), facebook)
+                                    linksList.put(
+                                        context.resources.getString(R.string.facebook),
+                                        facebook
+                                    )
                                 }
                                 context.resources.getString(R.string.behance) -> {
                                     val behance = this?.url
-                                    linksList.put(context.resources.getString(R.string.behance), behance)
+                                    linksList.put(
+                                        context.resources.getString(R.string.behance),
+                                        behance
+                                    )
                                 }
                                 context.resources.getString(R.string.dribbble) -> {
                                     val dribbble = this?.url
-                                    linksList.put(context.resources.getString(R.string.dribbble), dribbble)
+                                    linksList.put(
+                                        context.resources.getString(R.string.dribbble),
+                                        dribbble
+                                    )
                                 }
                                 context.resources.getString(R.string.twitter) -> {
                                     val twitter = this?.url
-                                    linksList.put(context.resources.getString(R.string.twitter), twitter)
+                                    linksList.put(
+                                        context.resources.getString(R.string.twitter),
+                                        twitter
+                                    )
                                 }
                                 else -> {
                                 }
@@ -195,7 +217,8 @@ class ParseForVM(val context: Context) {
                 }
 
 
-                if (aboutArtist == null) aboutArtist = context.resources.getString(R.string.noInformation)
+                if (aboutArtist == null) aboutArtist =
+                    context.resources.getString(R.string.no_information)
 
                 userList.add(
                     ProfileBinding(
@@ -221,7 +244,13 @@ class ParseForVM(val context: Context) {
     }
 
     private fun service(context: Context): BehanceApiInterface? {
-        return with(NetworkModule(context)) { providesBehanceApi(providesRetrofit(providesOkHttpClient().build())) }
+        return with(NetworkModule(context)) {
+            providesBehanceApi(
+                providesRetrofit(
+                    providesOkHttpClient().build()
+                )
+            )
+        }
     }
 
 }

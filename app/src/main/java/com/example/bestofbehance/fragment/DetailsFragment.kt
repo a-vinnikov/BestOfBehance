@@ -1,4 +1,4 @@
-package com.example.bestofbehance.fragments
+package com.example.bestofbehance.fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,12 +15,12 @@ import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.ProjectsBinding
 import com.example.bestofbehance.classesToSupport.CurrentDate
 import com.example.bestofbehance.classesToSupport.MultiList
-import com.example.bestofbehance.databases.ProjectsDataBase
-import com.example.bestofbehance.classesToSupport.NaviController
+import com.example.bestofbehance.database.ProjectsDataBase
+import com.example.bestofbehance.dagger.NaviController
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
-import com.example.bestofbehance.forAdapters.AdapterMulti
-import com.example.bestofbehance.viewModels.VMForParse
-import com.example.bestofbehance.viewModels.ViewModelFactory
+import com.example.bestofbehance.adapter.AdapterMulti
+import com.example.bestofbehance.viewModel.VMForParse
+import com.example.bestofbehance.viewModel.ViewModelFactory
 import kotlinx.android.synthetic.main.details_card.*
 import kotlinx.android.synthetic.main.fragment_details.*
 
@@ -68,7 +68,7 @@ class DetailsFragment : Fragment() {
                 val intent = Intent()
                 intent.action = Intent.ACTION_SEND
                 intent.putExtra(Intent.EXTRA_TEXT, args.cardBindingArg.url)
-                intent.type = resources.getString(R.string.intentType)
+                intent.type = resources.getString(R.string.intent_type)
 
                 startActivity(Intent.createChooser(intent, resources.getString(R.string.share)))
             }
@@ -100,7 +100,7 @@ class DetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         comments.text = this.resources.getQuantityString(
-            R.plurals.commentsCount1,
+            R.plurals.big_comments_count,
             args.cardBindingArg.comments!!.toInt(),
             args.cardBindingArg.comments!!.toInt()
         )
@@ -121,16 +121,16 @@ class DetailsFragment : Fragment() {
                 if (imageItems != null && commentsItems != null) {
 
                     val temp: List<MultiList> = imageItems.orEmpty() + commentsItems.orEmpty()
-                    recycler_view_details.adapter = AdapterMulti(temp as MutableList<MultiList>, null)
-                    recycler_view_details.layoutManager = LinearLayoutManager(activity)
+                    recyclerViewDetails.adapter = AdapterMulti(temp as MutableList<MultiList>, null)
+                    recyclerViewDetails.layoutManager = LinearLayoutManager(activity)
 
                     comments.setOnClickListener {
                         if (commentsItems!!.size < 7){
-                            details_card.setExpanded(false, true)
-                            (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPosition(temp.size - 1)
+                            detailsCard.setExpanded(false, true)
+                            (recyclerViewDetails.layoutManager as LinearLayoutManager).scrollToPosition(temp.size - 1)
                         } else {
-                            details_card.setExpanded(false, true)
-                            (recycler_view_details.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(imageItems!!.lastIndex + 1 ,
+                            detailsCard.setExpanded(false, true)
+                            (recyclerViewDetails.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(imageItems!!.lastIndex + 1 ,
                                 resources.getDimension(R.dimen.offset).toInt()
                             )
                         }

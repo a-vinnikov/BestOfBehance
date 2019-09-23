@@ -28,7 +28,7 @@ class NetworkModule(val context: Context) {
     @Provides
     fun providesRetrofit(okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
-            .baseUrl(context.resources.getString(R.string.baseUrl))
+            .baseUrl(context.resources.getString(R.string.base_url))
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
@@ -37,7 +37,7 @@ class NetworkModule(val context: Context) {
     @Singleton
     @Provides
     fun providesOkHttpClient(): OkHttpClient.Builder {
-        var api_key = context.resources.getString(R.string.firstKey)
+        var api_key = context.resources.getString(R.string.first_key)
         api_key = SharedPreferenceObject.getSharedPreference(context, context.resources.getString(R.string.api_key),api_key)
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.HEADERS
@@ -60,10 +60,10 @@ class NetworkModule(val context: Context) {
                 val response = chain.proceed(request)
 
                 if (!response.isSuccessful && response.code == 429) {
-                    Toast.makeText(context, context.resources.getString(R.string.refreshMessage), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.resources.getString(R.string.refresh_message), Toast.LENGTH_SHORT).show()
                     when (api_key){
-                        context.resources.getString(R.string.firstKey) -> SharedPreferenceObject.editorSharedPreference(context, context.resources.getString(R.string.api_key), context.resources.getString(R.string.secondKey))
-                        context.resources.getString(R.string.secondKey) -> SharedPreferenceObject.editorSharedPreference(context, context.resources.getString(R.string.api_key), context.resources.getString(R.string.firstKey))
+                        context.resources.getString(R.string.first_key) -> SharedPreferenceObject.editorSharedPreference(context, context.resources.getString(R.string.api_key), context.resources.getString(R.string.second_key))
+                        context.resources.getString(R.string.second_key) -> SharedPreferenceObject.editorSharedPreference(context, context.resources.getString(R.string.api_key), context.resources.getString(R.string.first_key))
                     }
                 }
 

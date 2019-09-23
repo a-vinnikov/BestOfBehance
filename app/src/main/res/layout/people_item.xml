@@ -84,19 +84,19 @@
                     app:layout_constraintTop_toBottomOf="@+id/peoplePost" />
 
             <ImageView
-                    android:id="@+id/view_image_people"
+                    android:id="@+id/viewImagePeople"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_marginTop="9dp"
                     android:layout_marginEnd="1dp"
                     android:src="@drawable/ic_views"
-                    app:layout_constraintEnd_toStartOf="@+id/view_text_people"
+                    app:layout_constraintEnd_toStartOf="@+id/viewTextPeople"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/peopleLine"
                     tools:ignore="ContentDescription" />
 
             <TextView
-                    android:id="@+id/view_text_people"
+                    android:id="@+id/viewTextPeople"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
@@ -104,26 +104,26 @@
                     android:layout_marginEnd="2dp"
                     android:text="@{peopleView.views}"
                     android:textSize="14sp"
-                    app:layout_constraintEnd_toStartOf="@+id/appreciation_image_people"
+                    app:layout_constraintEnd_toStartOf="@+id/appreciationImagePeople"
                     app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toEndOf="@+id/view_image_people"
+                    app:layout_constraintStart_toEndOf="@+id/viewImagePeople"
                     app:layout_constraintTop_toBottomOf="@+id/peopleLine" />
 
             <ImageView
-                    android:id="@+id/appreciation_image_people"
+                    android:id="@+id/appreciationImagePeople"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_marginTop="9dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="1dp"
                     android:src="@drawable/ic_appreciation"
-                    app:layout_constraintEnd_toStartOf="@+id/appreciation_text_people"
-                    app:layout_constraintStart_toEndOf="@+id/view_text_people"
+                    app:layout_constraintEnd_toStartOf="@+id/appreciationTextPeople"
+                    app:layout_constraintStart_toEndOf="@+id/viewTextPeople"
                     app:layout_constraintTop_toBottomOf="@id/peopleLine"
                     tools:ignore="ContentDescription" />
 
             <TextView
-                    android:id="@+id/appreciation_text_people"
+                    android:id="@+id/appreciationTextPeople"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
@@ -131,25 +131,25 @@
                     android:layout_marginEnd="2dp"
                     android:text="@{peopleView.appreciations}"
                     android:textSize="14sp"
-                    app:layout_constraintEnd_toStartOf="@+id/followers_image_people"
-                    app:layout_constraintStart_toEndOf="@+id/appreciation_image_people"
+                    app:layout_constraintEnd_toStartOf="@+id/followersImagePeople"
+                    app:layout_constraintStart_toEndOf="@+id/appreciationImagePeople"
                     app:layout_constraintTop_toBottomOf="@id/peopleLine" />
 
             <ImageView
-                    android:id="@+id/followers_image_people"
+                    android:id="@+id/followersImagePeople"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_marginTop="9dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="1dp"
                     android:src="@drawable/ic_followers"
-                    app:layout_constraintEnd_toStartOf="@+id/followers_text_people"
-                    app:layout_constraintStart_toEndOf="@+id/appreciation_text_people"
+                    app:layout_constraintEnd_toStartOf="@+id/followersTextPeople"
+                    app:layout_constraintStart_toEndOf="@+id/appreciationTextPeople"
                     app:layout_constraintTop_toBottomOf="@id/peopleLine"
                     tools:ignore="ContentDescription" />
 
             <TextView
-                    android:id="@+id/followers_text_people"
+                    android:id="@+id/followersTextPeople"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
@@ -157,38 +157,38 @@
                     android:layout_marginEnd="2dp"
                     android:text="@{peopleView.followers}"
                     android:textSize="14sp"
-                    app:layout_constraintEnd_toStartOf="@+id/following_image_people"
-                    app:layout_constraintStart_toEndOf="@+id/followers_image_people"
+                    app:layout_constraintEnd_toStartOf="@+id/followingImagePeople"
+                    app:layout_constraintStart_toEndOf="@+id/followersImagePeople"
                     app:layout_constraintTop_toBottomOf="@id/peopleLine" />
 
             <ImageView
-                    android:id="@+id/following_image_people"
+                    android:id="@+id/followingImagePeople"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_marginTop="9dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="1dp"
                     android:src="@drawable/ic_following"
-                    app:layout_constraintEnd_toStartOf="@+id/following_text_people"
-                    app:layout_constraintStart_toEndOf="@+id/followers_text_people"
+                    app:layout_constraintEnd_toStartOf="@+id/followingTextPeople"
+                    app:layout_constraintStart_toEndOf="@+id/followersTextPeople"
                     app:layout_constraintTop_toBottomOf="@id/peopleLine"
                     tools:ignore="ContentDescription" />
 
             <TextView
-                    android:id="@+id/following_text_people"
+                    android:id="@+id/followingTextPeople"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:layout_marginTop="9dp"
                     android:text="@{peopleView.following}"
                     android:textSize="14sp"
-                    app:layout_constraintStart_toEndOf="@+id/following_image_people"
+                    app:layout_constraintStart_toEndOf="@+id/followingImagePeople"
                     app:layout_constraintTop_toBottomOf="@id/peopleLine" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ToggleButton
-                android:id="@+id/bookmark_people"
+                android:id="@+id/bookmarkPeople"
                 style="@style/toggleButton"
                 android:layout_width="50dp"
                 android:layout_height="50dp"

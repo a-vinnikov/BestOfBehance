@@ -34,6 +34,13 @@
         <item name="android:background">@drawable/toolbar_drawer_toggle</item>
         <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
     </style>
+
+    <style name="viewButton"  parent="android:Theme.Black">
+        <item name="android:buttonStyleToggle">@style/Toolbar.Widget.Button.Toggle</item>
+        <item name="android:textOn"/>
+        <item name="android:textOff"/>
+    </style>
+
     <style name="toolbarToggleButton" parent="android:Theme.Black">
         <item name="android:buttonStyleToggle">@style/Toolbar.Widget.Button.Toggle</item>
         <item name="android:textOn"/>

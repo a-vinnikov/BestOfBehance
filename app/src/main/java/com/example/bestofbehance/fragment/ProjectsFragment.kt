@@ -1,4 +1,4 @@
-package com.example.bestofbehance.fragments
+package com.example.bestofbehance.fragment
 
 import android.os.Bundle
 import android.view.*
@@ -12,11 +12,12 @@ import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.classesToSupport.BookmarkClick
 import com.example.bestofbehance.classesToSupport.InClick
-import com.example.bestofbehance.classesToSupport.NaviController
+import com.example.bestofbehance.dagger.NaviController
 import com.example.bestofbehance.classesToSupport.SharedPreferenceObject
-import com.example.bestofbehance.databases.ProjectsDataBase
-import com.example.bestofbehance.forAdapters.AdapterNonPaging
-import com.example.bestofbehance.viewModels.*
+import com.example.bestofbehance.database.ProjectsDataBase
+import com.example.bestofbehance.adapter.AdapterProjects
+import com.example.bestofbehance.binding.ProjectsBinding
+import com.example.bestofbehance.viewModel.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_projects.*
 
@@ -25,7 +26,7 @@ class ProjectsFragment : Fragment() {
     private var currentViewMode = VIEW_MODE_LISTVIEW
 
     lateinit var jsonModel: VMForParse
-    lateinit var adapterProjects: AdapterNonPaging
+    lateinit var adapterProjects: AdapterProjects
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -43,17 +44,17 @@ class ProjectsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        currentViewMode = SharedPreferenceObject.getSharedPreference(context!!, resources.getString(R.string.currentViewModeProjects), currentViewMode)
+        currentViewMode = SharedPreferenceObject.getSharedPreference(context!!, resources.getString(R.string.current_view_mode_projects), currentViewMode)
         when (item.itemId) {
             R.id.menu_switcher -> {
                 if (currentViewMode == VIEW_MODE_GRIDVIEW) {
                     item.setIcon(R.drawable.tile)
-                    SharedPreferenceObject.editorSharedPreference(context!!, resources.getString(R.string.currentViewModeProjects), VIEW_MODE_LISTVIEW)
-                    recycler_view_projects.layoutManager = LinearLayoutManager(activity)
+                    SharedPreferenceObject.editorSharedPreference(context!!, resources.getString(R.string.current_view_mode_projects), VIEW_MODE_LISTVIEW)
+                    recyclerViewProjects.layoutManager = LinearLayoutManager(activity)
                 } else if (currentViewMode == VIEW_MODE_LISTVIEW) {
                     item.setIcon(R.drawable.list)
-                    SharedPreferenceObject.editorSharedPreference(context!!, resources.getString(R.string.currentViewModeProjects), VIEW_MODE_GRIDVIEW)
-                    recycler_view_projects.layoutManager = GridLayoutManager(activity, 2)
+                    SharedPreferenceObject.editorSharedPreference(context!!, resources.getString(R.string.current_view_mode_projects), VIEW_MODE_GRIDVIEW)
+                    recyclerViewProjects.layoutManager = GridLayoutManager(activity, 2)
                 }
             }
         }
@@ -74,15 +75,15 @@ class ProjectsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(VMForParse::class.java)
-        currentViewMode = SharedPreferenceObject.getSharedPreference(context!!, resources.getString(R.string.currentViewModeProjects), currentViewMode)
+        currentViewMode = SharedPreferenceObject.getSharedPreference(context!!, resources.getString(R.string.current_view_mode_projects), currentViewMode)
 
-        if (recycler_view_projects.adapter == null) {
+        if (recyclerViewProjects.adapter == null) {
             when (currentViewMode) {
                 VIEW_MODE_LISTVIEW -> {
-                    recycler_view_projects.layoutManager = LinearLayoutManager(activity)
+                    recyclerViewProjects.layoutManager = LinearLayoutManager(activity)
                 }
                 VIEW_MODE_GRIDVIEW -> {
-                    recycler_view_projects.layoutManager = GridLayoutManager(activity, 2)
+                    recyclerViewProjects.layoutManager = GridLayoutManager(activity, 2)
                 }
             }
             createRecyclerView()
@@ -92,23 +93,23 @@ class ProjectsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
             if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.all?.size != 0) {
-                text_projects.visibility = GONE
+                textProjects.visibility = GONE
             } else {
-                text_projects.visibility = VISIBLE
+                textProjects.visibility = VISIBLE
             }
         activity?.navigation?.menu?.findItem(R.id.projects)?.isChecked = true
     }
 
     private fun createRecyclerView() {
 
-        convertProjectsToCard{result -> adapterProjects = adapterFun(result)}
-        recycler_view_projects.adapter = adapterProjects
+        ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.all?.let { convertProjectsToCard(it){ result -> adapterProjects = adapterFun(result)} }
+        recyclerViewProjects.adapter = adapterProjects
 
     }
 
-    fun adapterFun(list: MutableList<CardBinding>): AdapterNonPaging {
+    fun adapterFun(list: MutableList<CardBinding>): AdapterProjects {
 
-        return AdapterNonPaging(list, object : InClick {
+        return AdapterProjects(list, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
                 NaviController(context!!).toDetailsFromProjects(item)
             }
@@ -120,18 +121,17 @@ class ProjectsFragment : Fragment() {
                     adapterProjects.list.removeAt(position)
                     adapterProjects.notifyDataSetChanged()
                         if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.all?.size == 0) {
-                            text_projects.visibility = VISIBLE
+                            textProjects.visibility = VISIBLE
                         }
                 }
             }
-        }, resources.getString(R.string.projects_title))
+        })
     }
 
-    private fun convertProjectsToCard(myCallBack: (result: MutableList<CardBinding>) -> Unit){
-        val list = ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.all
+    private fun convertProjectsToCard(list: MutableList<ProjectsBinding>, myCallBack: (result: MutableList<CardBinding>) -> Unit){
         val listCard: MutableList<CardBinding> = mutableListOf()
-        for (i in 0 until list!!.size){
-            listCard.add(CardBinding(list[i].id, list[i].bigImage, list[i].thumbnail, list[i].avatar, list[i].artistName, list[i].artName, list[i].views, list[i].appreciations, list[i].comments, list[i].username, list[i].published, list[i].url))
+        for (i in 0 until list.size){
+            listCard.add(CardBinding.ModelMapper.from(list[i]))
         }
         myCallBack.invoke(listCard)
     }

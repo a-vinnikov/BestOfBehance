@@ -1,4 +1,4 @@
-package com.example.bestofbehance.forAdapters
+package com.example.bestofbehance.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,12 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.binding.*
-import com.example.bestofbehance.dagger.NetworkModule
-import com.example.bestofbehance.databases.PeopleDataBase
+import com.example.bestofbehance.database.PeopleDataBase
 import com.example.bestofbehance.databinding.*
 import com.example.bestofbehance.classesToSupport.BookmarkClick
 import com.example.bestofbehance.classesToSupport.MultiList
-import com.example.bestofbehance.classesToSupport.NaviController
+import com.example.bestofbehance.dagger.NaviController
 import kotlinx.android.synthetic.main.comment_item.view.*
 import kotlinx.android.synthetic.main.people_item.view.*
 
@@ -119,13 +118,11 @@ class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick
             binding.peopleView = people
             binding.notifyPropertyChanged(BR._all)
 
-            itemView.bookmark_people.isChecked = PeopleDataBase.getDatabase(context)?.getPeopleDao()?.getByUsername(people.username!!) != null
-            if (NetworkModule(context).hasNetwork()){
+            itemView.bookmarkPeople.isChecked = PeopleDataBase.getDatabase(context)?.getPeopleDao()?.getByUsername(people.username!!) != null
                 itemView.peopleLayout.setOnClickListener { NaviController(
                     context
                 ).toProfileFromPeople(people.username!!) }
-                itemView.bookmark_people.setOnClickListener { bookmark.setPosition(adapterPosition) }
-            }
+                itemView.bookmarkPeople.setOnClickListener { bookmark.setPosition(adapterPosition) }
         }
 
     }

@@ -1,4 +1,4 @@
-package com.example.bestofbehance.databases
+package com.example.bestofbehance.database
 
 import android.content.Context
 import androidx.room.*

@@ -1,10 +1,9 @@
-package com.example.bestofbehance.forAdapters
+package com.example.bestofbehance.adapter
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -15,16 +14,16 @@ import com.example.bestofbehance.classesToSupport.InClick
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.getSharedPreference
-import com.example.bestofbehance.databases.ProjectsDataBase
+import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.classesToSupport.BookmarkClick
-import com.example.bestofbehance.classesToSupport.MathObject
-import com.example.bestofbehance.classesToSupport.NaviController
-import com.example.bestofbehance.fragments.VIEW_MODE_GRIDVIEW
-import com.example.bestofbehance.fragments.VIEW_MODE_LISTVIEW
+import com.example.bestofbehance.extensions.MathObject
+import com.example.bestofbehance.dagger.NaviController
+import com.example.bestofbehance.fragment.VIEW_MODE_GRIDVIEW
+import com.example.bestofbehance.fragment.VIEW_MODE_LISTVIEW
 
 
-class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkClick, val layout: String) :
-    PagedListAdapter<CardBinding, PagingAdapterViewHolder.ViewHolder>(diffCallback) {
+class PagingAdapterProfile(val inClick: InClick, val bookmarkClick: BookmarkClick) :
+    PagedListAdapter<CardBinding, PagingAdapterProfile.ViewHolder>(diffCallback) {
 
     lateinit var context: Context
     var position = 0
@@ -39,11 +38,7 @@ class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkC
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
         var currentViewMode = ""
-
-        when(layout){
-            context.resources.getString(R.string.best) -> { currentViewMode = getSharedPreference(context, context.resources.getString(R.string.currentViewMode), currentViewMode)}
-            context.resources.getString(R.string.profile_title) -> {currentViewMode = getSharedPreference(context, context.resources.getString(R.string.currentViewModeProfile), currentViewMode)}
-        }
+        currentViewMode = getSharedPreference(context, context.resources.getString(R.string.current_view_mode_profile), currentViewMode)
 
 
         holder.itemView.avatarView.setOnClickListener {
@@ -60,10 +55,8 @@ class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkC
             inClick.onItemClick(getItem(holder.adapterPosition)!!, holder.adapterPosition)
         }
 
-        if (layout == context.resources.getString(R.string.profile_title)){
             holder.itemView.avatarView.visibility = GONE
             holder.itemView.artistName.visibility = GONE
-        }
 
         var copyList = getItem(holder.adapterPosition)!!.copy()
 
@@ -77,7 +70,6 @@ class PagingAdapterViewHolder(val inClick: InClick, val bookmarkClick: BookmarkC
             }
 
             VIEW_MODE_LISTVIEW -> {
-                if (layout == context.resources.getString(R.string.best)) holder.itemView.avatarView.visibility = VISIBLE
                 copyList = getItem(holder.adapterPosition)!!.copy()
             }
         }

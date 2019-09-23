@@ -1,11 +1,14 @@
-package com.example.bestofbehance.fragments
+package com.example.bestofbehance.fragment
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
 import android.view.View.VISIBLE
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -22,11 +25,12 @@ import com.example.bestofbehance.binding.ProfileBinding
 import com.example.bestofbehance.binding.ProjectsBinding
 import com.example.bestofbehance.classesToSupport.*
 import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.editorSharedPreference
-import com.example.bestofbehance.databases.PeopleDataBase
-import com.example.bestofbehance.databases.ProjectsDataBase
+import com.example.bestofbehance.database.PeopleDataBase
+import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.databinding.FragmentProfileBinding
-import com.example.bestofbehance.forAdapters.PagingAdapterViewHolder
-import com.example.bestofbehance.viewModels.*
+import com.example.bestofbehance.adapter.PagingAdapterProfile
+import com.example.bestofbehance.dagger.NaviController
+import com.example.bestofbehance.viewModel.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.profile_card.*
 
@@ -36,7 +40,7 @@ class ProfileFragment : Fragment() {
     lateinit var jsonModel: VMForParse
 
     private var currentViewMode = VIEW_MODE_LISTVIEW
-    lateinit var adapterProfile: PagingAdapterViewHolder
+    lateinit var adapterProfile: PagingAdapterProfile
     lateinit var url: String
     var userId = 0
 
@@ -99,7 +103,7 @@ class ProfileFragment : Fragment() {
                 intent.putExtra(
                     Intent.EXTRA_TEXT, url
                 )
-                intent.type = resources.getString(R.string.intentType)
+                intent.type = resources.getString(R.string.intent_type)
 
                 startActivity(Intent.createChooser(intent, resources.getString(R.string.share)))
             }
@@ -135,7 +139,7 @@ class ProfileFragment : Fragment() {
             binding.cardViewProfile = list[0]
             binding.notifyPropertyChanged(BR._all)
 
-            if (list[0].aboutMe != resources.getString(R.string.noInformation) && list[0].aboutMe!!.length > resources.getInteger(R.integer.lengthOfAboutMe)) {
+            if (list[0].aboutMe != resources.getString(R.string.no_information) && list[0].aboutMe!!.length > resources.getInteger(R.integer.lengthOfAboutMe)) {
                 more.visibility = VISIBLE
             }
         }
@@ -147,28 +151,28 @@ class ProfileFragment : Fragment() {
                 if (links[i] != null) {
                     when (i) {
                         resources.getString(R.string.pinterest) -> {
-                            pinterest_image.visibility = VISIBLE
-                            pinterest_image.setOnClickListener { webPageOpen(links[resources.getString(R.string.pinterest)]!!) }
+                            pinterestImage.visibility = VISIBLE
+                            pinterestImage.setOnClickListener { webPageOpen(links[resources.getString(R.string.pinterest)]!!) }
                         }
                         resources.getString(R.string.instagram) -> {
-                            instagram_image.visibility = VISIBLE
-                            instagram_image.setOnClickListener { webPageOpen(links[resources.getString(R.string.instagram)]!!) }
+                            instagramImage.visibility = VISIBLE
+                            instagramImage.setOnClickListener { webPageOpen(links[resources.getString(R.string.instagram)]!!) }
                         }
                         resources.getString(R.string.facebook) -> {
-                            facebook_image.visibility = VISIBLE
-                            facebook_image.setOnClickListener { webPageOpen(links[resources.getString(R.string.facebook)]!!) }
+                            facebookImage.visibility = VISIBLE
+                            facebookImage.setOnClickListener { webPageOpen(links[resources.getString(R.string.facebook)]!!) }
                         }
                         resources.getString(R.string.behance) -> {
-                            be_image.visibility = VISIBLE
-                            instagram_image.setOnClickListener { webPageOpen(links[resources.getString(R.string.behance)]!!) }
+                            beImage.visibility = VISIBLE
+                            instagramImage.setOnClickListener { webPageOpen(links[resources.getString(R.string.behance)]!!) }
                         }
                         resources.getString(R.string.dribbble) -> {
-                            dribbble_image.visibility = VISIBLE
-                            dribbble_image.setOnClickListener { webPageOpen(links[resources.getString(R.string.dribbble)]!!) }
+                            dribbbleImage.visibility = VISIBLE
+                            dribbbleImage.setOnClickListener { webPageOpen(links[resources.getString(R.string.dribbble)]!!) }
                         }
                         resources.getString(R.string.twitter) -> {
-                            twitter_image.visibility = VISIBLE
-                            twitter_image.setOnClickListener { webPageOpen(links[resources.getString(R.string.twitter)]!!) }
+                            twitterImage.visibility = VISIBLE
+                            twitterImage.setOnClickListener { webPageOpen(links[resources.getString(R.string.twitter)]!!) }
                         }
                     }
                 }
@@ -182,7 +186,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        currentViewMode = SharedPreferenceObject.getSharedPreference(context!!, resources.getString(R.string.currentViewModeProfile), currentViewMode
+        currentViewMode = SharedPreferenceObject.getSharedPreference(context!!, resources.getString(R.string.current_view_mode_profile), currentViewMode
         )
 
         when (currentViewMode) {
@@ -193,34 +197,36 @@ class ProfileFragment : Fragment() {
         viewModeProfile.setOnClickListener {
             when(viewModeProfile.isChecked){
                 false -> {
-                editorSharedPreference(context!!, resources.getString(R.string.currentViewModeProfile), VIEW_MODE_LISTVIEW)
-                recycler_view_profile.layoutManager = LinearLayoutManager(activity)
+                editorSharedPreference(context!!, resources.getString(R.string.current_view_mode_profile), VIEW_MODE_LISTVIEW)
+                recyclerViewProfile.layoutManager = LinearLayoutManager(activity)
             }
                 true -> {
-                editorSharedPreference(context!!, resources.getString(R.string.currentViewModeProfile), VIEW_MODE_GRIDVIEW)
-                recycler_view_profile.layoutManager = GridLayoutManager(activity, 2)
+                editorSharedPreference(context!!, resources.getString(R.string.current_view_mode_profile), VIEW_MODE_GRIDVIEW)
+                recyclerViewProfile.layoutManager = GridLayoutManager(activity, 2)
             }
         }
-            recycler_view_profile.adapter?.notifyDataSetChanged()
+            recyclerViewProfile.adapter?.notifyDataSetChanged()
         }
 
-        if (recycler_view_profile.adapter == null) {
+        if (recyclerViewProfile.adapter == null) {
             when(currentViewMode){
-                VIEW_MODE_LISTVIEW -> {recycler_view_profile.layoutManager = LinearLayoutManager(activity)}
-                VIEW_MODE_GRIDVIEW -> {recycler_view_profile.layoutManager = GridLayoutManager(activity, 2)}
+                VIEW_MODE_LISTVIEW -> {recyclerViewProfile.layoutManager = LinearLayoutManager(activity)}
+                VIEW_MODE_GRIDVIEW -> {recyclerViewProfile.layoutManager = GridLayoutManager(activity, 2)}
             }
             createRecyclerView()
         }
 
         more.setOnClickListener {
-            when (about_me.lineCount) {
-                3 -> {
-                    about_me.maxLines = Integer.MAX_VALUE; about_me.ellipsize = null; more.text =
-                        resources.getString(R.string.minimize)
+            when {
+                aboutMe.lineCount == 3 -> {
+                    aboutMe.maxLines = Integer.MAX_VALUE
+                    aboutMe.ellipsize = null
+                    more.text = resources.getString(R.string.minimize)
                 }
-                in 3..Integer.MAX_VALUE -> {
-                    about_me.maxLines = 3; about_me.ellipsize =
-                        TextUtils.TruncateAt.END; more.text = resources.getString(R.string.more)
+                aboutMe.lineCount > 3 -> {
+                    aboutMe.maxLines = 3
+                    aboutMe.ellipsize = TextUtils.TruncateAt.END
+                    more.text = resources.getString(R.string.more)
                 }
             }
         }
@@ -234,16 +240,16 @@ class ProfileFragment : Fragment() {
 
         jsonModel.profilePagedList?.observe(viewLifecycleOwner,
             Observer<PagedList<CardBinding>> {
-                adapterProfile = adapterFun(it) as PagingAdapterViewHolder
+                adapterProfile = adapterFun(it) as PagingAdapterProfile
                 adapterProfile.submitList(it)
-                recycler_view_profile.adapter = adapterProfile
+                recyclerViewProfile.adapter = adapterProfile
             })
 
     }
 
-    private fun adapterFun(list: MutableList<CardBinding>): PagedListAdapter<CardBinding, PagingAdapterViewHolder.ViewHolder> {
+    private fun adapterFun(list: MutableList<CardBinding>): PagedListAdapter<CardBinding, PagingAdapterProfile.ViewHolder> {
 
-        return PagingAdapterViewHolder(object : InClick {
+        return PagingAdapterProfile(object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
                 NaviController(context!!).toDetailsFromProfile(item)
             }
@@ -265,7 +271,7 @@ class ProfileFragment : Fragment() {
                         ?.deleteById(list[position].id!!)
                 }
             }
-        }, resources.getString(R.string.profile_title))
+        })
     }
 
     private fun webPageOpen(url: String) {

@@ -1,4 +1,4 @@
-package com.example.bestofbehance.viewModels
+package com.example.bestofbehance.viewModel
 
 import android.app.Application
 import android.content.Context
@@ -35,17 +35,17 @@ class VMForParse(val context: Context) : AndroidViewModel(Application()) {
     }
 
     fun setContent(id: Int): MutableLiveData<MutableList<MultiList>> {
-        ParseForVM(context).projectRetrofit(id) { result -> listForContents.postValue(result) }
+        ParseForVM(context).fetchProject(id) { result -> listForContents.postValue(result) }
         return listForContents
     }
 
     fun setComments(id: Int): MutableLiveData<MutableList<MultiList>> {
-        ParseForVM(context).commentsRetrofit(id) { result -> listForComments.postValue(result) }
+        ParseForVM(context).fetchComments(id) { result -> listForComments.postValue(result) }
         return listForComments
     }
 
     fun setUser(username: String): Pair<MutableLiveData<MutableList<ProfileBinding>>, MutableLiveData<MutableMap<String, String?>>> {
-        ParseForVM(context).userRetrofit(username) { result, links -> listForUser.postValue(result)
+        ParseForVM(context).fetchUser(username) { result, links -> listForUser.postValue(result)
             listForLinks.postValue(links)}
         return Pair(listForUser, listForLinks)
     }

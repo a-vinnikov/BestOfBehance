@@ -26,7 +26,7 @@ class ConnectionLiveData(val context: Context) : LiveData<Boolean>() {
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> connectivityManager.registerDefaultNetworkCallback(getConnectivityManagerCallback())
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> lollipopNetworkAvailableRequest()
-            else -> { context.registerReceiver(networkReceiver, IntentFilter(context.resources.getString(R.string.intentFilter))) }
+            else -> { context.registerReceiver(networkReceiver, IntentFilter(context.resources.getString(R.string.intent_filter))) }
         }
     }
 
@@ -61,7 +61,7 @@ class ConnectionLiveData(val context: Context) : LiveData<Boolean>() {
             }
             return connectivityManagerCallback
         } else {
-            throw IllegalAccessError(context.resources.getString(R.string.illegalAccessError))
+            throw IllegalAccessError(context.resources.getString(R.string.illegal_access_error))
         }
     }
 

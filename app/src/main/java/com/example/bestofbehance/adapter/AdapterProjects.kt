@@ -1,4 +1,4 @@
-package com.example.bestofbehance.forAdapters
+package com.example.bestofbehance.adapter
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
@@ -12,12 +12,14 @@ import com.example.bestofbehance.databinding.ListItemBinding
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.*
-import com.example.bestofbehance.databases.ProjectsDataBase
-import com.example.bestofbehance.fragments.VIEW_MODE_GRIDVIEW
-import com.example.bestofbehance.fragments.VIEW_MODE_LISTVIEW
+import com.example.bestofbehance.dagger.NaviController
+import com.example.bestofbehance.database.ProjectsDataBase
+import com.example.bestofbehance.extensions.MathObject
+import com.example.bestofbehance.fragment.VIEW_MODE_GRIDVIEW
+import com.example.bestofbehance.fragment.VIEW_MODE_LISTVIEW
 
 
-class AdapterNonPaging(var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick, val layout: String) : RecyclerView.Adapter<AdapterNonPaging.ViewHolder>() {
+class AdapterProjects(var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick) : RecyclerView.Adapter<AdapterProjects.ViewHolder>() {
 
     lateinit var context: Context
     var position = 0
@@ -33,21 +35,11 @@ class AdapterNonPaging(var list: MutableList<CardBinding>, val inClick: InClick,
         this.position = holder.adapterPosition
         var currentViewMode = ""
 
-        when(layout){
-            context.resources.getString(R.string.best) -> { currentViewMode = SharedPreferenceObject.getSharedPreference(context, context.resources.getString(R.string.currentViewMode), currentViewMode)
-            }
-            context.resources.getString(R.string.projects_title) -> {currentViewMode = SharedPreferenceObject.getSharedPreference(context, context.resources.getString(R.string.currentViewModeProjects), currentViewMode)
-            }
-        }
+        currentViewMode = SharedPreferenceObject.getSharedPreference(context, context.resources.getString(R.string.current_view_mode_projects), currentViewMode)
 
 
         holder.itemView.avatarView.setOnClickListener {
-            when(layout){
-                context.resources.getString(R.string.best) -> {
-                    NaviController(context).toProfileFromBest(list[holder.adapterPosition].username!!) }
-                context.resources.getString(R.string.projects_title) -> {
-                    NaviController(context).toProfileFromProjects(list[holder.adapterPosition].username!!) }
-            }
+            NaviController(context).toProfileFromProjects(list[holder.adapterPosition].username!!)
         }
 
         holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(list[position].id!!) != null
