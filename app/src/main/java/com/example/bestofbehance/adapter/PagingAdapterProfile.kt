@@ -13,11 +13,11 @@ import com.example.bestofbehance.databinding.ListItemBinding
 import com.example.bestofbehance.classesToSupport.InClick
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
-import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.getSharedPreference
 import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.classesToSupport.BookmarkClick
 import com.example.bestofbehance.extensions.MathObject
-import com.example.bestofbehance.dagger.NaviController
+import com.example.bestofbehance.dagger.NavigateModule
+import com.example.bestofbehance.dagger.StorageModule
 import com.example.bestofbehance.fragment.VIEW_MODE_GRIDVIEW
 import com.example.bestofbehance.fragment.VIEW_MODE_LISTVIEW
 
@@ -38,11 +38,11 @@ class PagingAdapterProfile(val inClick: InClick, val bookmarkClick: BookmarkClic
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
         var currentViewMode = ""
-        currentViewMode = getSharedPreference(context, context.resources.getString(R.string.current_view_mode_profile), currentViewMode)
+        currentViewMode = StorageModule.getPreferences(context, context.resources.getString(R.string.current_view_mode_profile), currentViewMode)
 
 
         holder.itemView.avatarView.setOnClickListener {
-            NaviController(context).toProfileFromBest(getItem(holder.adapterPosition)?.username!!)
+            NavigateModule(context).toProfileFromBest(getItem(holder.adapterPosition)?.username!!)
         }
 
         holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(getItem(position)!!.id!!) != null

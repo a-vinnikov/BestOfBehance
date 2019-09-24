@@ -14,7 +14,6 @@ import okhttp3.*
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 import com.example.bestofbehance.R
-import com.example.bestofbehance.classesToSupport.SharedPreferenceObject
 
 @Module
 class NetworkModule(val context: Context) {
@@ -33,12 +32,11 @@ class NetworkModule(val context: Context) {
             .client(okHttpClient)
             .build()
 
-
     @Singleton
     @Provides
     fun providesOkHttpClient(): OkHttpClient.Builder {
         var api_key = context.resources.getString(R.string.first_key)
-        api_key = SharedPreferenceObject.getSharedPreference(context, context.resources.getString(R.string.api_key),api_key)
+        api_key = StorageModule.getPreferences(context, context.resources.getString(R.string.api_key),api_key)
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.HEADERS
 
@@ -62,8 +60,8 @@ class NetworkModule(val context: Context) {
                 if (!response.isSuccessful && response.code == 429) {
                     Toast.makeText(context, context.resources.getString(R.string.refresh_message), Toast.LENGTH_SHORT).show()
                     when (api_key){
-                        context.resources.getString(R.string.first_key) -> SharedPreferenceObject.editorSharedPreference(context, context.resources.getString(R.string.api_key), context.resources.getString(R.string.second_key))
-                        context.resources.getString(R.string.second_key) -> SharedPreferenceObject.editorSharedPreference(context, context.resources.getString(R.string.api_key), context.resources.getString(R.string.first_key))
+                        context.resources.getString(R.string.first_key) -> StorageModule.editorPreferences(context, context.resources.getString(R.string.api_key), context.resources.getString(R.string.second_key))
+                        context.resources.getString(R.string.second_key) -> StorageModule.editorPreferences(context, context.resources.getString(R.string.api_key), context.resources.getString(R.string.first_key))
                     }
                 }
 

@@ -31,7 +31,7 @@
     </style>
 
     <style name="Toolbar.Widget.Button.Toggle" parent="android:Widget">
-        <item name="android:background">@drawable/toolbar_drawer_toggle</item>
+        <item name="android:background">@drawable/toolbar_toggle_bg</item>
         <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
     </style>
 

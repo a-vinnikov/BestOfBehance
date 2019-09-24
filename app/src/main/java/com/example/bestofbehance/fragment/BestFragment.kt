@@ -15,18 +15,14 @@ import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.binding.ProjectsBinding
 import com.example.bestofbehance.classesToSupport.BookmarkClick
-import com.example.bestofbehance.classesToSupport.CurrentDate
 import com.example.bestofbehance.classesToSupport.InClick
-import com.example.bestofbehance.dagger.NaviController
+import com.example.bestofbehance.dagger.NavigateModule
 import com.example.bestofbehance.dagger.NetworkModule
-import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.editorSharedPreference
-import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.getSharedPreference
 import com.example.bestofbehance.database.CardDataBase
-import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.adapter.AdapterOfflineBest
 import com.example.bestofbehance.adapter.PagingAdapterBest
+import com.example.bestofbehance.dagger.StorageModule
 import com.example.bestofbehance.viewModel.*
 
 
@@ -57,18 +53,18 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        currentViewMode = getSharedPreference(context!!, resources.getString(R.string.current_view_mode), currentViewMode)
+        currentViewMode = StorageModule.getPreferences(context!!, resources.getString(R.string.current_view_mode), currentViewMode)
         when (item.itemId) {
             R.id.menu_switcher -> {
 
                 when(currentViewMode){
                     VIEW_MODE_GRIDVIEW -> {
-                        editorSharedPreference(context!!, resources.getString(R.string.current_view_mode), VIEW_MODE_LISTVIEW)
+                        StorageModule.editorPreferences(context!!, resources.getString(R.string.current_view_mode), VIEW_MODE_LISTVIEW)
                         recyclerView.layoutManager = LinearLayoutManager(activity)
                         item.setIcon(R.drawable.tile)
                     }
                     VIEW_MODE_LISTVIEW -> {
-                        editorSharedPreference(context!!, resources.getString(R.string.current_view_mode), VIEW_MODE_GRIDVIEW)
+                        StorageModule.editorPreferences(context!!, resources.getString(R.string.current_view_mode), VIEW_MODE_GRIDVIEW)
                         recyclerView.layoutManager = GridLayoutManager(activity, 2)
                         item.setIcon(R.drawable.list)
                     }
@@ -86,7 +82,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
-        currentViewMode = getSharedPreference(context!!, resources.getString(R.string.current_view_mode), currentViewMode)
+        currentViewMode = StorageModule.getPreferences(context!!, resources.getString(R.string.current_view_mode), currentViewMode)
         createRecyclerView(currentViewMode)
         swipe.isRefreshing = false
     }
@@ -104,7 +100,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         swipe.setOnRefreshListener(this)
         jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(VMForParse::class.java)
 
-        currentViewMode = getSharedPreference(context!!, resources.getString(R.string.current_view_mode), currentViewMode)
+        currentViewMode = StorageModule.getPreferences(context!!, resources.getString(R.string.current_view_mode), currentViewMode)
         if (recyclerView.adapter == null) {
             when(currentViewMode){
                 VIEW_MODE_LISTVIEW -> {recyclerView.layoutManager = LinearLayoutManager(activity)}
@@ -159,25 +155,11 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         return PagingAdapterBest(object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                NaviController(context!!).toDetailsFromBest(item)
+                NavigateModule(context!!).toDetailsFromBest(item)
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
-                if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(list[position].id!!) == null) {
-                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.insert(
-                        ProjectsBinding(
-                            list[position].id!!, list[position].bigImage, list[position].thumbnail,
-                            list[position].avatar, list[position].artistName,
-                            list[position].artName, list[position].views,
-                            list[position].appreciations, list[position].comments,
-                            list[position].username, list[position].published, list[position].url,
-                            CurrentDate.getCurrentDateTime().toString()
-                        )
-                    )
-                } else {
-                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()
-                        ?.deleteById(list[position].id!!)
-                }
+                jsonModel.bookmarksProjects(list[position])
             }
         })
     }
@@ -186,26 +168,12 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         return AdapterOfflineBest(list, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                NaviController(context!!).toDetailsFromBest(item)
+                NavigateModule(context!!).toDetailsFromBest(item)
             }
 
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
-                if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(list[position].id!!) == null) {
-                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.insert(
-                        ProjectsBinding(
-                            list[position].id!!, list[position].bigImage, list[position].thumbnail,
-                            list[position].avatar, list[position].artistName,
-                            list[position].artName, list[position].views,
-                            list[position].appreciations, list[position].comments,
-                            list[position].username, list[position].published, list[position].url,
-                            CurrentDate.getCurrentDateTime().toString()
-                        )
-                    )
-                } else {
-                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()
-                        ?.deleteById(list[position].id!!)
-                }
+                jsonModel.bookmarksProjects(list[position])
             }
         })
     }

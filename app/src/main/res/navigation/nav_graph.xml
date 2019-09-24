@@ -16,7 +16,7 @@
         <action android:id="@+id/action_people_to_profile" app:destination="@id/profile"/>
 
         <argument
-                android:name="cardBindingPeople"
+                android:name="peopleBindingArg"
                 app:argType="string" />
 
     </fragment>
@@ -34,7 +34,7 @@
         <action android:id="@+id/action_details_to_profile" app:destination="@id/profile"/>
 
         <argument
-                android:name="cardBindingArg"
+                android:name="detailsBindingArgs"
                 app:argType="com.example.bestofbehance.binding.CardBinding" />
 
     </fragment>
@@ -45,7 +45,7 @@
         <action android:id="@+id/action_profile_to_details" app:destination="@id/details"/>
 
         <argument
-                android:name="cardBindingProfile"
+                android:name="profileBindingArg"
                 app:argType="string" />
 
     </fragment>

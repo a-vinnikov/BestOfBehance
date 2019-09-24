@@ -12,8 +12,8 @@ import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.classesToSupport.BookmarkClick
 import com.example.bestofbehance.classesToSupport.InClick
-import com.example.bestofbehance.dagger.NaviController
-import com.example.bestofbehance.classesToSupport.SharedPreferenceObject
+import com.example.bestofbehance.dagger.NavigateModule
+import com.example.bestofbehance.dagger.StorageModule
 import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.adapter.AdapterProjects
 import com.example.bestofbehance.binding.ProjectsBinding
@@ -44,16 +44,16 @@ class ProjectsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        currentViewMode = SharedPreferenceObject.getSharedPreference(context!!, resources.getString(R.string.current_view_mode_projects), currentViewMode)
+        currentViewMode = StorageModule.getPreferences(context!!, resources.getString(R.string.current_view_mode_projects), currentViewMode)
         when (item.itemId) {
             R.id.menu_switcher -> {
                 if (currentViewMode == VIEW_MODE_GRIDVIEW) {
                     item.setIcon(R.drawable.tile)
-                    SharedPreferenceObject.editorSharedPreference(context!!, resources.getString(R.string.current_view_mode_projects), VIEW_MODE_LISTVIEW)
+                    StorageModule.editorPreferences(context!!, resources.getString(R.string.current_view_mode_projects), VIEW_MODE_LISTVIEW)
                     recyclerViewProjects.layoutManager = LinearLayoutManager(activity)
                 } else if (currentViewMode == VIEW_MODE_LISTVIEW) {
                     item.setIcon(R.drawable.list)
-                    SharedPreferenceObject.editorSharedPreference(context!!, resources.getString(R.string.current_view_mode_projects), VIEW_MODE_GRIDVIEW)
+                    StorageModule.editorPreferences(context!!, resources.getString(R.string.current_view_mode_projects), VIEW_MODE_GRIDVIEW)
                     recyclerViewProjects.layoutManager = GridLayoutManager(activity, 2)
                 }
             }
@@ -75,7 +75,7 @@ class ProjectsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(VMForParse::class.java)
-        currentViewMode = SharedPreferenceObject.getSharedPreference(context!!, resources.getString(R.string.current_view_mode_projects), currentViewMode)
+        currentViewMode = StorageModule.getPreferences(context!!, resources.getString(R.string.current_view_mode_projects), currentViewMode)
 
         if (recyclerViewProjects.adapter == null) {
             when (currentViewMode) {
@@ -111,7 +111,7 @@ class ProjectsFragment : Fragment() {
 
         return AdapterProjects(list, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                NaviController(context!!).toDetailsFromProjects(item)
+                NavigateModule(context!!).toDetailsFromProjects(item)
             }
 
         }, object : BookmarkClick {

@@ -10,44 +10,36 @@ import com.example.bestofbehance.fragment.*
 import dagger.Module
 import javax.inject.Singleton
 
-@Module
-class NaviController(activity: Context) {
+class NavigateModule(activity: Context) {
 
-    lateinit var context: FragmentActivity
+    //lateinit var context: FragmentActivity
 
     val controller = Navigation.findNavController(activity as Activity, R.id.fr)
 
-    @Singleton
     fun toDetailsFromBest(item: CardBinding) {
         controller.navigate(BestDirections.actionBestToDetails(item))
     }
 
-    @Singleton
     fun toDetailsFromProjects(item: CardBinding) {
         controller.navigate(ProjectsFragmentDirections.actionProjectsToDetails(item))
     }
 
-    @Singleton
     fun toProfileFromDetails(item: String) {
         controller.navigate(DetailsFragmentDirections.actionDetailsToProfile(item))
     }
 
-    @Singleton
     fun toProfileFromBest(item: String) {
         controller.navigate(BestDirections.actionBestToProfile(item))
     }
 
-    @Singleton
     fun toProfileFromProjects(item: String) {
         controller.navigate(ProjectsFragmentDirections.actionProjectsToProfile(item))
     }
 
-    @Singleton
     fun toDetailsFromProfile(item: CardBinding){
         controller.navigate(ProfileFragmentDirections.actionProfileToDetails(item))
     }
 
-    @Singleton
     fun toProfileFromPeople(item: String){
         controller.navigate(PeopleFragmentDirections.actionPeopleToProfile(item))
     }

@@ -1,4 +1,4 @@
-package com.example.bestofbehance.classesToSupport
+package com.example.bestofbehance.extensions
 
 import java.text.SimpleDateFormat
 import java.util.*

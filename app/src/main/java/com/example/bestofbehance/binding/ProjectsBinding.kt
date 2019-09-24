@@ -3,6 +3,7 @@ package com.example.bestofbehance.binding
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.bestofbehance.extensions.CurrentDate
 import java.io.Serializable
 
 @Entity(tableName = "ProjectsData")
@@ -20,5 +21,10 @@ data class ProjectsBinding(
     @ColumnInfo(name = "published") var published: Int?,
     @ColumnInfo(name = "url") var url: String?,
     @ColumnInfo(name = "added") var added: String?
-) : Serializable
+) : Serializable {
+    object ModelMapper {
+        fun from(form: CardBinding) =
+            ProjectsBinding(form.id!!, form.bigImage, form.thumbnail, form.avatar, form.artistName, form.artName, form.views, form.appreciations, form.comments, form.username, form.published, form.url, CurrentDate.getCurrentDateTime().toString())
+    }
+}
 

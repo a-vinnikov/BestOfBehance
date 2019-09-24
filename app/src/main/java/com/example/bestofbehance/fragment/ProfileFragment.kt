@@ -1,14 +1,11 @@
 package com.example.bestofbehance.fragment
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
 import android.view.View.VISIBLE
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -24,12 +21,12 @@ import com.example.bestofbehance.binding.PeopleBinding
 import com.example.bestofbehance.binding.ProfileBinding
 import com.example.bestofbehance.binding.ProjectsBinding
 import com.example.bestofbehance.classesToSupport.*
-import com.example.bestofbehance.classesToSupport.SharedPreferenceObject.editorSharedPreference
 import com.example.bestofbehance.database.PeopleDataBase
 import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.databinding.FragmentProfileBinding
 import com.example.bestofbehance.adapter.PagingAdapterProfile
-import com.example.bestofbehance.dagger.NaviController
+import com.example.bestofbehance.dagger.NavigateModule
+import com.example.bestofbehance.dagger.StorageModule
 import com.example.bestofbehance.viewModel.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.profile_card.*
@@ -47,7 +44,7 @@ class ProfileFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.two_buttons_toolbar, menu)
 
-        if (PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.getByUsername(args.cardBindingProfile) == null) {
+        if (PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.getByUsername(args.profileBindingArg) == null) {
             menu.findItem(R.id.menu_bookmark)
                 ?.setIcon(R.drawable.ic_bookmarks_normal)
         } else {
@@ -66,23 +63,12 @@ class ProfileFragment : Fragment() {
             R.id.menu_bookmark -> {
                 when {
                     nameProfile.text == null -> item.isCheckable = false
-                    PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.getByUsername(args.cardBindingProfile) == null -> {
+                    PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.getByUsername(args.profileBindingArg) == null -> {
 
-                        jsonModel.setUser(args.cardBindingProfile)
+                        jsonModel.setUser(args.profileBindingArg)
                         val observerGSON = Observer<MutableList<ProfileBinding>> { list ->
                             PeopleDataBase.getDatabase(context!!)?.getPeopleDao()?.insert(
-                                PeopleBinding(
-                                    list[0].id!!,
-                                    args.cardBindingProfile,
-                                    list[0].avatar,
-                                    list[0].name,
-                                    list[0].post,
-                                    list[0].views,
-                                    list[0].appreciations,
-                                    list[0].followers,
-                                    list[0].following,
-                                    CurrentDate.getCurrentDateTime().toString()
-                                )
+                                PeopleBinding.ModelMapper.from(list[0], args.profileBindingArg)
                             )
                         }
 
@@ -91,7 +77,7 @@ class ProfileFragment : Fragment() {
                     }
                     else -> {
                         PeopleDataBase.getDatabase(context!!)?.getPeopleDao()
-                            ?.deleteByUsername(args.cardBindingProfile)
+                            ?.deleteByUsername(args.profileBindingArg)
                         item.setIcon(R.drawable.ic_bookmarks_normal)
                     }
                 }
@@ -127,19 +113,22 @@ class ProfileFragment : Fragment() {
         val binding = FragmentProfileBinding.inflate(inflater)
         val fragmentDetailsView: View = binding.root
 
-        jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(VMForParse::class.java)
+        jsonModel =
+            ViewModelProviders.of(this, ViewModelFactory(context!!)).get(VMForParse::class.java)
 
-        jsonModel.setUser(args.cardBindingProfile)
+        jsonModel.setUser(args.profileBindingArg)
 
         val observerGSON = Observer<MutableList<ProfileBinding>> { list ->
 
-            if (list[0].url != null ) url = list[0].url!!
-
+            if (list[0].url != null) url = list[0].url!!
             if (list[0].id != null) userId = list[0].id!!
             binding.cardViewProfile = list[0]
             binding.notifyPropertyChanged(BR._all)
 
-            if (list[0].aboutMe != resources.getString(R.string.no_information) && list[0].aboutMe!!.length > resources.getInteger(R.integer.lengthOfAboutMe)) {
+            if (list[0].aboutMe != resources.getString(R.string.no_information) && list[0].aboutMe!!.length > resources.getInteger(
+                    R.integer.lengthOfAboutMe
+                )
+            ) {
                 more.visibility = VISIBLE
             }
         }
@@ -152,27 +141,63 @@ class ProfileFragment : Fragment() {
                     when (i) {
                         resources.getString(R.string.pinterest) -> {
                             pinterestImage.visibility = VISIBLE
-                            pinterestImage.setOnClickListener { webPageOpen(links[resources.getString(R.string.pinterest)]!!) }
+                            pinterestImage.setOnClickListener {
+                                webPageOpen(
+                                    links[resources.getString(
+                                        R.string.pinterest
+                                    )]!!
+                                )
+                            }
                         }
                         resources.getString(R.string.instagram) -> {
                             instagramImage.visibility = VISIBLE
-                            instagramImage.setOnClickListener { webPageOpen(links[resources.getString(R.string.instagram)]!!) }
+                            instagramImage.setOnClickListener {
+                                webPageOpen(
+                                    links[resources.getString(
+                                        R.string.instagram
+                                    )]!!
+                                )
+                            }
                         }
                         resources.getString(R.string.facebook) -> {
                             facebookImage.visibility = VISIBLE
-                            facebookImage.setOnClickListener { webPageOpen(links[resources.getString(R.string.facebook)]!!) }
+                            facebookImage.setOnClickListener {
+                                webPageOpen(
+                                    links[resources.getString(
+                                        R.string.facebook
+                                    )]!!
+                                )
+                            }
                         }
                         resources.getString(R.string.behance) -> {
                             beImage.visibility = VISIBLE
-                            instagramImage.setOnClickListener { webPageOpen(links[resources.getString(R.string.behance)]!!) }
+                            instagramImage.setOnClickListener {
+                                webPageOpen(
+                                    links[resources.getString(
+                                        R.string.behance
+                                    )]!!
+                                )
+                            }
                         }
                         resources.getString(R.string.dribbble) -> {
                             dribbbleImage.visibility = VISIBLE
-                            dribbbleImage.setOnClickListener { webPageOpen(links[resources.getString(R.string.dribbble)]!!) }
+                            dribbbleImage.setOnClickListener {
+                                webPageOpen(
+                                    links[resources.getString(
+                                        R.string.dribbble
+                                    )]!!
+                                )
+                            }
                         }
                         resources.getString(R.string.twitter) -> {
                             twitterImage.visibility = VISIBLE
-                            twitterImage.setOnClickListener { webPageOpen(links[resources.getString(R.string.twitter)]!!) }
+                            twitterImage.setOnClickListener {
+                                webPageOpen(
+                                    links[resources.getString(
+                                        R.string.twitter
+                                    )]!!
+                                )
+                            }
                         }
                     }
                 }
@@ -186,7 +211,8 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        currentViewMode = SharedPreferenceObject.getSharedPreference(context!!, resources.getString(R.string.current_view_mode_profile), currentViewMode
+        currentViewMode = StorageModule.getPreferences(
+            context!!, resources.getString(R.string.current_view_mode_profile), currentViewMode
         )
 
         when (currentViewMode) {
@@ -195,23 +221,35 @@ class ProfileFragment : Fragment() {
         }
 
         viewModeProfile.setOnClickListener {
-            when(viewModeProfile.isChecked){
+            when (viewModeProfile.isChecked) {
                 false -> {
-                editorSharedPreference(context!!, resources.getString(R.string.current_view_mode_profile), VIEW_MODE_LISTVIEW)
-                recyclerViewProfile.layoutManager = LinearLayoutManager(activity)
-            }
+                    StorageModule.editorPreferences(
+                        context!!,
+                        resources.getString(R.string.current_view_mode_profile),
+                        VIEW_MODE_LISTVIEW
+                    )
+                    recyclerViewProfile.layoutManager = LinearLayoutManager(activity)
+                }
                 true -> {
-                editorSharedPreference(context!!, resources.getString(R.string.current_view_mode_profile), VIEW_MODE_GRIDVIEW)
-                recyclerViewProfile.layoutManager = GridLayoutManager(activity, 2)
+                    StorageModule.editorPreferences(
+                        context!!,
+                        resources.getString(R.string.current_view_mode_profile),
+                        VIEW_MODE_GRIDVIEW
+                    )
+                    recyclerViewProfile.layoutManager = GridLayoutManager(activity, 2)
+                }
             }
-        }
             recyclerViewProfile.adapter?.notifyDataSetChanged()
         }
 
         if (recyclerViewProfile.adapter == null) {
-            when(currentViewMode){
-                VIEW_MODE_LISTVIEW -> {recyclerViewProfile.layoutManager = LinearLayoutManager(activity)}
-                VIEW_MODE_GRIDVIEW -> {recyclerViewProfile.layoutManager = GridLayoutManager(activity, 2)}
+            when (currentViewMode) {
+                VIEW_MODE_LISTVIEW -> {
+                    recyclerViewProfile.layoutManager = LinearLayoutManager(activity)
+                }
+                VIEW_MODE_GRIDVIEW -> {
+                    recyclerViewProfile.layoutManager = GridLayoutManager(activity, 2)
+                }
             }
             createRecyclerView()
         }
@@ -235,7 +273,7 @@ class ProfileFragment : Fragment() {
 
     private fun createRecyclerView() {
         if (jsonModel.profilePagedList?.value == null) {
-            jsonModel.setUserProjects(args.cardBindingProfile)
+            jsonModel.setUserProjects(args.profileBindingArg)
         }
 
         jsonModel.profilePagedList?.observe(viewLifecycleOwner,
@@ -251,25 +289,11 @@ class ProfileFragment : Fragment() {
 
         return PagingAdapterProfile(object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                NaviController(context!!).toDetailsFromProfile(item)
+                NavigateModule(context!!).toDetailsFromProfile(item)
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
-                if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(list[position].id!!) == null) {
-                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.insert(
-                        ProjectsBinding(
-                            list[position].id!!, list[position].bigImage, list[position].thumbnail,
-                            list[position].avatar, list[position].artistName,
-                            list[position].artName, list[position].views,
-                            list[position].appreciations, list[position].comments,
-                            list[position].username, list[position].published, list[position].url,
-                            CurrentDate.getCurrentDateTime().toString()
-                        )
-                    )
-                } else {
-                    ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()
-                        ?.deleteById(list[position].id!!)
-                }
+                jsonModel.bookmarksProjects(list[position])
             }
         })
     }

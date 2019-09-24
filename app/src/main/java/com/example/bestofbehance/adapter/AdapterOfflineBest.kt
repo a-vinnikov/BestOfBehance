@@ -20,7 +20,7 @@ import com.example.bestofbehance.fragment.VIEW_MODE_GRIDVIEW
 import com.example.bestofbehance.fragment.VIEW_MODE_LISTVIEW
 
 
-class AdapterProjects(var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick) : RecyclerView.Adapter<AdapterProjects.ViewHolder>() {
+class AdapterOfflineBest(var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick) : RecyclerView.Adapter<AdapterOfflineBest.ViewHolder>() {
 
     lateinit var context: Context
     var position = 0
@@ -36,18 +36,16 @@ class AdapterProjects(var list: MutableList<CardBinding>, val inClick: InClick, 
         this.position = holder.adapterPosition
         var currentViewMode = ""
 
-        currentViewMode = StorageModule.getPreferences(context, context.resources.getString(R.string.current_view_mode_projects), currentViewMode)
+         currentViewMode = StorageModule.getPreferences(context, context.resources.getString(R.string.current_view_mode), currentViewMode)
 
 
         holder.itemView.avatarView.setOnClickListener {
-            NavigateModule(context).toProfileFromProjects(list[holder.adapterPosition].username!!)
+            NavigateModule(context).toProfileFromBest(list[holder.adapterPosition].username!!)
         }
 
         holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(list[position].id!!) != null
 
-        holder.itemView.bookmark.setOnClickListener {
-            bookmarkClick.setPosition(position)
-        }
+        holder.itemView.bookmark.setOnClickListener { bookmarkClick.setPosition(position) }
 
         holder.itemView.constLayout.setOnClickListener {
             inClick.onItemClick(list[holder.adapterPosition], holder.adapterPosition)
