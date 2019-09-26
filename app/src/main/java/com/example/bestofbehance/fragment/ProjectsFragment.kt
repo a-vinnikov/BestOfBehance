@@ -110,7 +110,7 @@ class ProjectsFragment : Fragment() {
 
     fun adapterFun(list: MutableList<CardBinding>): AdapterProjects {
 
-        return AdapterProjects(currentViewMode, list, object : InClick {
+        return AdapterProjects(list, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
                 FragmentNavigate(context!!).toDetailsFromProjects(item)
             }

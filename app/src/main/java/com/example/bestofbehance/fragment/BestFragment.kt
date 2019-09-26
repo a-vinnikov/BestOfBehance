@@ -139,7 +139,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private fun adapterFun(
         list: MutableList<CardBinding>): PagedListAdapter<CardBinding, PagingAdapterBest.ViewHolder> {
 
-        return PagingAdapterBest(currentViewMode, object : InClick {
+        return PagingAdapterBest(object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
                 FragmentNavigate(context!!).toDetailsFromBest(item)
             }
@@ -152,7 +152,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private fun adapterOffline(list: MutableList<CardBinding>): AdapterOfflineBest {
 
-        return AdapterOfflineBest(currentViewMode, list, object : InClick {
+        return AdapterOfflineBest(list, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
                 FragmentNavigate(context!!).toDetailsFromBest(item)
             }

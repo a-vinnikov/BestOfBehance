@@ -12,15 +12,17 @@ import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.databinding.ListItemBinding
 import com.example.bestofbehance.classesToSupport.InClick
 import com.example.bestofbehance.BR
+import com.example.bestofbehance.R
 import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.classesToSupport.BookmarkClick
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_GRIDVIEW
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_LISTVIEW
 import com.example.bestofbehance.extension.MathObject
 import com.example.bestofbehance.module.FragmentNavigate
+import com.example.bestofbehance.module.StorageModule
 
 
-class PagingAdapterProfile(val currentViewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick) :
+class PagingAdapterProfile(val inClick: InClick, val bookmarkClick: BookmarkClick) :
     PagedListAdapter<CardBinding, PagingAdapterProfile.ViewHolder>(diffCallback) {
 
     lateinit var context: Context
@@ -35,6 +37,8 @@ class PagingAdapterProfile(val currentViewMode: String, val inClick: InClick, va
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
+        var currentViewMode = ""
+        currentViewMode = StorageModule.getPreferences(context, context.resources.getString(R.string.current_view_mode_profile), currentViewMode)
 
         holder.itemView.avatarView.setOnClickListener {
             FragmentNavigate(context).toProfileFromBest(getItem(holder.adapterPosition)?.username!!)

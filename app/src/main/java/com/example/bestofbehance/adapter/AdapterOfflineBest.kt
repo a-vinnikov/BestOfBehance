@@ -10,13 +10,15 @@ import kotlinx.android.synthetic.main.list_item.view.*
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.databinding.ListItemBinding
 import com.example.bestofbehance.BR
+import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.*
 import com.example.bestofbehance.module.FragmentNavigate
 import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.extension.MathObject
+import com.example.bestofbehance.module.StorageModule
 
 
-class AdapterOfflineBest(val currentViewMode: String, var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick) : RecyclerView.Adapter<AdapterOfflineBest.ViewHolder>() {
+class AdapterOfflineBest(var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick) : RecyclerView.Adapter<AdapterOfflineBest.ViewHolder>() {
 
     lateinit var context: Context
     var position = 0
@@ -30,7 +32,9 @@ class AdapterOfflineBest(val currentViewMode: String, var list: MutableList<Card
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
+        var currentViewMode = ""
 
+        currentViewMode = StorageModule.getPreferences(context, context.resources.getString(R.string.current_view_mode), currentViewMode)
 
         holder.itemView.avatarView.setOnClickListener {
             FragmentNavigate(context).toProfileFromBest(list[holder.adapterPosition].username!!)

@@ -283,7 +283,7 @@ class ProfileFragment : Fragment() {
 
     private fun adapterFun(list: MutableList<CardBinding>): PagedListAdapter<CardBinding, PagingAdapterProfile.ViewHolder> {
 
-        return PagingAdapterProfile(currentViewMode, object : InClick {
+        return PagingAdapterProfile(object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
                 FragmentNavigate(context!!).toDetailsFromProfile(item)
             }
