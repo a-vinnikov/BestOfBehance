@@ -5,8 +5,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="commentsView" type="com.example.bestofbehance.binding.CommentsBinding"/>
-        <import type="com.example.bestofbehance.extensions.UnixDateConverter"/>
+        <variable name="commentsView" type="com.example.bestofbehance.binding.detailsBinding.CommentsBinding"/>
+        <import type="com.example.bestofbehance.extension.UnixDateConverter"/>
     </data>
 
 

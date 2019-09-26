@@ -10,7 +10,7 @@ interface CardDao {
     val all: MutableList<CardBinding>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(cardBinding: CardBinding)
+    fun insert(binding: CardBinding)
 
     @Query("DELETE FROM CardData")
     fun deleteAll()

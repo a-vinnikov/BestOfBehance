@@ -5,14 +5,18 @@ import androidx.core.text.HtmlCompat
 import com.example.bestofbehance.R
 import com.example.bestofbehance.retrofit.BehanceApiInterface
 import com.example.bestofbehance.binding.*
-import com.example.bestofbehance.dagger.NetworkModule
+import com.example.bestofbehance.binding.detailsBinding.CommentsBinding
+import com.example.bestofbehance.binding.detailsBinding.CountBinding
+import com.example.bestofbehance.binding.detailsBinding.ImageBinding
+import com.example.bestofbehance.binding.detailsBinding.TextBinding
+import com.example.bestofbehance.module.NetworkModule
 import com.example.bestofbehance.gson.*
 import com.example.bestofbehance.classesToSupport.MultiList
 import retrofit2.Call
 import retrofit2.Callback
 import java.lang.StringBuilder
 
-class ParseForVM(val context: Context) {
+class ParseForViewModel(val context: Context) {
 
     private val iListCon: MutableList<MultiList> = mutableListOf()
     private val iListCom: MutableList<MultiList> = mutableListOf()
@@ -41,19 +45,31 @@ class ParseForVM(val context: Context) {
                     when (listResponse[i]!!.type) {
                         context.resources.getString(R.string.image) -> {
                             val image = listResponse[i]?.src
-                            iListCon.add(MultiList.ImageList(ImageBinding(image)))
+                            iListCon.add(MultiList.ImageList(
+                                ImageBinding(
+                                    image
+                                )
+                            ))
                         }
                         context.resources.getString(R.string.text) -> {
                             val text = listResponse[i]?.text.toString()
                             val textFormatted =
                                 HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
                                     .toString().trim()
-                            iListCon.add(MultiList.TextList(TextBinding(textFormatted)))
+                            iListCon.add(MultiList.TextList(
+                                TextBinding(
+                                    textFormatted
+                                )
+                            ))
                         }
                         context.resources.getString(R.string.media_collection) -> {
                             for (element in listResponse[i]?.components!!) {
                                 val collectionItem = element?.src
-                                iListCon.add(MultiList.ImageList(ImageBinding(collectionItem)))
+                                iListCon.add(MultiList.ImageList(
+                                    ImageBinding(
+                                        collectionItem
+                                    )
+                                ))
                             }
                         }
                     }
@@ -82,7 +98,11 @@ class ParseForVM(val context: Context) {
                 val numberOfComments = response.body()?.comments?.size
 
                 if (numberOfComments == 0) {
-                    iListCom.add(MultiList.CountList(CountBinding(numberOfComments.toInt())))
+                    iListCom.add(MultiList.CountList(
+                        CountBinding(
+                            numberOfComments.toInt()
+                        )
+                    ))
                 } else {
                     listResponse.let {
                         for (i in 0 until numberOfComments!!) {
@@ -94,7 +114,11 @@ class ParseForVM(val context: Context) {
                             val date = it?.get(i)?.createdOn.toString()
 
                             if (i == 0) {
-                                iListCom.add(MultiList.CountList(CountBinding(numberOfComments)))
+                                iListCom.add(MultiList.CountList(
+                                    CountBinding(
+                                        numberOfComments
+                                    )
+                                ))
                             }
                             iListCom.add(
                                 MultiList.CommentsList(

@@ -7,7 +7,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.example.bestofbehance.classesToSupport.ConnectionLiveData
-import com.example.bestofbehance.dagger.NavigateModule
+import com.example.bestofbehance.module.NavigateModule
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.textView

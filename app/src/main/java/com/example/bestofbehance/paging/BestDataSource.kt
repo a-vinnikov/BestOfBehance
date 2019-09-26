@@ -2,7 +2,7 @@ package com.example.bestofbehance.paging
 import android.content.Context
 import androidx.paging.PageKeyedDataSource
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.dagger.NetworkModule
+import com.example.bestofbehance.module.NetworkModule
 import com.example.bestofbehance.database.CardDataBase
 import com.example.bestofbehance.gson.GeneralResponse
 import retrofit2.Call

@@ -13,7 +13,7 @@ interface PeopleDao {
     fun getByUsername(username: String): PeopleBinding
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(cardBinding: PeopleBinding)
+    fun insert(binding: PeopleBinding)
 
     @Query("DELETE FROM PeopleData WHERE username = :username")
     fun deleteByUsername(username: String)

@@ -1,4 +1,4 @@
-package com.example.bestofbehance.extensions
+package com.example.bestofbehance.extension
 
 import java.math.RoundingMode
 import java.text.DecimalFormat

@@ -11,12 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.MultiList
-import com.example.bestofbehance.database.ProjectsDataBase
-import com.example.bestofbehance.dagger.NavigateModule
+import com.example.bestofbehance.module.NavigateModule
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
 import com.example.bestofbehance.adapter.AdapterMulti
-import com.example.bestofbehance.extensions.WebOpening
-import com.example.bestofbehance.viewModel.VMForParse
+import com.example.bestofbehance.extension.WebOpening
+import com.example.bestofbehance.viewModel.ViewModelForParse
 import com.example.bestofbehance.viewModel.ViewModelFactory
 import kotlinx.android.synthetic.main.details_card.*
 import kotlinx.android.synthetic.main.fragment_details.*
@@ -24,13 +23,13 @@ import kotlinx.android.synthetic.main.fragment_details.*
 class DetailsFragment : Fragment() {
 
     private val args: DetailsFragmentArgs by navArgs()
-    lateinit var jsonModel: VMForParse
+    lateinit var jsonModel: ViewModelForParse
     var position = 0
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.two_buttons_toolbar, menu)
 
-        if (ProjectsDataBase.getDatabase(context!!)?.getProjectsDao()?.getById(args.detailsBindingArgs.id!!) == null) {
+        if (jsonModel.checkInProjectsDB(args.detailsBindingArgs.id!!) == null) {
             menu.findItem(R.id.menu_bookmark)
                 ?.setIcon(R.drawable.ic_bookmarks_normal)
         } else {
@@ -49,7 +48,7 @@ class DetailsFragment : Fragment() {
             }
 
             R.id.menu_share -> {
-                startActivity(Intent.createChooser(WebOpening.open(args.detailsBindingArgs.url!!, context!!), resources.getString(R.string.share)))
+                startActivity(Intent.createChooser(WebOpening.share(args.detailsBindingArgs.url!!, context!!), resources.getString(R.string.share)))
             }
         }
         return super.onOptionsItemSelected(item)
@@ -70,7 +69,7 @@ class DetailsFragment : Fragment() {
         binding.cardViewDetails = args.detailsBindingArgs
         binding.notifyPropertyChanged(BR._all)
 
-        jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(VMForParse::class.java)
+        jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(ViewModelForParse::class.java)
 
         return fragmentDetailsView
     }

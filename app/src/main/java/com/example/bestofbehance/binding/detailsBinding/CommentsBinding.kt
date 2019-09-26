@@ -1,4 +1,4 @@
-package com.example.bestofbehance.binding
+package com.example.bestofbehance.binding.detailsBinding
 
 data class CommentsBinding(
     var commentAvatarView: String? = null,

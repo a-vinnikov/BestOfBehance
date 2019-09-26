@@ -4,7 +4,7 @@
         android:background="@color/colorMain">
 
     <data>
-        <variable name="cardViewText" type="com.example.bestofbehance.binding.TextBinding"/>
+        <variable name="cardViewText" type="com.example.bestofbehance.binding.detailsBinding.TextBinding"/>
     </data>
 
     <androidx.cardview.widget.CardView

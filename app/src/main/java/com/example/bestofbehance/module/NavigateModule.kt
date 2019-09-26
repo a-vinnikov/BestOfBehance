@@ -1,18 +1,13 @@
-package com.example.bestofbehance.dagger
+package com.example.bestofbehance.module
 
 import android.app.Activity
 import android.content.Context
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.Navigation
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.fragment.*
-import dagger.Module
-import javax.inject.Singleton
 
 class NavigateModule(activity: Context) {
-
-    //lateinit var context: FragmentActivity
 
     val controller = Navigation.findNavController(activity as Activity, R.id.fr)
 

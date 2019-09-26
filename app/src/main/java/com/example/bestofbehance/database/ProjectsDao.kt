@@ -13,7 +13,7 @@ interface ProjectsDao {
     fun getById(id: Int): ProjectsBinding
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(cardBinding: ProjectsBinding)
+    fun insert(binding: ProjectsBinding)
 
     @Query("DELETE FROM ProjectsData WHERE id = :id")
     fun deleteById(id: Int)

@@ -1,4 +1,4 @@
-package com.example.bestofbehance.extensions
+package com.example.bestofbehance.extension
 
 import android.annotation.SuppressLint
 import java.text.SimpleDateFormat

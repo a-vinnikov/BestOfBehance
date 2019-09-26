@@ -6,11 +6,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.binding.*
+import com.example.bestofbehance.binding.detailsBinding.CommentsBinding
+import com.example.bestofbehance.binding.detailsBinding.CountBinding
+import com.example.bestofbehance.binding.detailsBinding.ImageBinding
+import com.example.bestofbehance.binding.detailsBinding.TextBinding
 import com.example.bestofbehance.database.PeopleDataBase
 import com.example.bestofbehance.databinding.*
 import com.example.bestofbehance.classesToSupport.BookmarkClick
 import com.example.bestofbehance.classesToSupport.MultiList
-import com.example.bestofbehance.dagger.NavigateModule
+import com.example.bestofbehance.module.NavigateModule
 import kotlinx.android.synthetic.main.comment_item.view.*
 import kotlinx.android.synthetic.main.people_item.view.*
 
@@ -119,9 +123,7 @@ class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick
             binding.notifyPropertyChanged(BR._all)
 
             itemView.bookmarkPeople.isChecked = PeopleDataBase.getDatabase(context)?.getPeopleDao()?.getByUsername(people.username!!) != null
-                itemView.peopleLayout.setOnClickListener { NavigateModule(
-                    context
-                ).toProfileFromPeople(people.username!!) }
+                itemView.peopleLayout.setOnClickListener { NavigateModule(context).toProfileFromPeople(people.username!!) }
                 itemView.bookmarkPeople.setOnClickListener { bookmark.setPosition(adapterPosition) }
         }
 

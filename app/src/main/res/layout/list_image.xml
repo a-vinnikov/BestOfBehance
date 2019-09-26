@@ -5,7 +5,7 @@
         android:background="@color/colorMain">
 
     <data>
-        <variable name="cardViewImage" type="com.example.bestofbehance.binding.ImageBinding"/>
+        <variable name="cardViewImage" type="com.example.bestofbehance.binding.detailsBinding.ImageBinding"/>
     </data>
 
     <androidx.cardview.widget.CardView

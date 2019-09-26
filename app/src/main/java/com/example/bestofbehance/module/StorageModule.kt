@@ -1,11 +1,8 @@
-package com.example.bestofbehance.dagger
+package com.example.bestofbehance.module
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
-import dagger.Module
-import java.util.prefs.Preferences
-import javax.inject.Inject
 
 object StorageModule {
 

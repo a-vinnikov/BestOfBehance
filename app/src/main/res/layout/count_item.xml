@@ -4,7 +4,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="countsView" type="com.example.bestofbehance.binding.CountBinding"/>
+        <variable name="countsView" type="com.example.bestofbehance.binding.detailsBinding.CountBinding"/>
     </data>
 
     <androidx.cardview.widget.CardView

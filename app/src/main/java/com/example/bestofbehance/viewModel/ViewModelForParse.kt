@@ -7,18 +7,20 @@ import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.example.bestofbehance.R
-import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.binding.ProfileBinding
-import com.example.bestofbehance.binding.ProjectsBinding
+import com.example.bestofbehance.binding.*
+import com.example.bestofbehance.binding.mapper.MapperForProjectsBinding
 import com.example.bestofbehance.classesToSupport.MultiList
+import com.example.bestofbehance.classesToSupport.PAGING_PAGE_SIZE
+import com.example.bestofbehance.database.CardDataBase
+import com.example.bestofbehance.database.PeopleDataBase
 import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.paging.ProfileDataSource
 import com.example.bestofbehance.paging.BestDataSource
 import com.example.bestofbehance.paging.DataSourceFactory
 
-const val PAGING_PAGE_SIZE = 10
 
-class VMForParse(val context: Context) : AndroidViewModel(Application()) {
+
+class ViewModelForParse(val context: Context) : AndroidViewModel(Application()) {
 
     val listForContents: MutableLiveData<MutableList<MultiList>> by lazy { MutableLiveData<MutableList<MultiList>>() }
     val listForComments: MutableLiveData<MutableList<MultiList>> by lazy { MutableLiveData<MutableList<MultiList>>() }
@@ -40,17 +42,17 @@ class VMForParse(val context: Context) : AndroidViewModel(Application()) {
     }
 
     private fun setContent(id: Int): MutableLiveData<MutableList<MultiList>> {
-        ParseForVM(context).fetchProject(id) { result -> listForContents.postValue(result) }
+        ParseForViewModel(context).fetchProject(id) { result -> listForContents.postValue(result) }
         return listForContents
     }
 
     private fun setComments(id: Int): MutableLiveData<MutableList<MultiList>> {
-        ParseForVM(context).fetchComments(id) { result -> listForComments.postValue(result) }
+        ParseForViewModel(context).fetchComments(id) { result -> listForComments.postValue(result) }
         return listForComments
     }
 
     fun setUser(username: String): Pair<MutableLiveData<MutableList<ProfileBinding>>, MutableLiveData<MutableMap<String, String?>>> {
-        ParseForVM(context).fetchUser(username) { result, links -> listForUser.postValue(result)
+        ParseForViewModel(context).fetchUser(username) { result, links -> listForUser.postValue(result)
             listForLinks.postValue(links)}
         return Pair(listForUser, listForLinks)
     }
@@ -66,8 +68,6 @@ class VMForParse(val context: Context) : AndroidViewModel(Application()) {
 
     fun fetchData(id: Int): MediatorLiveData<MutableList<MultiList>> {
         liveDataMulti.value?.clear()
-        //liveDataMulti.removeSource(listForContents)
-        //liveDataMulti.removeSource(listForComments)
         mediatorAdd(liveDataMulti, setContent(id))
         mediatorAdd(liveDataMulti, setComments(id))
         return liveDataMulti
@@ -86,7 +86,7 @@ class VMForParse(val context: Context) : AndroidViewModel(Application()) {
 
     fun bookmarksToolbar(binding: CardBinding, item: MenuItem){
         if (ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(binding.id!!) == null) {
-            ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.insert(ProjectsBinding.ModelMapper.from(binding))
+            ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.insert(MapperForProjectsBinding.from(binding))
             item.setIcon(R.drawable.ic_bookmarks_pressed)
         } else {
             ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.deleteById(binding.id!!)
@@ -96,9 +96,27 @@ class VMForParse(val context: Context) : AndroidViewModel(Application()) {
 
     fun bookmarksProjects(binding: CardBinding){
         if (ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(binding.id!!) == null) {
-            ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.insert(ProjectsBinding.ModelMapper.from(binding))
+            ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.insert(MapperForProjectsBinding.from(binding))
         } else {
             ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.deleteById(binding.id!!)
         }
     }
+
+    fun getAllFromCardDB() = CardDataBase.getDatabase(context)?.getCardDao()?.all!!
+
+    fun getAllFromPeopleDB() = PeopleDataBase.getDatabase(context)?.getPeopleDao()?.all
+
+    fun getByUsernameFromPeopleDB(username: String) = PeopleDataBase.getDatabase(context)?.getPeopleDao()?.getByUsername(username)
+
+    fun deleteByUsernameFromPeopleDB(username: String) = PeopleDataBase.getDatabase(context)?.getPeopleDao()?.deleteByUsername(username)
+
+    fun insertInPeopleDB(data: PeopleBinding) = PeopleDataBase.getDatabase(context)?.getPeopleDao()?.insert(data)
+
+    fun checkInProjectsDB(id: Int) = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(id)
+
+    fun getAllFromProjectsDB() = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.all
+
+    fun getByIdFromProjectsDB(id: Int) = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(id)
+
+    fun deleteByIdFromProjectsDB(id: Int) = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.deleteById(id)
 }

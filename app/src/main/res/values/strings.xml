@@ -28,10 +28,6 @@
         <item quantity="other">COMMENTS (%d)</item>
     </plurals>
 
-    <string name="first_key">xMrW480v8SrR9J02koQXiIEEMr3uzIfd</string>
-    <string name="second_key">0QmPh684DRz1SpWHDikkyFCzLShGiHPi</string>
-    <string name="base_url">https://api.behance.net/v2/</string>
-
     <string name="list">list</string>
     <string name="tile">tile</string>
     <string name="share">Share to :</string>
