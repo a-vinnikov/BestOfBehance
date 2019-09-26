@@ -28,18 +28,22 @@ class NetworkModule(val context: Context) {
 
     fun providesOkHttpClient(): OkHttpClient.Builder {
         val logging = HttpLoggingInterceptor()
-        var key = API_KEY
         logging.level = HttpLoggingInterceptor.Level.HEADERS
 
         val httpClient = OkHttpClient.Builder()
         httpClient.addInterceptor (object : Interceptor {
             @Throws(IOException::class)
             override fun intercept(chain: Interceptor.Chain): Response {
-                return try {
+                lateinit var temp: Response
+
+                temp = try {
                     getResponse(chain, API_KEY)
                 } catch (e: IOException){
+                    temp.close()
                     getResponse(chain, SECOND_KEY)
                 }
+
+                return temp
             }
         })
 
