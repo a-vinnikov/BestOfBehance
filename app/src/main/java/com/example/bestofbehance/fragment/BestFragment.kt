@@ -119,12 +119,12 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                         if (swipe.isRefreshing || jsonModel.itemPagedList?.value?.size == null) {
                             jsonModel.setGeneral()
                         }
+                        adapterBest = adapterFun() as PagingAdapterBest
+                        recyclerView.adapter = adapterBest
 
                         jsonModel.itemPagedList?.observe(viewLifecycleOwner,
                             Observer<PagedList<CardBinding>> { list ->
-                                adapterBest = adapterFun(list) as PagingAdapterBest
                                 adapterBest.submitList(list)
-                                recyclerView.adapter = adapterBest
                             })
                     }
                     false -> {
@@ -136,8 +136,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     }
 
-    private fun adapterFun(
-        list: MutableList<CardBinding>): PagedListAdapter<CardBinding, PagingAdapterBest.ViewHolder> {
+    private fun adapterFun(): PagedListAdapter<CardBinding, PagingAdapterBest.ViewHolder> {
 
         return PagingAdapterBest(object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
@@ -145,7 +144,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
-                jsonModel.bookmarksProjects(list[position])
+                jsonModel.bookmarksProjects(jsonModel.itemPagedList?.value?.get(position)!!)
             }
         })
     }

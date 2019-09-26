@@ -271,17 +271,16 @@ class ProfileFragment : Fragment() {
         if (jsonModel.profilePagedList?.value == null) {
             jsonModel.setUserProjects(args.profileBindingArg)
         }
-
+        adapterProfile = adapterFun() as PagingAdapterProfile
+        recyclerViewProfile.adapter = adapterProfile
         jsonModel.profilePagedList?.observe(viewLifecycleOwner,
             Observer<PagedList<CardBinding>> {
-                adapterProfile = adapterFun(it) as PagingAdapterProfile
                 adapterProfile.submitList(it)
-                recyclerViewProfile.adapter = adapterProfile
             })
 
     }
 
-    private fun adapterFun(list: MutableList<CardBinding>): PagedListAdapter<CardBinding, PagingAdapterProfile.ViewHolder> {
+    private fun adapterFun(): PagedListAdapter<CardBinding, PagingAdapterProfile.ViewHolder> {
 
         return PagingAdapterProfile(object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
@@ -289,7 +288,7 @@ class ProfileFragment : Fragment() {
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
-                jsonModel.bookmarksProjects(list[position])
+                jsonModel.bookmarksProjects(jsonModel.profilePagedList?.value?.get(position)!!)
             }
         })
     }
