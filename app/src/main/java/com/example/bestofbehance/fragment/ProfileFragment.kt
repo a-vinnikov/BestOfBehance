@@ -22,7 +22,7 @@ import com.example.bestofbehance.databinding.FragmentProfileBinding
 import com.example.bestofbehance.adapter.PagingAdapterProfile
 import com.example.bestofbehance.binding.mapper.MapperForPeopleBinding
 import com.example.bestofbehance.extension.WebOpening
-import com.example.bestofbehance.module.NavigateModule
+import com.example.bestofbehance.module.FragmentNavigate
 import com.example.bestofbehance.module.StorageModule
 import com.example.bestofbehance.viewModel.*
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -285,7 +285,7 @@ class ProfileFragment : Fragment() {
 
         return PagingAdapterProfile(currentViewMode, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                NavigateModule(context!!).toDetailsFromProfile(item)
+                FragmentNavigate(context!!).toDetailsFromProfile(item)
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {

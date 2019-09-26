@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.MultiList
-import com.example.bestofbehance.module.NavigateModule
+import com.example.bestofbehance.module.FragmentNavigate
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
 import com.example.bestofbehance.adapter.AdapterMulti
 import com.example.bestofbehance.extension.WebOpening
@@ -116,7 +116,7 @@ class DetailsFragment : Fragment() {
                     }
                 }
             })
-        avatarViewDetails.setOnClickListener { NavigateModule(
+        avatarViewDetails.setOnClickListener { FragmentNavigate(
             context!!
         ).toProfileFromDetails(args.detailsBindingArgs.username!!) }
     }

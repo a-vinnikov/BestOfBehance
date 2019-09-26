@@ -15,7 +15,7 @@ import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.module.NavigateModule
+import com.example.bestofbehance.module.FragmentNavigate
 import com.example.bestofbehance.adapter.AdapterOfflineBest
 import com.example.bestofbehance.adapter.PagingAdapterBest
 import com.example.bestofbehance.classesToSupport.*
@@ -141,7 +141,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         return PagingAdapterBest(currentViewMode, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                NavigateModule(context!!).toDetailsFromBest(item)
+                FragmentNavigate(context!!).toDetailsFromBest(item)
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
@@ -154,7 +154,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         return AdapterOfflineBest(currentViewMode, list, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                NavigateModule(context!!).toDetailsFromBest(item)
+                FragmentNavigate(context!!).toDetailsFromBest(item)
             }
 
         }, object : BookmarkClick {

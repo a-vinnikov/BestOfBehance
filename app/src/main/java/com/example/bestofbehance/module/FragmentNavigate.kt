@@ -7,7 +7,7 @@ import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.fragment.*
 
-class NavigateModule(activity: Context) {
+class FragmentNavigate(activity: Context) {
 
     val controller = Navigation.findNavController(activity as Activity, R.id.fr)
 

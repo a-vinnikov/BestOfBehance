@@ -11,7 +11,7 @@ import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.databinding.ListItemBinding
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.classesToSupport.*
-import com.example.bestofbehance.module.NavigateModule
+import com.example.bestofbehance.module.FragmentNavigate
 import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.extension.MathObject
 
@@ -33,7 +33,7 @@ class AdapterOfflineBest(val currentViewMode: String, var list: MutableList<Card
 
 
         holder.itemView.avatarView.setOnClickListener {
-            NavigateModule(context).toProfileFromBest(list[holder.adapterPosition].username!!)
+            FragmentNavigate(context).toProfileFromBest(list[holder.adapterPosition].username!!)
         }
 
         holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(list[position].id!!) != null

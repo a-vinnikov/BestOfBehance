@@ -12,11 +12,9 @@ import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.classesToSupport.BookmarkClick
 import com.example.bestofbehance.classesToSupport.InClick
-import com.example.bestofbehance.module.NavigateModule
+import com.example.bestofbehance.module.FragmentNavigate
 import com.example.bestofbehance.module.StorageModule
 import com.example.bestofbehance.adapter.AdapterProjects
-import com.example.bestofbehance.binding.mapper.MapperForCardBinding
-import com.example.bestofbehance.binding.ProjectsBinding
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_GRIDVIEW
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_LISTVIEW
 import com.example.bestofbehance.extension.Converter
@@ -114,7 +112,7 @@ class ProjectsFragment : Fragment() {
 
         return AdapterProjects(currentViewMode, list, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                NavigateModule(context!!).toDetailsFromProjects(item)
+                FragmentNavigate(context!!).toDetailsFromProjects(item)
             }
 
         }, object : BookmarkClick {

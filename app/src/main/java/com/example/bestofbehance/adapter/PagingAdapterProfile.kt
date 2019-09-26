@@ -17,7 +17,7 @@ import com.example.bestofbehance.classesToSupport.BookmarkClick
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_GRIDVIEW
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_LISTVIEW
 import com.example.bestofbehance.extension.MathObject
-import com.example.bestofbehance.module.NavigateModule
+import com.example.bestofbehance.module.FragmentNavigate
 
 
 class PagingAdapterProfile(val currentViewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick) :
@@ -37,7 +37,7 @@ class PagingAdapterProfile(val currentViewMode: String, val inClick: InClick, va
         this.position = holder.adapterPosition
 
         holder.itemView.avatarView.setOnClickListener {
-            NavigateModule(context).toProfileFromBest(getItem(holder.adapterPosition)?.username!!)
+            FragmentNavigate(context).toProfileFromBest(getItem(holder.adapterPosition)?.username!!)
         }
 
         holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(getItem(position)!!.id!!) != null

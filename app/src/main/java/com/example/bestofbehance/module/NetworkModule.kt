@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit
 import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.API_KEY
 import com.example.bestofbehance.classesToSupport.BASE_URL
+import com.example.bestofbehance.classesToSupport.SECOND_KEY
 
 
 class NetworkModule(val context: Context) {
@@ -27,26 +28,18 @@ class NetworkModule(val context: Context) {
 
     fun providesOkHttpClient(): OkHttpClient.Builder {
         val logging = HttpLoggingInterceptor()
+        var key = API_KEY
         logging.level = HttpLoggingInterceptor.Level.HEADERS
 
         val httpClient = OkHttpClient.Builder()
-        httpClient.addNetworkInterceptor (object : Interceptor {
+        httpClient.addInterceptor (object : Interceptor {
             @Throws(IOException::class)
             override fun intercept(chain: Interceptor.Chain): Response {
-                val original = chain.request()
-                val originalHttpUrl = original.url
-
-                val url = originalHttpUrl.newBuilder()
-                    .addQueryParameter(context.resources.getString(R.string.api_key), API_KEY)
-                    .build()
-
-                val requestBuilder = original.newBuilder().url(url)
-
-                val request = requestBuilder.build()
-
-                val response = chain.proceed(request)
-
-                return response
+                return try {
+                    getResponse(chain, API_KEY)
+                } catch (e: IOException){
+                    getResponse(chain, SECOND_KEY)
+                }
             }
         })
 
@@ -57,5 +50,22 @@ class NetworkModule(val context: Context) {
         httpClient.addNetworkInterceptor(logging)
 
         return httpClient
+    }
+
+    fun getResponse(chain: Interceptor.Chain, key: String): Response {
+        val original = chain.request()
+        val originalHttpUrl = original.url
+
+        val url = originalHttpUrl.newBuilder()
+            .addQueryParameter(context.resources.getString(R.string.api_key), key)
+            .build()
+
+        val requestBuilder = original.newBuilder().url(url)
+
+        val request = requestBuilder.build()
+
+        val response = chain.proceed(request)
+
+        return response
     }
 }

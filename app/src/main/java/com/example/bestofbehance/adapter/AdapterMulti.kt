@@ -14,7 +14,7 @@ import com.example.bestofbehance.database.PeopleDataBase
 import com.example.bestofbehance.databinding.*
 import com.example.bestofbehance.classesToSupport.BookmarkClick
 import com.example.bestofbehance.classesToSupport.MultiList
-import com.example.bestofbehance.module.NavigateModule
+import com.example.bestofbehance.module.FragmentNavigate
 import kotlinx.android.synthetic.main.comment_item.view.*
 import kotlinx.android.synthetic.main.people_item.view.*
 
@@ -109,7 +109,7 @@ class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick
             binding.commentsView = comment
             binding.notifyPropertyChanged(BR._all)
 
-            itemView.commentAvatarView.setOnClickListener { NavigateModule(
+            itemView.commentAvatarView.setOnClickListener { FragmentNavigate(
                 context
             ).toProfileFromDetails(comment.commentatorUsername!!) }
         }
@@ -123,7 +123,7 @@ class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick
             binding.notifyPropertyChanged(BR._all)
 
             itemView.bookmarkPeople.isChecked = PeopleDataBase.getDatabase(context)?.getPeopleDao()?.getByUsername(people.username!!) != null
-                itemView.peopleLayout.setOnClickListener { NavigateModule(context).toProfileFromPeople(people.username!!) }
+                itemView.peopleLayout.setOnClickListener { FragmentNavigate(context).toProfileFromPeople(people.username!!) }
                 itemView.bookmarkPeople.setOnClickListener { bookmark.setPosition(adapterPosition) }
         }
 
