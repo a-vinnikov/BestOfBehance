@@ -12,7 +12,6 @@ import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.API_KEY
 import com.example.bestofbehance.classesToSupport.BASE_URL
 import com.example.bestofbehance.classesToSupport.SECOND_KEY
-import com.example.bestofbehance.retrofit.BehanceCallAdapter
 import com.example.bestofbehance.retrofit.BehanceCallAdapterFactory
 
 
@@ -50,9 +49,9 @@ class NetworkModule(val context: Context) {
             }
         })
 
-        httpClient.connectTimeout(5, TimeUnit.MINUTES)
-        httpClient.writeTimeout(5, TimeUnit.MINUTES)
-        httpClient.readTimeout(5, TimeUnit.MINUTES)
+        httpClient.connectTimeout(1, TimeUnit.MINUTES)
+        httpClient.writeTimeout(1, TimeUnit.MINUTES)
+        httpClient.readTimeout(1, TimeUnit.MINUTES)
 
         httpClient.addNetworkInterceptor(logging)
 
@@ -71,8 +70,6 @@ class NetworkModule(val context: Context) {
 
         val request = requestBuilder.build()
 
-        val response = chain.proceed(request)
-
-        return response
+        return chain.proceed(request)
     }
 }

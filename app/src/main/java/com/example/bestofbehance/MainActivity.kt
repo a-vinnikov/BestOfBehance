@@ -43,8 +43,6 @@ open class MainActivity : AppCompatActivity() {
         snackBar = Snackbar.make(snackCoordinator, resources.getString(R.string.no_connection), Snackbar.LENGTH_INDEFINITE)
         setupNavigation()
 
-
-
         val connectionLiveData = ConnectionLiveData(this)
         connectionLiveData.observe(this, androidx.lifecycle.Observer { isConnected ->
             isConnected?.let {
