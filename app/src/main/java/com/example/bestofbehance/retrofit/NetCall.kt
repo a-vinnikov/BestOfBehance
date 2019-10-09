@@ -26,7 +26,6 @@ class NetCall<R>(private val call: Call<R>) {
             override fun onResponse(call: Call<R>?, r: Response<R>?) =
                 handleResponse(r, responseHandler)
         }
-        
         call.enqueue(callback)
     }
     private fun handleResponse(response: Response<R>?, handler: (R?, Throwable?) -> Unit) {
