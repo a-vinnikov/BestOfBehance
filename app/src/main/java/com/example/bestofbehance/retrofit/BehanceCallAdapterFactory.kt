@@ -10,10 +10,8 @@ class BehanceCallAdapterFactory private constructor() : CallAdapter.Factory() {
     override fun get(returnType: Type?, annotations: Array<out Annotation>?, retrofit: Retrofit?): CallAdapter<*, *>? {
         return returnType?.let {
             return try {
-                // get enclosing type
                 val enclosingType = (it as ParameterizedType)
 
-                // ensure enclosing type is 'NetCall'
                 if (enclosingType.rawType != NetCall::class.java)
                     null
                 else {

@@ -8,9 +8,7 @@ import java.io.IOException
 
 class NetCall<R>(private val call: Call<R>) {
     fun run(responseHandler: (R?, Throwable?) -> Unit) {
-        // run in the same thread
         try {
-            // call and handle response
             val response = call.execute()
             handleResponse(response, responseHandler)
 
@@ -20,7 +18,6 @@ class NetCall<R>(private val call: Call<R>) {
     }
 
     fun process(responseHandler: (R?, Throwable?) -> Unit) {
-        // define callback
         val callback = object : Callback<R> {
 
             override fun onFailure(call: Call<R>?, t: Throwable?) =
@@ -29,8 +26,7 @@ class NetCall<R>(private val call: Call<R>) {
             override fun onResponse(call: Call<R>?, r: Response<R>?) =
                 handleResponse(r, responseHandler)
         }
-
-        // enqueue network call
+        
         call.enqueue(callback)
     }
     private fun handleResponse(response: Response<R>?, handler: (R?, Throwable?) -> Unit) {
