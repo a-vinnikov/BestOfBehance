@@ -14,22 +14,25 @@ import com.example.bestofbehance.classesToSupport.MultiList
 import com.example.bestofbehance.module.FragmentNavigate
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
 import com.example.bestofbehance.adapter.AdapterMulti
+import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.extension.WebOpening
 import com.example.bestofbehance.viewModel.ViewModelForParse
 import com.example.bestofbehance.viewModel.ViewModelFactory
 import kotlinx.android.synthetic.main.details_card.*
 import kotlinx.android.synthetic.main.fragment_details.*
+import java.lang.reflect.InvocationTargetException
 
 class DetailsFragment : Fragment() {
 
     private val args: DetailsFragmentArgs by navArgs()
     lateinit var jsonModel: ViewModelForParse
+    private var cardArguments: CardBinding? = null
     var position = 0
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.two_buttons_toolbar, menu)
 
-        if (jsonModel.checkInProjectsDB(args.detailsBindingArgs.id!!) == null) {
+        if (jsonModel.checkInProjectsDB(cardArguments?.id!!) == null) {
             menu.findItem(R.id.menu_bookmark)
                 ?.setIcon(R.drawable.ic_bookmarks_normal)
         } else {
@@ -44,11 +47,11 @@ class DetailsFragment : Fragment() {
         when (item.itemId) {
 
             R.id.menu_bookmark -> {
-                jsonModel.bookmarksToolbar(args.detailsBindingArgs, item)
+                jsonModel.bookmarksToolbar(cardArguments!!, item)
             }
 
             R.id.menu_share -> {
-                startActivity(Intent.createChooser(WebOpening.share(args.detailsBindingArgs.url!!, context!!), resources.getString(R.string.share)))
+                startActivity(Intent.createChooser(WebOpening.share(cardArguments?.url!!, context!!), resources.getString(R.string.share)))
             }
         }
         return super.onOptionsItemSelected(item)
@@ -63,13 +66,25 @@ class DetailsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
+        jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(ViewModelForParse::class.java)
+
+        try {
+            if (args.detailsBindingArgs?.id != null){
+                cardArguments = args.detailsBindingArgs
+            }
+        } catch (e: InvocationTargetException){
+            jsonModel.setSingleProject(arguments?.getString("projectId")!!.toInt())
+        }
+
+        jsonModel.listForProject.observe(viewLifecycleOwner, Observer<MutableList<CardBinding>>{
+            cardArguments = it[0]
+        })
+
         val binding = FragmentDetailsBinding.inflate(inflater)
         val fragmentDetailsView: View = binding.root
 
-        binding.cardViewDetails = args.detailsBindingArgs
+        binding.cardViewDetails = cardArguments
         binding.notifyPropertyChanged(BR._all)
-
-        jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(ViewModelForParse::class.java)
 
         return fragmentDetailsView
     }
@@ -79,11 +94,11 @@ class DetailsFragment : Fragment() {
 
         comments.text = this.resources.getQuantityString(
             R.plurals.big_comments_count,
-            args.detailsBindingArgs.comments!!.toInt(),
-            args.detailsBindingArgs.comments!!.toInt()
+            cardArguments?.comments!!.toInt(),
+            cardArguments?.comments!!.toInt()
         )
 
-        jsonModel.fetchData(args.detailsBindingArgs.id!!)
+        jsonModel.fetchData(cardArguments?.id!!)
 
         var imageItems: MutableList<MultiList>? = null
         var commentsItems: MutableList<MultiList>? = null
@@ -118,6 +133,6 @@ class DetailsFragment : Fragment() {
             })
         avatarViewDetails.setOnClickListener { FragmentNavigate(
             context!!
-        ).toProfileFromDetails(args.detailsBindingArgs.username!!) }
+        ).toProfileFromDetails(cardArguments?.username!!) }
     }
 }

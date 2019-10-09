@@ -15,58 +15,44 @@ class ProfileDataSource(val user: String, val context: Context) : PageKeyedDataS
     private val recList: MutableList<CardBinding> = mutableListOf()
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, CardBinding>) {
-        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getUserProjects(user, FIRST_PAGE)}.enqueue(object : Callback<GeneralResponse> {
-            override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {}
-
-            override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
-                response.body()?.run {
-                    projects(user,this){ result ->
-                        val firstResponse = result.sortedByDescending { it.published }
-                        if (firstResponse.size < context.resources.getInteger(R.integer.responseSize)){
-                            callback.onResult(firstResponse, null, FIRST_PAGE)
-                        } else {
-                            callback.onResult(firstResponse, null, FIRST_PAGE + 1)
-                        }
-                        }
+        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getUserProjects(user, FIRST_PAGE)}.run { generalResponse, _ ->
+            generalResponse?.run {
+                projects(user,this){ result ->
+                    val firstResponse = result.sortedByDescending { it.published }
+                    if (firstResponse.size < context.resources.getInteger(R.integer.responseSize)){
+                        callback.onResult(firstResponse, null, FIRST_PAGE)
+                    } else {
+                        callback.onResult(firstResponse, null, FIRST_PAGE + 1)
+                    }
                 }
             }
-        })
+        }
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
         if(params.key != 1){
-            with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getUserProjects(user, params.key)}
-                .enqueue(object : Callback<GeneralResponse> {
-                    override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
-                    }
 
-                    override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
-                            val key = params.key + 1
-                            response.body()?.run {
-                                projects(user,this){ result ->
-                                    val anotherResponse = result.sortedByDescending { it.published }
-                                    callback.onResult(anotherResponse, key)}
-                            }
-                    }
-                })
+            with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getUserProjects(user, params.key)}.run { generalResponse, _ ->
+                val key = params.key + 1
+                generalResponse?.run {
+                    projects(user,this){ result ->
+                        val anotherResponse = result.sortedByDescending { it.published }
+                        callback.onResult(anotherResponse, key)}
+                }
+            }
         }
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getUserProjects(user, params.key)}
-            .enqueue(object : Callback<GeneralResponse> {
-                override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
-                }
 
-                override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
-                    response.body()?.run {
-                        val key = if (params.key > 1) params.key - 1 else null
-                        projects(user,this){ result ->
-                            val abc = result.sortedByDescending { it.published }
-                            callback.onResult(abc, key)}
-                    }
-                }
-            })
+        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getUserProjects(user, params.key)}.run { generalResponse, _ ->
+            generalResponse?.run {
+                val key = if (params.key > 1) params.key - 1 else null
+                projects(user,this){ result ->
+                    val abc = result.sortedByDescending { it.published }
+                    callback.onResult(abc, key)}
+            }
+        }
     }
 
     private fun projects(username: String, response: GeneralResponse, myCallBack: (result: MutableList<CardBinding>) -> Unit){

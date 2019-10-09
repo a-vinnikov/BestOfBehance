@@ -35,7 +35,15 @@
 
         <argument
                 android:name="detailsBindingArgs"
-                app:argType="com.example.bestofbehance.binding.CardBinding" />
+                app:argType="com.example.bestofbehance.binding.CardBinding"
+                app:nullable="true"/>
+        <deepLink
+                android:id="@+id/deepLink"
+                app:uri="https://www.behance.net/gallery/{projectId}/{projectName}"
+                android:autoVerify="true"
+                tools:ignore="UnusedAttribute"/>
+
+        <argument android:name="projectId" app:argType="string"/>
 
     </fragment>
     <fragment android:id="@+id/profile"

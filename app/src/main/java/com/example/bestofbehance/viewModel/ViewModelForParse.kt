@@ -24,6 +24,7 @@ class ViewModelForParse(val context: Context) : AndroidViewModel(Application()) 
 
     val listForContents: MutableLiveData<MutableList<MultiList>> by lazy { MutableLiveData<MutableList<MultiList>>() }
     val listForComments: MutableLiveData<MutableList<MultiList>> by lazy { MutableLiveData<MutableList<MultiList>>() }
+    val listForProject: MutableLiveData<MutableList<CardBinding>> by lazy {MutableLiveData<MutableList<CardBinding>>() }
     val listForUser: MutableLiveData<MutableList<ProfileBinding>> by lazy { MutableLiveData<MutableList<ProfileBinding>>() }
     val listForLinks: MutableLiveData<MutableMap<String, String?>> by lazy { MutableLiveData<MutableMap<String, String?>>() }
     val liveDataMulti = MediatorLiveData<MutableList<MultiList>>()
@@ -44,6 +45,11 @@ class ViewModelForParse(val context: Context) : AndroidViewModel(Application()) 
     private fun setContent(id: Int): MutableLiveData<MutableList<MultiList>> {
         ParseForViewModel(context).fetchProject(id) { result -> listForContents.postValue(result) }
         return listForContents
+    }
+
+    fun setSingleProject(id: Int): MutableLiveData<MutableList<CardBinding>> {
+        ParseForViewModel(context).fetchSingleProject(id) { result -> listForProject.postValue(result) }
+        return listForProject
     }
 
     private fun setComments(id: Int): MutableLiveData<MutableList<MultiList>> {

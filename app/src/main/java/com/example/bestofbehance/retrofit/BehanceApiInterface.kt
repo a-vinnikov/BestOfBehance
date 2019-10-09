@@ -14,18 +14,18 @@ import retrofit2.http.Query
 interface BehanceApiInterface {
 
     @GET("projects/{projectId}")
-    fun getProject(@Path("projectId") projectId: String): Call<ImageResponse>
+    fun getProject(@Path("projectId") projectId: Int): NetCall<ImageResponse>
 
     @GET("projects/{projectId}/comments")
-    fun getComments(@Path("projectId") projectId: String): Call<CommentsMain>
+    fun getComments(@Path("projectId") projectId: String): NetCall<CommentsMain>
 
     @GET("projects")
-    fun getGeneral(@Query("sort") sort: String, @Query("page") page: Int): Call<GeneralResponse>
+    fun getGeneral(@Query("sort") sort: String, @Query("page") page: Int): NetCall<GeneralResponse>
 
     @GET("users/{user}")
-    fun getUser(@Path("user") user: String): Call<UserResponse>
+    fun getUser(@Path("user") user: String): NetCall<UserResponse>
 
     @GET("users/{user}/projects")
-    fun getUserProjects(@Path("user") user: String, @Query("page") page: Int): Call<GeneralResponse>
+    fun getUserProjects(@Path("user") user: String, @Query("page") page: Int): NetCall<GeneralResponse>
 
 }

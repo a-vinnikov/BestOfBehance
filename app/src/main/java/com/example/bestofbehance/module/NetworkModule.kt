@@ -12,6 +12,8 @@ import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.API_KEY
 import com.example.bestofbehance.classesToSupport.BASE_URL
 import com.example.bestofbehance.classesToSupport.SECOND_KEY
+import com.example.bestofbehance.retrofit.BehanceCallAdapter
+import com.example.bestofbehance.retrofit.BehanceCallAdapterFactory
 
 
 class NetworkModule(val context: Context) {
@@ -23,6 +25,7 @@ class NetworkModule(val context: Context) {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(BehanceCallAdapterFactory.create())
             .client(okHttpClient)
             .build()
 
