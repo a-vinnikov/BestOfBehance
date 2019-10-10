@@ -112,7 +112,7 @@ class ProjectsFragment : Fragment() {
 
         return AdapterProjects(list, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                FragmentNavigate(context!!).toDetailsFromProjects(item)
+                FragmentNavigate(context!!).toDetailsFromProjects(item.id.toString())
             }
 
         }, object : BookmarkClick {

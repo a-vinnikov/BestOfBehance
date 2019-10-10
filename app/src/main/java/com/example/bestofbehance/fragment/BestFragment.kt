@@ -140,7 +140,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         return PagingAdapterBest(object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                FragmentNavigate(context!!).toDetailsFromBest(item)
+                FragmentNavigate(context!!).toDetailsFromBest(item.id.toString())
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
@@ -153,7 +153,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         return AdapterOfflineBest(list, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                FragmentNavigate(context!!).toDetailsFromBest(item)
+                FragmentNavigate(context!!).toDetailsFromBest(item.id.toString())
             }
 
         }, object : BookmarkClick {

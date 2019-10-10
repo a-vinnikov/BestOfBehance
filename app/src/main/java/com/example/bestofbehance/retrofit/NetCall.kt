@@ -33,7 +33,7 @@ class NetCall<R>(private val call: Call<R>) {
             handler(response.body(), null)
         } else {
             if (response?.code() in 400..511)
-                handler(null, HttpException(response))
+                handler(null, HttpException(response as Response<*>))
 
             else handler(response?.body(), null)
 

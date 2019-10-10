@@ -11,12 +11,12 @@ class FragmentNavigate(activity: Context) {
 
     val controller = Navigation.findNavController(activity as Activity, R.id.fr)
 
-    fun toDetailsFromBest(item: CardBinding) {
-        controller.navigate(BestDirections.actionBestToDetails(item, ""))
+    fun toDetailsFromBest(item: String) {
+        controller.navigate(BestDirections.actionBestToDetails(item))
     }
 
-    fun toDetailsFromProjects(item: CardBinding) {
-        controller.navigate(ProjectsFragmentDirections.actionProjectsToDetails(item, ""))
+    fun toDetailsFromProjects(item: String) {
+        controller.navigate(ProjectsFragmentDirections.actionProjectsToDetails(item))
     }
 
     fun toProfileFromDetails(item: String) {
@@ -31,8 +31,8 @@ class FragmentNavigate(activity: Context) {
         controller.navigate(ProjectsFragmentDirections.actionProjectsToProfile(item))
     }
 
-    fun toDetailsFromProfile(item: CardBinding){
-        controller.navigate(ProfileFragmentDirections.actionProfileToDetails(item, ""))
+    fun toDetailsFromProfile(item: String){
+        controller.navigate(ProfileFragmentDirections.actionProfileToDetails(item))
     }
 
     fun toProfileFromPeople(item: String){

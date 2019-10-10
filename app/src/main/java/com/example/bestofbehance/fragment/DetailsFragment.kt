@@ -24,15 +24,15 @@ import java.lang.reflect.InvocationTargetException
 
 class DetailsFragment : Fragment() {
 
-    private val args: DetailsFragmentArgs by navArgs()
     lateinit var jsonModel: ViewModelForParse
-    lateinit var cardArguments: CardBinding
+    var cardArguments: CardBinding? = null
+    var projectId: Int = 0
     var position = 0
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.two_buttons_toolbar, menu)
 
-        if (jsonModel.checkInProjectsDB(cardArguments.id!!) == null) {
+        if (jsonModel.checkInProjectsDB(projectId) == null) {
             menu.findItem(R.id.menu_bookmark)
                 ?.setIcon(R.drawable.ic_bookmarks_normal)
         } else {
@@ -51,7 +51,7 @@ class DetailsFragment : Fragment() {
             }
 
             R.id.menu_share -> {
-                startActivity(Intent.createChooser(WebOpening.share(cardArguments.url!!, context!!), resources.getString(R.string.share)))
+                startActivity(Intent.createChooser(WebOpening.share(cardArguments?.url!!, context!!), resources.getString(R.string.share)))
             }
         }
         return super.onOptionsItemSelected(item)
@@ -71,19 +71,21 @@ class DetailsFragment : Fragment() {
 
         jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(ViewModelForParse::class.java)
 
-        try {
-            if (args.detailsBindingArgs?.id != null){
-                cardArguments = args.detailsBindingArgs!!
-            }
-        } catch (e: InvocationTargetException){
-            jsonModel.setSingleProject(arguments?.getString("projectId")!!.toInt())
-            jsonModel.listForProject.observe(viewLifecycleOwner, Observer<MutableList<CardBinding>>{
-                cardArguments = it[0]
-            })
-        } finally {
+        projectId = arguments?.getString("projectId")!!.toInt()
+
+        val observerGSON = Observer<MutableList<CardBinding>>{
+            cardArguments = it[0]
             binding.cardViewDetails = cardArguments
             binding.notifyPropertyChanged(BR._all)
+
+            comments.text = this.resources.getQuantityString(
+                R.plurals.big_comments_count,
+                it[0].comments!!.toInt(),
+                it[0].comments!!.toInt()
+            )
         }
+
+        jsonModel.listForProject.observe(viewLifecycleOwner, observerGSON)
 
         return fragmentDetailsView
     }
@@ -91,13 +93,9 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        comments.text = this.resources.getQuantityString(
-            R.plurals.big_comments_count,
-            cardArguments.comments!!.toInt(),
-            cardArguments.comments!!.toInt()
-        )
+        jsonModel.setSingleProject(projectId)
 
-        jsonModel.fetchData(cardArguments.id!!)
+        jsonModel.fetchData(projectId)
 
         var imageItems: MutableList<MultiList>? = null
         var commentsItems: MutableList<MultiList>? = null
@@ -132,6 +130,6 @@ class DetailsFragment : Fragment() {
             })
         avatarViewDetails.setOnClickListener { FragmentNavigate(
             context!!
-        ).toProfileFromDetails(cardArguments.username!!) }
+        ).toProfileFromDetails(cardArguments?.username!!) }
     }
 }

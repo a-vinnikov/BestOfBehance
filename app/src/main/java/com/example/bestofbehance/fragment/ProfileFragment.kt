@@ -30,7 +30,7 @@ import kotlinx.android.synthetic.main.profile_card.*
 
 class ProfileFragment : Fragment() {
 
-    private val args: ProfileFragmentArgs by navArgs()
+    private var username: String = ""
     lateinit var jsonModel: ViewModelForParse
 
     private var currentViewMode = VIEW_MODE_LISTVIEW
@@ -41,7 +41,7 @@ class ProfileFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.two_buttons_toolbar, menu)
 
-        if (jsonModel.getByUsernameFromPeopleDB(args.profileBindingArg) == null) {
+        if (jsonModel.getByUsernameFromPeopleDB(username) == null) {
             menu.findItem(R.id.menu_bookmark)
                 ?.setIcon(R.drawable.ic_bookmarks_normal)
         } else {
@@ -60,12 +60,12 @@ class ProfileFragment : Fragment() {
             R.id.menu_bookmark -> {
                 when {
                     nameProfile.text == null -> item.isCheckable = false
-                    jsonModel.getByUsernameFromPeopleDB(args.profileBindingArg) == null -> {
+                    jsonModel.getByUsernameFromPeopleDB(username) == null -> {
 
-                        jsonModel.setUser(args.profileBindingArg)
+                        jsonModel.setUser(username)
                         val observerGSON = Observer<MutableList<ProfileBinding>> { list ->
                             jsonModel.insertInPeopleDB(
-                                MapperForPeopleBinding.from(list[0], args.profileBindingArg)
+                                MapperForPeopleBinding.from(list[0], username)
                             )
                         }
 
@@ -73,7 +73,7 @@ class ProfileFragment : Fragment() {
                         item.setIcon(R.drawable.ic_bookmarks_pressed)
                     }
                     else -> {
-                        jsonModel.deleteByUsernameFromPeopleDB(args.profileBindingArg)
+                        jsonModel.deleteByUsernameFromPeopleDB(username)
                         item.setIcon(R.drawable.ic_bookmarks_normal)
                     }
                 }
@@ -112,7 +112,9 @@ class ProfileFragment : Fragment() {
         jsonModel =
             ViewModelProviders.of(this, ViewModelFactory(context!!)).get(ViewModelForParse::class.java)
 
-        jsonModel.setUser(args.profileBindingArg)
+        username = arguments?.getString("username")!!
+
+        jsonModel.setUser(username)
 
         val observerGSON = Observer<MutableList<ProfileBinding>> { list ->
 
@@ -269,7 +271,7 @@ class ProfileFragment : Fragment() {
 
     private fun createRecyclerView() {
         if (jsonModel.profilePagedList?.value == null) {
-            jsonModel.setUserProjects(args.profileBindingArg)
+            jsonModel.setUserProjects(username)
         }
         adapterProfile = adapterFun() as PagingAdapterProfile
         recyclerViewProfile.adapter = adapterProfile
@@ -284,7 +286,7 @@ class ProfileFragment : Fragment() {
 
         return PagingAdapterProfile(object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                FragmentNavigate(context!!).toDetailsFromProfile(item)
+                FragmentNavigate(context!!).toDetailsFromProfile(item.id.toString())
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {

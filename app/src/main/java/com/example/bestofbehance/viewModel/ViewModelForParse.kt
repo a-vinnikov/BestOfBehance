@@ -24,7 +24,7 @@ class ViewModelForParse(val context: Context) : AndroidViewModel(Application()) 
 
     val listForContents: MutableLiveData<MutableList<MultiList>> by lazy { MutableLiveData<MutableList<MultiList>>() }
     val listForComments: MutableLiveData<MutableList<MultiList>> by lazy { MutableLiveData<MutableList<MultiList>>() }
-    val listForProject: MutableLiveData<MutableList<CardBinding>> by lazy {MutableLiveData<MutableList<CardBinding>>() }
+    val listForProject: MutableLiveData<MutableList<CardBinding>> by lazy { MutableLiveData<MutableList<CardBinding>>() }
     val listForUser: MutableLiveData<MutableList<ProfileBinding>> by lazy { MutableLiveData<MutableList<ProfileBinding>>() }
     val listForLinks: MutableLiveData<MutableMap<String, String?>> by lazy { MutableLiveData<MutableMap<String, String?>>() }
     val liveDataMulti = MediatorLiveData<MutableList<MultiList>>()
@@ -90,12 +90,12 @@ class ViewModelForParse(val context: Context) : AndroidViewModel(Application()) 
             catch (e: IllegalArgumentException){}
     }
 
-    fun bookmarksToolbar(binding: CardBinding, item: MenuItem){
-        if (ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(binding.id!!) == null) {
-            ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.insert(MapperForProjectsBinding.from(binding))
+    fun bookmarksToolbar(binding: CardBinding?, item: MenuItem){
+        if (ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(binding?.id!!) == null) {
+            ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.insert(MapperForProjectsBinding.from(binding!!))
             item.setIcon(R.drawable.ic_bookmarks_pressed)
         } else {
-            ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.deleteById(binding.id!!)
+            ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.deleteById(binding?.id!!)
             item.setIcon(R.drawable.ic_bookmarks_normal)
         }
     }
