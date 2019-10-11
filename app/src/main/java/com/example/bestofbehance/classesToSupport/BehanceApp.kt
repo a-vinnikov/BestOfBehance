@@ -3,20 +3,12 @@ package com.example.bestofbehance.classesToSupport
 import android.app.Application
 import com.example.bestofbehance.dagger.Configurator
 import com.example.bestofbehance.dagger.DaggerBehanceComponent
-import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
-import dagger.android.support.DaggerApplication
 import javax.inject.Inject
 
 
-class BehanceApp: DaggerApplication(), HasAndroidInjector {
-
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        val component = DaggerBehanceComponent.builder().application(this).build()
-        component.inject(this)
-        return component
-    }
+class BehanceApp : Application(), HasAndroidInjector {
 
     @Inject
     lateinit var androidInjector: DispatchingAndroidInjector<Any>
@@ -31,7 +23,7 @@ class BehanceApp: DaggerApplication(), HasAndroidInjector {
         /*if (BuildConfig.DEBUG) {
         Timber.plant(Timber.DebugTree())
         }*/
-        //initializeInjector()
+        initializeInjector()
         configure()
     }
 

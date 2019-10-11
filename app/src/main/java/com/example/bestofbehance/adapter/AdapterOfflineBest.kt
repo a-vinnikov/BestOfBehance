@@ -22,10 +22,10 @@ import com.example.bestofbehance.dagger.module.StorageModule
 import javax.inject.Inject
 
 
-class AdapterOfflineBest(var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick) : RecyclerView.Adapter<AdapterOfflineBest.ViewHolder>(), Injectable {
+class AdapterOfflineBest(var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick) : RecyclerView.Adapter<AdapterOfflineBest.ViewHolder>()/*, Injectable*/ {
 
-    @Inject
-    lateinit var preferences: AllAboutSharedPreferences
+    /*@Inject
+    lateinit var preferences: AllAboutSharedPreferences*/
 
     lateinit var context: Context
     var position = 0
@@ -41,7 +41,7 @@ class AdapterOfflineBest(var list: MutableList<CardBinding>, val inClick: InClic
         this.position = holder.adapterPosition
         var currentViewMode = ""
 
-        currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode), currentViewMode)
+        //currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode), currentViewMode)
 
         holder.itemView.avatarView.setOnClickListener {
             FragmentNavigate(context).toProfileFromBest(list[holder.adapterPosition].username!!)

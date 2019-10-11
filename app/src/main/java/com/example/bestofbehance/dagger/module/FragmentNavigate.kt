@@ -11,7 +11,7 @@ class FragmentNavigate(activity: Context) {
     val controller = Navigation.findNavController(activity as Activity, R.id.fr)
 
     fun toDetailsFromBest(item: String) {
-        controller.navigate(BestDirections.actionBestToDetails(item))
+        controller.navigate(BestFragmentDirections.actionBestToDetails(item))
     }
 
     fun toDetailsFromProjects(item: String) {
@@ -23,7 +23,7 @@ class FragmentNavigate(activity: Context) {
     }
 
     fun toProfileFromBest(item: String) {
-        controller.navigate(BestDirections.actionBestToProfile(item))
+        controller.navigate(BestFragmentDirections.actionBestToProfile(item))
     }
 
     fun toProfileFromProjects(item: String) {

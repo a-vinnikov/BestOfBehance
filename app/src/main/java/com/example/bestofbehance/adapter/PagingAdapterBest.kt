@@ -27,10 +27,10 @@ import javax.inject.Inject
 
 
 class PagingAdapterBest(val inClick: InClick, val bookmarkClick: BookmarkClick) :
-    PagedListAdapter<CardBinding, PagingAdapterBest.ViewHolder>(diffCallback), Injectable {
+    PagedListAdapter<CardBinding, PagingAdapterBest.ViewHolder>(diffCallback)/*, Injectable*/ {
 
-    @Inject
-    lateinit var preferences: AllAboutSharedPreferences
+    /*@Inject
+    lateinit var preferences: AllAboutSharedPreferences*/
 
     lateinit var context: Context
     var position = 0
@@ -45,7 +45,7 @@ class PagingAdapterBest(val inClick: InClick, val bookmarkClick: BookmarkClick) 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
         var currentViewMode = ""
-        currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode), currentViewMode)
+        //currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode), currentViewMode)
 
 
         holder.itemView.avatarView.setOnClickListener {

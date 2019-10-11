@@ -17,10 +17,10 @@ import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.paging.ProfileDataSource
 import com.example.bestofbehance.paging.BestDataSource
 import com.example.bestofbehance.paging.DataSourceFactory
+import javax.inject.Inject
 
 
-
-class ViewModelForParse(val context: Context) : AndroidViewModel(Application()) {
+class ViewModelForParse @Inject constructor(val context: Context) : AndroidViewModel(Application()) {
 
     val listForContents: MutableLiveData<MutableList<MultiList>> by lazy { MutableLiveData<MutableList<MultiList>>() }
     val listForComments: MutableLiveData<MutableList<MultiList>> by lazy { MutableLiveData<MutableList<MultiList>>() }

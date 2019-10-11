@@ -7,6 +7,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.R
@@ -18,12 +19,16 @@ import com.example.bestofbehance.viewModel.ViewModelForParse
 import com.example.bestofbehance.viewModel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_people.*
+import javax.inject.Inject
 
 
 class PeopleFragment : Fragment() {
 
     lateinit var jsonModel: ViewModelForParse
     lateinit var adapterPeople: AdapterMulti
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,7 +57,7 @@ class PeopleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(ViewModelForParse::class.java)
+        jsonModel = ViewModelProviders.of(this, viewModelFactory).get(ViewModelForParse::class.java)
 
         if (recyclerViewPeople.adapter == null) {
             createRecyclerView()

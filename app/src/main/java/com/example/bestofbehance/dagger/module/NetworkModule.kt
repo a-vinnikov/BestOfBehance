@@ -1,25 +1,33 @@
 package com.example.bestofbehance.dagger.module
 
-import android.content.Context
-import com.example.bestofbehance.retrofit.BehanceApiInterface
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import okhttp3.*
-import java.io.IOException
-import java.util.concurrent.TimeUnit
-import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.API_KEY
 import com.example.bestofbehance.classesToSupport.BASE_URL
 import com.example.bestofbehance.classesToSupport.SECOND_KEY
+import com.example.bestofbehance.retrofit.BehanceApiInterface
 import com.example.bestofbehance.retrofit.BehanceCallAdapterFactory
+import dagger.Module
+import dagger.Provides
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Response
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
+import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
 
-class NetworkModule(val context: Context) {
+@Module
+class NetworkModule {
 
+    @Provides
+    @Singleton
     fun providesBehanceApi(retrofit: Retrofit): BehanceApiInterface =
         retrofit.create(BehanceApiInterface::class.java)
 
+    @Provides
+    @Singleton
     fun providesRetrofit(okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -28,19 +36,21 @@ class NetworkModule(val context: Context) {
             .client(okHttpClient)
             .build()
 
+    @Provides
+    @Singleton
     fun providesOkHttpClient(): OkHttpClient.Builder {
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.HEADERS
 
         val httpClient = OkHttpClient.Builder()
-        httpClient.addInterceptor (object : Interceptor {
+        httpClient.addInterceptor(object : Interceptor {
             @Throws(IOException::class)
             override fun intercept(chain: Interceptor.Chain): Response {
                 lateinit var temp: Response
 
                 temp = try {
                     getResponse(chain, API_KEY)
-                } catch (e: IOException){
+                } catch (e: IOException) {
                     temp.close()
                     getResponse(chain, SECOND_KEY)
                 }
@@ -63,7 +73,10 @@ class NetworkModule(val context: Context) {
         val originalHttpUrl = original.url
 
         val url = originalHttpUrl.newBuilder()
-            .addQueryParameter(context.resources.getString(R.string.api_key), key)
+            .addQueryParameter(
+                "api_key",
+                key
+            )// TODO: return context.resources.getString(R.string.api_key)
             .build()
 
         val requestBuilder = original.newBuilder().url(url)

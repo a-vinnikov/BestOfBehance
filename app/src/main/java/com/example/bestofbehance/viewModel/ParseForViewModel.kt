@@ -272,7 +272,7 @@ class ParseForViewModel(val context: Context) {
     }
 
     private fun service(context: Context): BehanceApiInterface? {
-        return with(NetworkModule(context)) {
+        return with(NetworkModule()) {
             providesBehanceApi(
                 providesRetrofit(
                     providesOkHttpClient().build()

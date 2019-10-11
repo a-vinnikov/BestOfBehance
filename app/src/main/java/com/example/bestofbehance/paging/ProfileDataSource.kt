@@ -12,7 +12,7 @@ class ProfileDataSource(val user: String, val context: Context) : PageKeyedDataS
     private val recList: MutableList<CardBinding> = mutableListOf()
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, CardBinding>) {
-        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getUserProjects(user, FIRST_PAGE)}.run { generalResponse, _ ->
+        with(NetworkModule()){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getUserProjects(user, FIRST_PAGE)}.run { generalResponse, _ ->
             generalResponse?.run {
                 projects(user,this){ result ->
                     val firstResponse = result.sortedByDescending { it.published }
@@ -29,7 +29,7 @@ class ProfileDataSource(val user: String, val context: Context) : PageKeyedDataS
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
         if(params.key != 1){
 
-            with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getUserProjects(user, params.key)}.run { generalResponse, _ ->
+            with(NetworkModule()){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getUserProjects(user, params.key)}.run { generalResponse, _ ->
                 val key = params.key + 1
                 generalResponse?.run {
                     projects(user,this){ result ->
@@ -42,7 +42,7 @@ class ProfileDataSource(val user: String, val context: Context) : PageKeyedDataS
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
 
-        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getUserProjects(user, params.key)}.run { generalResponse, _ ->
+        with(NetworkModule()){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getUserProjects(user, params.key)}.run { generalResponse, _ ->
             generalResponse?.run {
                 val key = if (params.key > 1) params.key - 1 else null
                 projects(user,this){ result ->

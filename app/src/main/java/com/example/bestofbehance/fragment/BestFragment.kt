@@ -11,6 +11,7 @@ import android.view.*
 import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuInflater
+import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import com.example.bestofbehance.R
@@ -26,10 +27,13 @@ import com.example.bestofbehance.viewModel.ViewModelForParse
 import javax.inject.Inject
 
 
-class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener, Injectable{
+class BestFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Injectable{
 
     @Inject
     lateinit var preferences: AllAboutSharedPreferences
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     lateinit var jsonModel: ViewModelForParse
     private var currentViewMode = VIEW_MODE_LISTVIEW
@@ -98,7 +102,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener, Injectable{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         swipe.setOnRefreshListener(this)
-        jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(ViewModelForParse::class.java)
+        jsonModel = ViewModelProviders.of(this, viewModelFactory).get(ViewModelForParse::class.java)
 
         currentViewMode = preferences.stringGet(resources.getString(R.string.current_view_mode), currentViewMode)
         if (recyclerView.adapter == null) {

@@ -17,7 +17,10 @@ import org.jetbrains.anko.textView
 import javax.inject.Inject
 
 
-open class MainActivity : AppCompatActivity() {
+open class MainActivity : AppCompatActivity(), HasAndroidInjector {
+
+    @Inject
+    lateinit var androidInjector: DispatchingAndroidInjector<Any>
 
     lateinit var snackBar: Snackbar
 
@@ -28,6 +31,8 @@ open class MainActivity : AppCompatActivity() {
             R.id.people
         )
         .build()
+
+    override fun androidInjector() = androidInjector
 
     private fun setupNavigation() {
         NavigationUI.setupActionBarWithNavController(this, FragmentNavigate(

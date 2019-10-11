@@ -14,7 +14,7 @@ class BestDataSource(val context: Context) : PageKeyedDataSource<Int, CardBindin
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, CardBinding>) {
 
-        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getGeneral("appreciations", FIRST_PAGE)}.run { generalResponse, _ ->
+        with(NetworkModule()){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getGeneral("appreciations", FIRST_PAGE)}.run { generalResponse, _ ->
             generalResponse?.run {
                 general(this){result ->
                     dbFill(result)
@@ -27,7 +27,7 @@ class BestDataSource(val context: Context) : PageKeyedDataSource<Int, CardBindin
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
 
-        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getGeneral("appreciations", params.key)}.run { generalResponse, _ ->
+        with(NetworkModule()){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getGeneral("appreciations", params.key)}.run { generalResponse, _ ->
             generalResponse?.run {
                 val key = params.key + 1
                 generalResponse.run {
@@ -41,7 +41,7 @@ class BestDataSource(val context: Context) : PageKeyedDataSource<Int, CardBindin
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getGeneral("appreciations", params.key)}.run { generalResponse, _ ->
+        with(NetworkModule()){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getGeneral("appreciations", params.key)}.run { generalResponse, _ ->
             generalResponse?.run {
                 val key = if (params.key > 1) params.key - 1 else null
                 general(this){result ->
