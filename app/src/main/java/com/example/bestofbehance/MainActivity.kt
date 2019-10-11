@@ -9,8 +9,12 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.bestofbehance.classesToSupport.ConnectionLiveData
 import com.example.bestofbehance.dagger.module.FragmentNavigate
 import com.google.android.material.snackbar.Snackbar
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.textView
+import javax.inject.Inject
 
 
 open class MainActivity : AppCompatActivity() {
