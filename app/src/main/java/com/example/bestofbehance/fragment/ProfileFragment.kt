@@ -21,11 +21,12 @@ import com.example.bestofbehance.classesToSupport.*
 import com.example.bestofbehance.databinding.FragmentProfileBinding
 import com.example.bestofbehance.adapter.PagingAdapterProfile
 import com.example.bestofbehance.binding.mapper.MapperForPeopleBinding
+import com.example.bestofbehance.classesToSupport.listeners.BookmarkClick
+import com.example.bestofbehance.classesToSupport.listeners.LayoutClick
 import com.example.bestofbehance.dagger.AllAboutSharedPreferences
+import com.example.bestofbehance.dagger.FragmentNavigate
 import com.example.bestofbehance.dagger.Injectable
 import com.example.bestofbehance.extension.WebOpening
-import com.example.bestofbehance.dagger.module.FragmentNavigate
-import com.example.bestofbehance.dagger.module.StorageModule
 import com.example.bestofbehance.viewModel.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.profile_card.*
@@ -38,6 +39,9 @@ class ProfileFragment : Fragment(), Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var navigate: FragmentNavigate
 
     private var username: String = ""
     lateinit var jsonModel: ViewModelForParse
@@ -286,9 +290,10 @@ class ProfileFragment : Fragment(), Injectable {
 
     private fun adapterFun(): PagedListAdapter<CardBinding, PagingAdapterProfile.ViewHolder> {
 
-        return PagingAdapterProfile(currentViewMode, object : InClick {
+        return PagingAdapterProfile(currentViewMode, object :
+            LayoutClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                FragmentNavigate(context!!).toDetailsFromProfile(item.id.toString())
+                navigate.toDetailsFromProfile(item.id.toString())
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {

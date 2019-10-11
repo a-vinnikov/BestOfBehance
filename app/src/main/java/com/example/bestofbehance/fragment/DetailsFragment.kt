@@ -11,14 +11,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.MultiList
-import com.example.bestofbehance.dagger.module.FragmentNavigate
+import com.example.bestofbehance.dagger.module.NavigateModule
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
 import com.example.bestofbehance.adapter.AdapterMulti
 import com.example.bestofbehance.binding.CardBinding
+import com.example.bestofbehance.classesToSupport.listeners.UserClick
+import com.example.bestofbehance.dagger.FragmentNavigate
 import com.example.bestofbehance.dagger.Injectable
 import com.example.bestofbehance.extension.WebOpening
 import com.example.bestofbehance.viewModel.ViewModelForParse
-import com.example.bestofbehance.viewModel.ViewModelFactory
 import kotlinx.android.synthetic.main.details_card.*
 import kotlinx.android.synthetic.main.fragment_details.*
 import javax.inject.Inject
@@ -27,6 +28,9 @@ class DetailsFragment : Fragment(), Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var navigate: FragmentNavigate
 
     lateinit var jsonModel: ViewModelForParse
     var cardArguments: CardBinding? = null
@@ -115,7 +119,11 @@ class DetailsFragment : Fragment(), Injectable {
                 if (imageItems != null && commentsItems != null) {
 
                     val temp: List<MultiList> = imageItems.orEmpty() + commentsItems.orEmpty()
-                    recyclerViewDetails.adapter = AdapterMulti(temp as MutableList<MultiList>, null)
+                    recyclerViewDetails.adapter = AdapterMulti(temp as MutableList<MultiList>, null, object:
+                        UserClick {
+                        override fun onUserClick(username: String) {
+                            navigate.toProfileFromDetails(username)
+                        }})
                     recyclerViewDetails.layoutManager = LinearLayoutManager(activity)
 
                     comments.setOnClickListener {
@@ -132,8 +140,6 @@ class DetailsFragment : Fragment(), Injectable {
                     }
                 }
             })
-        avatarViewDetails.setOnClickListener { FragmentNavigate(
-            context!!
-        ).toProfileFromDetails(cardArguments?.username!!) }
+        avatarViewDetails.setOnClickListener { navigate.toProfileFromDetails(cardArguments?.username!!) }
     }
 }

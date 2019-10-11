@@ -11,14 +11,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.classesToSupport.BookmarkClick
-import com.example.bestofbehance.classesToSupport.InClick
-import com.example.bestofbehance.dagger.module.FragmentNavigate
-import com.example.bestofbehance.dagger.module.StorageModule
+import com.example.bestofbehance.classesToSupport.listeners.BookmarkClick
+import com.example.bestofbehance.classesToSupport.listeners.LayoutClick
 import com.example.bestofbehance.adapter.AdapterProjects
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_GRIDVIEW
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_LISTVIEW
+import com.example.bestofbehance.classesToSupport.listeners.UserClick
 import com.example.bestofbehance.dagger.AllAboutSharedPreferences
+import com.example.bestofbehance.dagger.FragmentNavigate
 import com.example.bestofbehance.dagger.Injectable
 import com.example.bestofbehance.extension.Converter
 import com.example.bestofbehance.viewModel.*
@@ -33,6 +33,9 @@ class ProjectsFragment : Fragment(), Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var navigate: FragmentNavigate
 
     private var currentViewMode = VIEW_MODE_LISTVIEW
 
@@ -122,9 +125,10 @@ class ProjectsFragment : Fragment(), Injectable {
 
     fun adapterFun(list: MutableList<CardBinding>): AdapterProjects {
 
-        return AdapterProjects(currentViewMode, list, object : InClick {
+        return AdapterProjects(currentViewMode, list, object :
+            LayoutClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                FragmentNavigate(context!!).toDetailsFromProjects(item.id.toString())
+                navigate.toDetailsFromProjects(item.id.toString())
             }
 
         }, object : BookmarkClick {
@@ -138,6 +142,9 @@ class ProjectsFragment : Fragment(), Injectable {
                         }
                 }
             }
-        })
+        }, object: UserClick {
+            override fun onUserClick(username: String) {
+                navigate.toProfileFromProjects(username)
+            }})
     }
 }

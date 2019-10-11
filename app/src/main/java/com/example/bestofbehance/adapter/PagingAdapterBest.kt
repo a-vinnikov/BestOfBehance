@@ -11,17 +11,18 @@ import androidx.recyclerview.widget.DiffUtil
 import kotlinx.android.synthetic.main.list_item.view.*
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.databinding.ListItemBinding
-import com.example.bestofbehance.classesToSupport.InClick
+import com.example.bestofbehance.classesToSupport.listeners.LayoutClick
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.database.ProjectsDataBase
-import com.example.bestofbehance.classesToSupport.BookmarkClick
+import com.example.bestofbehance.classesToSupport.listeners.BookmarkClick
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_GRIDVIEW
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_LISTVIEW
+import com.example.bestofbehance.classesToSupport.listeners.UserClick
 import com.example.bestofbehance.extension.MathObject
-import com.example.bestofbehance.dagger.module.FragmentNavigate
+import com.example.bestofbehance.dagger.module.NavigateModule
 
 
-class PagingAdapterBest(private val currentViewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick) :
+class PagingAdapterBest(private val currentViewMode: String, val layoutClick: LayoutClick, val bookmarkClick: BookmarkClick, val userClick: UserClick) :
     PagedListAdapter<CardBinding, PagingAdapterBest.ViewHolder>(diffCallback){
 
     lateinit var context: Context
@@ -41,7 +42,7 @@ class PagingAdapterBest(private val currentViewMode: String, val inClick: InClic
 
 
         holder.itemView.avatarView.setOnClickListener {
-            FragmentNavigate(context).toProfileFromBest(getItem(holder.adapterPosition)?.username!!)
+            userClick.onUserClick(getItem(holder.adapterPosition)?.username!!)
         }
 
         holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(getItem(position)!!.id!!) != null
@@ -51,7 +52,7 @@ class PagingAdapterBest(private val currentViewMode: String, val inClick: InClic
         }
 
         holder.itemView.constLayout.setOnClickListener {
-            inClick.onItemClick(getItem(holder.adapterPosition)!!, holder.adapterPosition)
+            layoutClick.onItemClick(getItem(holder.adapterPosition)!!, holder.adapterPosition)
         }
 
         var copyList = getItem(holder.adapterPosition)!!.copy()

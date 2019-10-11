@@ -16,13 +16,15 @@ import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.dagger.module.FragmentNavigate
 import com.example.bestofbehance.adapter.AdapterOfflineBest
 import com.example.bestofbehance.adapter.PagingAdapterBest
 import com.example.bestofbehance.classesToSupport.*
+import com.example.bestofbehance.classesToSupport.listeners.BookmarkClick
+import com.example.bestofbehance.classesToSupport.listeners.LayoutClick
+import com.example.bestofbehance.classesToSupport.listeners.UserClick
 import com.example.bestofbehance.dagger.AllAboutSharedPreferences
+import com.example.bestofbehance.dagger.FragmentNavigate
 import com.example.bestofbehance.dagger.Injectable
-import com.example.bestofbehance.viewModel.ViewModelFactory
 import com.example.bestofbehance.viewModel.ViewModelForParse
 import javax.inject.Inject
 
@@ -34,6 +36,9 @@ class BestFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Injectabl
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var navigate: FragmentNavigate
 
     lateinit var jsonModel: ViewModelForParse
     private var currentViewMode = VIEW_MODE_LISTVIEW
@@ -149,29 +154,40 @@ class BestFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Injectabl
 
     private fun adapterFun(): PagedListAdapter<CardBinding, PagingAdapterBest.ViewHolder> {
 
-        return PagingAdapterBest(currentViewMode, object : InClick {
+        return PagingAdapterBest(currentViewMode, object :
+            LayoutClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                FragmentNavigate(context!!).toDetailsFromBest(item.id.toString())
+                navigate.toDetailsFromBest(item.id.toString())
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
                 jsonModel.bookmarksProjects(jsonModel.itemPagedList?.value?.get(position)!!)
             }
+        }, object: UserClick {
+            override fun onUserClick(username: String) {
+                navigate.toProfileFromBest(username)
+            }
+
         })
     }
 
     private fun adapterOffline(list: MutableList<CardBinding>): AdapterOfflineBest {
 
-        return AdapterOfflineBest(currentViewMode, list, object : InClick {
+        return AdapterOfflineBest(currentViewMode, list, object :
+            LayoutClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                FragmentNavigate(context!!).toDetailsFromBest(item.id.toString())
+                navigate.toDetailsFromBest(item.id.toString())
             }
 
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
                 jsonModel.bookmarksProjects(list[position])
             }
-        })
+        }, object: UserClick {
+            override fun onUserClick(username: String) {
+                navigate.toProfileFromBest(username)
+            }}
+        )
     }
 
 }

@@ -1,15 +1,16 @@
 package com.example.bestofbehance
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.example.bestofbehance.classesToSupport.ConnectionLiveData
-import com.example.bestofbehance.dagger.module.FragmentNavigate
+import com.example.bestofbehance.dagger.module.NavigateModule
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import kotlinx.android.synthetic.main.activity_main.*
@@ -35,13 +36,8 @@ open class MainActivity : AppCompatActivity(), HasAndroidInjector {
         .build()
 
     private fun setupNavigation() {
-        NavigationUI.setupActionBarWithNavController(this, FragmentNavigate(
-            this
-        ).controller, appBarConfiguration)
-        navigation.setupWithNavController(
-            FragmentNavigate(
-                this
-            ).controller)
+        NavigationUI.setupActionBarWithNavController(this, Navigation.findNavController(this, R.id.fr), appBarConfiguration)
+        navigation.setupWithNavController(Navigation.findNavController(this, R.id.fr))
 
     }
 

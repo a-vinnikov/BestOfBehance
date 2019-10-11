@@ -2,11 +2,8 @@ package com.example.bestofbehance.dagger
 
 import android.app.Application
 import com.example.bestofbehance.classesToSupport.BehanceApp
-import com.example.bestofbehance.dagger.module.StorageModule
 import com.example.bestofbehance.dagger.builder.ActivityBuilder
-import com.example.bestofbehance.dagger.module.CommonModule
-import com.example.bestofbehance.dagger.module.ConfiguratorModule
-import com.example.bestofbehance.dagger.module.NetworkModule
+import com.example.bestofbehance.dagger.module.*
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -18,6 +15,7 @@ import javax.inject.Singleton
     modules = [
         AndroidInjectionModule::class,
         StorageModule::class,
+        NavigateModule::class,
         CommonModule::class,
         ConfiguratorModule::class,
         NetworkModule::class,
