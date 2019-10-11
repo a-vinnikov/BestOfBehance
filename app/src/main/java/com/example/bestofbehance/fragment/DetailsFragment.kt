@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.*
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.BR
@@ -14,13 +15,18 @@ import com.example.bestofbehance.dagger.module.FragmentNavigate
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
 import com.example.bestofbehance.adapter.AdapterMulti
 import com.example.bestofbehance.binding.CardBinding
+import com.example.bestofbehance.dagger.Injectable
 import com.example.bestofbehance.extension.WebOpening
 import com.example.bestofbehance.viewModel.ViewModelForParse
 import com.example.bestofbehance.viewModel.ViewModelFactory
 import kotlinx.android.synthetic.main.details_card.*
 import kotlinx.android.synthetic.main.fragment_details.*
+import javax.inject.Inject
 
-class DetailsFragment : Fragment() {
+class DetailsFragment : Fragment(), Injectable {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     lateinit var jsonModel: ViewModelForParse
     var cardArguments: CardBinding? = null
@@ -67,7 +73,7 @@ class DetailsFragment : Fragment() {
         val binding = FragmentDetailsBinding.inflate(inflater)
         val fragmentDetailsView: View = binding.root
 
-        jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(ViewModelForParse::class.java)
+        jsonModel = ViewModelProviders.of(this, viewModelFactory).get(ViewModelForParse::class.java)
 
         projectId = arguments?.getString("projectId")!!.toInt()
 

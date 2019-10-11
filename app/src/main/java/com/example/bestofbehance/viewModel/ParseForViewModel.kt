@@ -24,7 +24,7 @@ class ParseForViewModel(val context: Context) {
 
     fun fetchProject(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit) {
 
-        service(context)?.getProject(projectId)?.process { imageResponse, _ ->
+        service()?.getProject(projectId)?.process { imageResponse, _ ->
             val listResponse = imageResponse?.project?.modules
 
             if (listResponse != null) for (i in listResponse.indices) {
@@ -68,7 +68,7 @@ class ParseForViewModel(val context: Context) {
 
     fun fetchComments(projectId: Int, myCallBack: (result: MutableList<MultiList>) -> Unit) {
 
-        service(context)?.getComments(projectId.toString())?.process { commentsMain, _ ->
+        service()?.getComments(projectId.toString())?.process { commentsMain, _ ->
             val listResponse = commentsMain?.comments
             val numberOfComments = commentsMain?.comments?.size
 
@@ -120,7 +120,7 @@ class ParseForViewModel(val context: Context) {
         myCallBack: (result: MutableList<ProfileBinding>, links: MutableMap<String, String?>) -> Unit
     ) {
 
-        service(context)?.getUser(username)?.process { userResponse, _ ->
+        service()?.getUser(username)?.process { userResponse, _ ->
 
             val listResponse = userResponse?.user
 
@@ -156,42 +156,42 @@ class ParseForViewModel(val context: Context) {
                     with(listResponse.socialLinks[i]) {
                         when (this?.serviceName) {
                             context.resources.getString(R.string.pinterest) -> {
-                                val pinterest = this?.url
+                                val pinterest = this.url
                                 linksList.put(
                                     context.resources.getString(R.string.pinterest),
                                     pinterest
                                 )
                             }
                             context.resources.getString(R.string.instagram) -> {
-                                val instagram = this?.url
+                                val instagram = this.url
                                 linksList.put(
                                     context.resources.getString(R.string.instagram),
                                     instagram
                                 )
                             }
                             context.resources.getString(R.string.facebook) -> {
-                                val facebook = this?.url
+                                val facebook = this.url
                                 linksList.put(
                                     context.resources.getString(R.string.facebook),
                                     facebook
                                 )
                             }
                             context.resources.getString(R.string.behance) -> {
-                                val behance = this?.url
+                                val behance = this.url
                                 linksList.put(
                                     context.resources.getString(R.string.behance),
                                     behance
                                 )
                             }
                             context.resources.getString(R.string.dribbble) -> {
-                                val dribbble = this?.url
+                                val dribbble = this.url
                                 linksList.put(
                                     context.resources.getString(R.string.dribbble),
                                     dribbble
                                 )
                             }
                             context.resources.getString(R.string.twitter) -> {
-                                val twitter = this?.url
+                                val twitter = this.url
                                 linksList.put(
                                     context.resources.getString(R.string.twitter),
                                     twitter
@@ -232,7 +232,7 @@ class ParseForViewModel(val context: Context) {
 
     fun fetchSingleProject(projectId: Int, myCallBack: (result: MutableList<CardBinding>) -> Unit){
 
-        service(context)?.getProject(projectId)?.process { imageResponse, _ ->
+        service()?.getProject(projectId)?.process { imageResponse, _ ->
 
             val listResponse = imageResponse?.project
 
@@ -271,8 +271,8 @@ class ParseForViewModel(val context: Context) {
 
     }
 
-    private fun service(context: Context): BehanceApiInterface? {
-        return with(NetworkModule(context)) {
+    private fun service(): BehanceApiInterface? {
+        return with(NetworkModule()) {
             providesBehanceApi(
                 providesRetrofit(
                     providesOkHttpClient().build()

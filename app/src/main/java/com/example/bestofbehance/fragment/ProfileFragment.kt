@@ -229,15 +229,13 @@ class ProfileFragment : Fragment(), Injectable {
         viewModeProfile.setOnClickListener {
             when (viewModeProfile.isChecked) {
                 false -> {
-                    preferences.stringEdit(resources.getString(R.string.current_view_mode_profile),
-                        VIEW_MODE_LISTVIEW
-                    )
+                    preferences.stringEdit(resources.getString(R.string.current_view_mode_profile), VIEW_MODE_LISTVIEW)
+                    adapterProfile.viewMode = VIEW_MODE_LISTVIEW
                     recyclerViewProfile.layoutManager = LinearLayoutManager(activity)
                 }
                 true -> {
-                    preferences.stringEdit(resources.getString(R.string.current_view_mode_profile),
-                        VIEW_MODE_GRIDVIEW
-                    )
+                    preferences.stringEdit(resources.getString(R.string.current_view_mode_profile), VIEW_MODE_GRIDVIEW)
+                    adapterProfile.viewMode = VIEW_MODE_GRIDVIEW
                     recyclerViewProfile.layoutManager = GridLayoutManager(activity, 2)
                 }
             }
@@ -288,7 +286,7 @@ class ProfileFragment : Fragment(), Injectable {
 
     private fun adapterFun(): PagedListAdapter<CardBinding, PagingAdapterProfile.ViewHolder> {
 
-        return PagingAdapterProfile(object : InClick {
+        return PagingAdapterProfile(currentViewMode, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
                 FragmentNavigate(context!!).toDetailsFromProfile(item.id.toString())
             }

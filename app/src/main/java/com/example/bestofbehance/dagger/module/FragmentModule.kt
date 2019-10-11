@@ -8,8 +8,9 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class FragmentModule {
 
+    @ContributesAndroidInjector
     @PerFragment
-    abstract fun provideBestFragment(): Best
+    abstract fun provideBestFragment(): BestFragment
 
     @ContributesAndroidInjector
     @PerFragment

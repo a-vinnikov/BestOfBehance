@@ -17,7 +17,12 @@ import org.jetbrains.anko.textView
 import javax.inject.Inject
 
 
-open class MainActivity : AppCompatActivity() {
+open class MainActivity : AppCompatActivity(), HasAndroidInjector {
+
+    @Inject
+    lateinit var androidInjector: DispatchingAndroidInjector<Any>
+
+    override fun androidInjector() = androidInjector
 
     lateinit var snackBar: Snackbar
 

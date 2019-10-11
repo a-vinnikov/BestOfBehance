@@ -3,7 +3,7 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph" app:startDestination="@id/best">
     <fragment android:id="@+id/best"
-              android:name="com.example.bestofbehance.fragment.Best"
+              android:name="com.example.bestofbehance.fragment.BestFragment"
               android:label="@string/best_title"
               tools:layout="@layout/fragment_best">
         <action android:id="@+id/action_best_to_details" app:destination="@id/details"/>

@@ -60,11 +60,13 @@ class ProjectsFragment : Fragment(), Injectable {
             R.id.menu_switcher -> {
                 if (currentViewMode == VIEW_MODE_GRIDVIEW) {
                     item.setIcon(R.drawable.ic_tile)
-                    preferences.stringGet(resources.getString(R.string.current_view_mode_projects), VIEW_MODE_LISTVIEW)
+                    adapterProjects.viewMode = VIEW_MODE_LISTVIEW
+                    preferences.stringEdit(resources.getString(R.string.current_view_mode_projects), VIEW_MODE_LISTVIEW)
                     recyclerViewProjects.layoutManager = LinearLayoutManager(activity)
                 } else if (currentViewMode == VIEW_MODE_LISTVIEW) {
                     item.setIcon(R.drawable.ic_list)
-                    preferences.stringGet(resources.getString(R.string.current_view_mode_projects), VIEW_MODE_GRIDVIEW)
+                    adapterProjects.viewMode = VIEW_MODE_GRIDVIEW
+                    preferences.stringEdit(resources.getString(R.string.current_view_mode_projects), VIEW_MODE_GRIDVIEW)
                     recyclerViewProjects.layoutManager = GridLayoutManager(activity, 2)
                 }
             }
@@ -120,7 +122,7 @@ class ProjectsFragment : Fragment(), Injectable {
 
     fun adapterFun(list: MutableList<CardBinding>): AdapterProjects {
 
-        return AdapterProjects(list, object : InClick {
+        return AdapterProjects(currentViewMode, list, object : InClick {
             override fun onItemClick(item: CardBinding, position: Int) {
                 FragmentNavigate(context!!).toDetailsFromProjects(item.id.toString())
             }

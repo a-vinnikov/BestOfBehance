@@ -25,14 +25,12 @@ import com.example.bestofbehance.dagger.module.StorageModule
 import javax.inject.Inject
 
 
-class PagingAdapterProfile(val inClick: InClick, val bookmarkClick: BookmarkClick) :
-    PagedListAdapter<CardBinding, PagingAdapterProfile.ViewHolder>(diffCallback), Injectable {
-
-    @Inject
-    lateinit var preferences: AllAboutSharedPreferences
+class PagingAdapterProfile(private val currentViewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick) :
+    PagedListAdapter<CardBinding, PagingAdapterProfile.ViewHolder>(diffCallback){
 
     lateinit var context: Context
     var position = 0
+    var viewMode = currentViewMode
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -43,8 +41,7 @@ class PagingAdapterProfile(val inClick: InClick, val bookmarkClick: BookmarkClic
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
-        var currentViewMode = ""
-        currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode_profile), currentViewMode)
+        //currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode_profile), currentViewMode)
 
         holder.itemView.avatarView.setOnClickListener {
             FragmentNavigate(context).toProfileFromBest(getItem(holder.adapterPosition)?.username!!)
@@ -65,7 +62,7 @@ class PagingAdapterProfile(val inClick: InClick, val bookmarkClick: BookmarkClic
 
         var copyList = getItem(holder.adapterPosition)!!.copy()
 
-        when (currentViewMode) {
+        when (viewMode) {
             VIEW_MODE_GRIDVIEW -> {
                 holder.itemView.avatarView.visibility = GONE
 

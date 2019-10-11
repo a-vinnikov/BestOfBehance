@@ -22,13 +22,14 @@ import com.example.bestofbehance.dagger.module.StorageModule
 import javax.inject.Inject
 
 
-class AdapterOfflineBest(var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick) : RecyclerView.Adapter<AdapterOfflineBest.ViewHolder>(), Injectable {
+class AdapterOfflineBest(private val currentViewMode: String, var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick) : RecyclerView.Adapter<AdapterOfflineBest.ViewHolder>() {
 
-    @Inject
-    lateinit var preferences: AllAboutSharedPreferences
+    /*@Inject
+    lateinit var preferences: AllAboutSharedPreferences*/
 
     lateinit var context: Context
     var position = 0
+    var viewMode = currentViewMode
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -39,9 +40,8 @@ class AdapterOfflineBest(var list: MutableList<CardBinding>, val inClick: InClic
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
-        var currentViewMode = ""
 
-        currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode), currentViewMode)
+        //currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode), currentViewMode)
 
         holder.itemView.avatarView.setOnClickListener {
             FragmentNavigate(context).toProfileFromBest(list[holder.adapterPosition].username!!)
@@ -57,7 +57,7 @@ class AdapterOfflineBest(var list: MutableList<CardBinding>, val inClick: InClic
 
         var copyList = list[holder.adapterPosition].copy()
 
-        when (currentViewMode) {
+        when (viewMode) {
             VIEW_MODE_GRIDVIEW -> {
                 holder.itemView.avatarView.visibility = GONE
 

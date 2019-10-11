@@ -21,13 +21,11 @@ import com.example.bestofbehance.dagger.module.StorageModule
 import javax.inject.Inject
 
 
-class AdapterProjects(var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick) : RecyclerView.Adapter<AdapterProjects.ViewHolder>(),Injectable {
-
-    @Inject
-    lateinit var preferences: AllAboutSharedPreferences
+class AdapterProjects(private val currentViewMode: String, var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick) : RecyclerView.Adapter<AdapterProjects.ViewHolder>() {
 
     lateinit var context: Context
     var position = 0
+    var viewMode = currentViewMode
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -38,9 +36,8 @@ class AdapterProjects(var list: MutableList<CardBinding>, val inClick: InClick, 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
-        var currentViewMode = ""
 
-        currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode_projects), currentViewMode)
+        //currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode_projects), currentViewMode)
 
         holder.itemView.avatarView.setOnClickListener {
             FragmentNavigate(context).toProfileFromProjects(list[holder.adapterPosition].username!!)
@@ -58,7 +55,7 @@ class AdapterProjects(var list: MutableList<CardBinding>, val inClick: InClick, 
 
         var copyList = list[holder.adapterPosition].copy()
 
-        when (currentViewMode) {
+        when (viewMode) {
             VIEW_MODE_GRIDVIEW -> {
                 holder.itemView.avatarView.visibility = GONE
 

@@ -13,27 +13,20 @@ import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.databinding.ListItemBinding
 import com.example.bestofbehance.classesToSupport.InClick
 import com.example.bestofbehance.BR
-import com.example.bestofbehance.R
 import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.classesToSupport.BookmarkClick
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_GRIDVIEW
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_LISTVIEW
-import com.example.bestofbehance.dagger.AllAboutSharedPreferences
-import com.example.bestofbehance.dagger.Injectable
 import com.example.bestofbehance.extension.MathObject
 import com.example.bestofbehance.dagger.module.FragmentNavigate
-import com.example.bestofbehance.dagger.module.StorageModule
-import javax.inject.Inject
 
 
-class PagingAdapterBest(val inClick: InClick, val bookmarkClick: BookmarkClick) :
-    PagedListAdapter<CardBinding, PagingAdapterBest.ViewHolder>(diffCallback), Injectable {
-
-    @Inject
-    lateinit var preferences: AllAboutSharedPreferences
+class PagingAdapterBest(private val currentViewMode: String, val inClick: InClick, val bookmarkClick: BookmarkClick) :
+    PagedListAdapter<CardBinding, PagingAdapterBest.ViewHolder>(diffCallback){
 
     lateinit var context: Context
     var position = 0
+    var viewMode = currentViewMode
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -44,8 +37,7 @@ class PagingAdapterBest(val inClick: InClick, val bookmarkClick: BookmarkClick) 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
-        var currentViewMode = ""
-        currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode), currentViewMode)
+        //currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode), currentViewMode)
 
 
         holder.itemView.avatarView.setOnClickListener {
@@ -64,7 +56,7 @@ class PagingAdapterBest(val inClick: InClick, val bookmarkClick: BookmarkClick) 
 
         var copyList = getItem(holder.adapterPosition)!!.copy()
 
-        when (currentViewMode) {
+        when (viewMode) {
             VIEW_MODE_GRIDVIEW -> {
                 holder.itemView.avatarView.visibility = GONE
 

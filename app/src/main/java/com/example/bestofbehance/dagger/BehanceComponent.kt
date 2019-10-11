@@ -6,23 +6,25 @@ import com.example.bestofbehance.dagger.module.StorageModule
 import com.example.bestofbehance.dagger.builder.ActivityBuilder
 import com.example.bestofbehance.dagger.module.CommonModule
 import com.example.bestofbehance.dagger.module.ConfiguratorModule
+import com.example.bestofbehance.dagger.module.NetworkModule
 import dagger.BindsInstance
 import dagger.Component
-import dagger.Subcomponent
 import dagger.android.AndroidInjectionModule
 import dagger.android.AndroidInjector
-import dagger.android.support.AndroidSupportInjectionModule
+import javax.inject.Singleton
 
+@Singleton
 @Component(
     modules = [
         AndroidInjectionModule::class,
         StorageModule::class,
         CommonModule::class,
         ConfiguratorModule::class,
+        NetworkModule::class,
         ActivityBuilder::class])
-interface BehanceComponent: AndroidInjector<BehanceApp> {
+interface BehanceComponent{
 
-    override fun inject(instance: BehanceApp)
+    fun inject(instance: BehanceApp)
 
     @Component.Builder
     interface Builder {
