@@ -5,10 +5,11 @@ import android.content.Context
 import androidx.navigation.Navigation
 import com.example.bestofbehance.R
 import com.example.bestofbehance.fragment.*
+import javax.inject.Inject
 
-class FragmentNavigate(activity: Context) {
+class FragmentNavigate @Inject constructor(val context: Context) {
 
-    val controller = Navigation.findNavController(activity as Activity, R.id.fr)
+    val controller = Navigation.findNavController(context as Activity, R.id.fr)
 
     fun toDetailsFromBest(item: String) {
         controller.navigate(BestFragmentDirections.actionBestToDetails(item))
