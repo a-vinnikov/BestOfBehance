@@ -1,10 +1,9 @@
-package com.example.bestofbehance.module
+package com.example.bestofbehance.dagger.module
 
 import android.app.Activity
 import android.content.Context
 import androidx.navigation.Navigation
 import com.example.bestofbehance.R
-import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.fragment.*
 
 class FragmentNavigate(activity: Context) {

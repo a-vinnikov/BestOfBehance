@@ -7,8 +7,8 @@ import android.view.*
 import android.view.View.VISIBLE
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.navArgs
 import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.GridLayoutManager
@@ -21,14 +21,23 @@ import com.example.bestofbehance.classesToSupport.*
 import com.example.bestofbehance.databinding.FragmentProfileBinding
 import com.example.bestofbehance.adapter.PagingAdapterProfile
 import com.example.bestofbehance.binding.mapper.MapperForPeopleBinding
+import com.example.bestofbehance.dagger.AllAboutSharedPreferences
+import com.example.bestofbehance.dagger.Injectable
 import com.example.bestofbehance.extension.WebOpening
-import com.example.bestofbehance.module.FragmentNavigate
-import com.example.bestofbehance.module.StorageModule
+import com.example.bestofbehance.dagger.module.FragmentNavigate
+import com.example.bestofbehance.dagger.module.StorageModule
 import com.example.bestofbehance.viewModel.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.profile_card.*
+import javax.inject.Inject
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment(), Injectable {
+
+    @Inject
+    lateinit var preferences: AllAboutSharedPreferences
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var username: String = ""
     lateinit var jsonModel: ViewModelForParse
@@ -110,7 +119,7 @@ class ProfileFragment : Fragment() {
         val fragmentDetailsView: View = binding.root
 
         jsonModel =
-            ViewModelProviders.of(this, ViewModelFactory(context!!)).get(ViewModelForParse::class.java)
+            ViewModelProviders.of(this, viewModelFactory).get(ViewModelForParse::class.java)
 
         username = arguments?.getString("username")!!
 
@@ -209,8 +218,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        currentViewMode = StorageModule.getPreferences(
-            context!!, resources.getString(R.string.current_view_mode_profile), currentViewMode
+        currentViewMode = preferences.stringGet(resources.getString(R.string.current_view_mode_profile), currentViewMode
         )
 
         when (currentViewMode) {
@@ -221,17 +229,13 @@ class ProfileFragment : Fragment() {
         viewModeProfile.setOnClickListener {
             when (viewModeProfile.isChecked) {
                 false -> {
-                    StorageModule.editorPreferences(
-                        context!!,
-                        resources.getString(R.string.current_view_mode_profile),
+                    preferences.stringEdit(resources.getString(R.string.current_view_mode_profile),
                         VIEW_MODE_LISTVIEW
                     )
                     recyclerViewProfile.layoutManager = LinearLayoutManager(activity)
                 }
                 true -> {
-                    StorageModule.editorPreferences(
-                        context!!,
-                        resources.getString(R.string.current_view_mode_profile),
+                    preferences.stringEdit(resources.getString(R.string.current_view_mode_profile),
                         VIEW_MODE_GRIDVIEW
                     )
                     recyclerViewProfile.layoutManager = GridLayoutManager(activity, 2)

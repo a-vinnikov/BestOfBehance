@@ -4,11 +4,8 @@ import android.content.Context
 import androidx.paging.PageKeyedDataSource
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.module.NetworkModule
+import com.example.bestofbehance.dagger.module.NetworkModule
 import com.example.bestofbehance.gson.GeneralResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class ProfileDataSource(val user: String, val context: Context) : PageKeyedDataSource<Int, CardBinding>() {
 

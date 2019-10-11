@@ -5,6 +5,7 @@ import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,17 +13,26 @@ import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.classesToSupport.BookmarkClick
 import com.example.bestofbehance.classesToSupport.InClick
-import com.example.bestofbehance.module.FragmentNavigate
-import com.example.bestofbehance.module.StorageModule
+import com.example.bestofbehance.dagger.module.FragmentNavigate
+import com.example.bestofbehance.dagger.module.StorageModule
 import com.example.bestofbehance.adapter.AdapterProjects
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_GRIDVIEW
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_LISTVIEW
+import com.example.bestofbehance.dagger.AllAboutSharedPreferences
+import com.example.bestofbehance.dagger.Injectable
 import com.example.bestofbehance.extension.Converter
 import com.example.bestofbehance.viewModel.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_projects.*
+import javax.inject.Inject
 
-class ProjectsFragment : Fragment() {
+class ProjectsFragment : Fragment(), Injectable {
+
+    @Inject
+    lateinit var preferences: AllAboutSharedPreferences
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var currentViewMode = VIEW_MODE_LISTVIEW
 
@@ -45,16 +55,16 @@ class ProjectsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        currentViewMode = StorageModule.getPreferences(context!!, resources.getString(R.string.current_view_mode_projects), currentViewMode)
+        currentViewMode = preferences.stringGet(resources.getString(R.string.current_view_mode_projects), currentViewMode)
         when (item.itemId) {
             R.id.menu_switcher -> {
                 if (currentViewMode == VIEW_MODE_GRIDVIEW) {
                     item.setIcon(R.drawable.ic_tile)
-                    StorageModule.editorPreferences(context!!, resources.getString(R.string.current_view_mode_projects), VIEW_MODE_LISTVIEW)
+                    preferences.stringGet(resources.getString(R.string.current_view_mode_projects), VIEW_MODE_LISTVIEW)
                     recyclerViewProjects.layoutManager = LinearLayoutManager(activity)
                 } else if (currentViewMode == VIEW_MODE_LISTVIEW) {
                     item.setIcon(R.drawable.ic_list)
-                    StorageModule.editorPreferences(context!!, resources.getString(R.string.current_view_mode_projects), VIEW_MODE_GRIDVIEW)
+                    preferences.stringGet(resources.getString(R.string.current_view_mode_projects), VIEW_MODE_GRIDVIEW)
                     recyclerViewProjects.layoutManager = GridLayoutManager(activity, 2)
                 }
             }
@@ -75,8 +85,8 @@ class ProjectsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(ViewModelForParse::class.java)
-        currentViewMode = StorageModule.getPreferences(context!!, resources.getString(R.string.current_view_mode_projects), currentViewMode)
+        jsonModel = ViewModelProviders.of(this, viewModelFactory).get(ViewModelForParse::class.java)
+        currentViewMode = preferences.stringGet(resources.getString(R.string.current_view_mode_projects), currentViewMode)
 
         if (recyclerViewProjects.adapter == null) {
             when (currentViewMode) {

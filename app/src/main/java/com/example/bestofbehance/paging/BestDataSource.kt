@@ -2,12 +2,9 @@ package com.example.bestofbehance.paging
 import android.content.Context
 import androidx.paging.PageKeyedDataSource
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.module.NetworkModule
+import com.example.bestofbehance.dagger.module.NetworkModule
 import com.example.bestofbehance.database.CardDataBase
 import com.example.bestofbehance.gson.GeneralResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import timber.log.Timber
 
 const val FIRST_PAGE = 1

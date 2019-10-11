@@ -14,7 +14,7 @@ import com.example.bestofbehance.database.PeopleDataBase
 import com.example.bestofbehance.databinding.*
 import com.example.bestofbehance.classesToSupport.BookmarkClick
 import com.example.bestofbehance.classesToSupport.MultiList
-import com.example.bestofbehance.module.FragmentNavigate
+import com.example.bestofbehance.dagger.module.FragmentNavigate
 import kotlinx.android.synthetic.main.comment_item.view.*
 import kotlinx.android.synthetic.main.people_item.view.*
 

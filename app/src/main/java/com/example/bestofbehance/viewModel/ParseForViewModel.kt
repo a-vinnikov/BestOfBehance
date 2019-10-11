@@ -9,12 +9,8 @@ import com.example.bestofbehance.binding.detailsBinding.CommentsBinding
 import com.example.bestofbehance.binding.detailsBinding.CountBinding
 import com.example.bestofbehance.binding.detailsBinding.ImageBinding
 import com.example.bestofbehance.binding.detailsBinding.TextBinding
-import com.example.bestofbehance.module.NetworkModule
-import com.example.bestofbehance.gson.*
+import com.example.bestofbehance.dagger.module.NetworkModule
 import com.example.bestofbehance.classesToSupport.MultiList
-import retrofit2.Call
-import retrofit2.Callback
-import timber.log.Timber
 import java.lang.StringBuilder
 
 class ParseForViewModel(val context: Context) {

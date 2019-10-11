@@ -1,4 +1,4 @@
-package com.example.bestofbehance.module
+package com.example.bestofbehance.dagger.module
 
 import android.content.Context
 import com.example.bestofbehance.retrofit.BehanceApiInterface

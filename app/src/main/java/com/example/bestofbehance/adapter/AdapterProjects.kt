@@ -12,13 +12,19 @@ import com.example.bestofbehance.databinding.ListItemBinding
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.*
-import com.example.bestofbehance.module.FragmentNavigate
+import com.example.bestofbehance.dagger.AllAboutSharedPreferences
+import com.example.bestofbehance.dagger.Injectable
+import com.example.bestofbehance.dagger.module.FragmentNavigate
 import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.extension.MathObject
-import com.example.bestofbehance.module.StorageModule
+import com.example.bestofbehance.dagger.module.StorageModule
+import javax.inject.Inject
 
 
-class AdapterProjects(var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick) : RecyclerView.Adapter<AdapterProjects.ViewHolder>() {
+class AdapterProjects(var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick) : RecyclerView.Adapter<AdapterProjects.ViewHolder>(),Injectable {
+
+    @Inject
+    lateinit var preferences: AllAboutSharedPreferences
 
     lateinit var context: Context
     var position = 0
@@ -34,7 +40,7 @@ class AdapterProjects(var list: MutableList<CardBinding>, val inClick: InClick, 
         this.position = holder.adapterPosition
         var currentViewMode = ""
 
-        currentViewMode = StorageModule.getPreferences(context, context.resources.getString(R.string.current_view_mode_projects), currentViewMode)
+        currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode_projects), currentViewMode)
 
         holder.itemView.avatarView.setOnClickListener {
             FragmentNavigate(context).toProfileFromProjects(list[holder.adapterPosition].username!!)

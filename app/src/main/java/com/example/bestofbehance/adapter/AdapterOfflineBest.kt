@@ -1,6 +1,7 @@
 package com.example.bestofbehance.adapter
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -12,13 +13,19 @@ import com.example.bestofbehance.databinding.ListItemBinding
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.*
-import com.example.bestofbehance.module.FragmentNavigate
+import com.example.bestofbehance.dagger.AllAboutSharedPreferences
+import com.example.bestofbehance.dagger.Injectable
+import com.example.bestofbehance.dagger.module.FragmentNavigate
 import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.extension.MathObject
-import com.example.bestofbehance.module.StorageModule
+import com.example.bestofbehance.dagger.module.StorageModule
+import javax.inject.Inject
 
 
-class AdapterOfflineBest(var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick) : RecyclerView.Adapter<AdapterOfflineBest.ViewHolder>() {
+class AdapterOfflineBest(var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick) : RecyclerView.Adapter<AdapterOfflineBest.ViewHolder>(), Injectable {
+
+    @Inject
+    lateinit var preferences: AllAboutSharedPreferences
 
     lateinit var context: Context
     var position = 0
@@ -34,7 +41,7 @@ class AdapterOfflineBest(var list: MutableList<CardBinding>, val inClick: InClic
         this.position = holder.adapterPosition
         var currentViewMode = ""
 
-        currentViewMode = StorageModule.getPreferences(context, context.resources.getString(R.string.current_view_mode), currentViewMode)
+        currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode), currentViewMode)
 
         holder.itemView.avatarView.setOnClickListener {
             FragmentNavigate(context).toProfileFromBest(list[holder.adapterPosition].username!!)

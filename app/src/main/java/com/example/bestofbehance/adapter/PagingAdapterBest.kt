@@ -18,13 +18,19 @@ import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.classesToSupport.BookmarkClick
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_GRIDVIEW
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_LISTVIEW
+import com.example.bestofbehance.dagger.AllAboutSharedPreferences
+import com.example.bestofbehance.dagger.Injectable
 import com.example.bestofbehance.extension.MathObject
-import com.example.bestofbehance.module.FragmentNavigate
-import com.example.bestofbehance.module.StorageModule
+import com.example.bestofbehance.dagger.module.FragmentNavigate
+import com.example.bestofbehance.dagger.module.StorageModule
+import javax.inject.Inject
 
 
 class PagingAdapterBest(val inClick: InClick, val bookmarkClick: BookmarkClick) :
-    PagedListAdapter<CardBinding, PagingAdapterBest.ViewHolder>(diffCallback) {
+    PagedListAdapter<CardBinding, PagingAdapterBest.ViewHolder>(diffCallback), Injectable {
+
+    @Inject
+    lateinit var preferences: AllAboutSharedPreferences
 
     lateinit var context: Context
     var position = 0
@@ -39,7 +45,7 @@ class PagingAdapterBest(val inClick: InClick, val bookmarkClick: BookmarkClick) 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
         var currentViewMode = ""
-        currentViewMode = StorageModule.getPreferences(context, context.resources.getString(R.string.current_view_mode), currentViewMode)
+        currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode), currentViewMode)
 
 
         holder.itemView.avatarView.setOnClickListener {

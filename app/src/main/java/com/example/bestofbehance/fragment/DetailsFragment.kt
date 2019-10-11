@@ -6,12 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.BR
 import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.MultiList
-import com.example.bestofbehance.module.FragmentNavigate
+import com.example.bestofbehance.dagger.module.FragmentNavigate
 import com.example.bestofbehance.databinding.FragmentDetailsBinding
 import com.example.bestofbehance.adapter.AdapterMulti
 import com.example.bestofbehance.binding.CardBinding
@@ -20,7 +19,6 @@ import com.example.bestofbehance.viewModel.ViewModelForParse
 import com.example.bestofbehance.viewModel.ViewModelFactory
 import kotlinx.android.synthetic.main.details_card.*
 import kotlinx.android.synthetic.main.fragment_details.*
-import java.lang.reflect.InvocationTargetException
 
 class DetailsFragment : Fragment() {
 
