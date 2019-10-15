@@ -11,20 +11,34 @@ import android.view.*
 import kotlinx.android.synthetic.main.fragment_best.*
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.MenuInflater
+import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import com.example.bestofbehance.R
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.module.FragmentNavigate
 import com.example.bestofbehance.adapter.AdapterOfflineBest
 import com.example.bestofbehance.adapter.PagingAdapterBest
 import com.example.bestofbehance.classesToSupport.*
-import com.example.bestofbehance.module.StorageModule
-import com.example.bestofbehance.viewModel.*
+import com.example.bestofbehance.classesToSupport.listeners.BookmarkClick
+import com.example.bestofbehance.classesToSupport.listeners.LayoutClick
+import com.example.bestofbehance.classesToSupport.listeners.UserClick
+import com.example.bestofbehance.dagger.AllAboutSharedPreferences
+import com.example.bestofbehance.dagger.FragmentNavigate
+import com.example.bestofbehance.dagger.Injectable
+import com.example.bestofbehance.viewModel.ViewModelForParse
+import javax.inject.Inject
 
 
+class BestFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener, Injectable{
 
-class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+    @Inject
+    lateinit var preferences: AllAboutSharedPreferences
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var navigate: FragmentNavigate
 
     lateinit var jsonModel: ViewModelForParse
     private var currentViewMode = VIEW_MODE_LISTVIEW
@@ -48,18 +62,20 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        currentViewMode = StorageModule.getPreferences(context!!, resources.getString(R.string.current_view_mode), currentViewMode)
+        currentViewMode = preferences.stringGet(resources.getString(R.string.current_view_mode), currentViewMode)
         when (item.itemId) {
             R.id.menu_switcher -> {
 
                 when(currentViewMode){
                     VIEW_MODE_GRIDVIEW -> {
-                        StorageModule.editorPreferences(context!!, resources.getString(R.string.current_view_mode), VIEW_MODE_LISTVIEW)
+                        preferences.stringEdit(resources.getString(R.string.current_view_mode), VIEW_MODE_LISTVIEW)
+                        adapterBest.viewMode = VIEW_MODE_LISTVIEW
                         recyclerView.layoutManager = LinearLayoutManager(context!!)
                         item.setIcon(R.drawable.ic_tile)
                     }
                     VIEW_MODE_LISTVIEW -> {
-                        StorageModule.editorPreferences(context!!, resources.getString(R.string.current_view_mode), VIEW_MODE_GRIDVIEW)
+                        preferences.stringEdit(resources.getString(R.string.current_view_mode), VIEW_MODE_GRIDVIEW)
+                        adapterBest.viewMode = VIEW_MODE_GRIDVIEW
                         recyclerView.layoutManager = GridLayoutManager(context!!, 2)
                         item.setIcon(R.drawable.ic_list)
                     }
@@ -77,7 +93,7 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
-        currentViewMode = StorageModule.getPreferences(context!!, resources.getString(R.string.current_view_mode), currentViewMode)
+        currentViewMode = preferences.stringGet(resources.getString(R.string.current_view_mode), currentViewMode)
         createRecyclerView()
         swipe.isRefreshing = false
     }
@@ -93,9 +109,9 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         swipe.setOnRefreshListener(this)
-        jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(ViewModelForParse::class.java)
+        jsonModel = ViewModelProviders.of(this, viewModelFactory).get(ViewModelForParse::class.java)
 
-        currentViewMode = StorageModule.getPreferences(context!!, resources.getString(R.string.current_view_mode), currentViewMode)
+        currentViewMode = preferences.stringGet(resources.getString(R.string.current_view_mode), currentViewMode)
         if (recyclerView.adapter == null) {
             when(currentViewMode){
                 VIEW_MODE_LISTVIEW -> {recyclerView.layoutManager = LinearLayoutManager(activity)}
@@ -138,29 +154,40 @@ class Best : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private fun adapterFun(): PagedListAdapter<CardBinding, PagingAdapterBest.ViewHolder> {
 
-        return PagingAdapterBest(object : InClick {
+        return PagingAdapterBest(currentViewMode, object :
+            LayoutClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                FragmentNavigate(context!!).toDetailsFromBest(item)
+                navigate.toDetailsFromBest(item.id.toString())
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
                 jsonModel.bookmarksProjects(jsonModel.itemPagedList?.value?.get(position)!!)
             }
+        }, object: UserClick {
+            override fun onUserClick(username: String) {
+                navigate.toProfileFromBest(username)
+            }
+
         })
     }
 
     private fun adapterOffline(list: MutableList<CardBinding>): AdapterOfflineBest {
 
-        return AdapterOfflineBest(list, object : InClick {
+        return AdapterOfflineBest(currentViewMode, list, object :
+            LayoutClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                FragmentNavigate(context!!).toDetailsFromBest(item)
+                navigate.toDetailsFromBest(item.id.toString())
             }
 
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {
                 jsonModel.bookmarksProjects(list[position])
             }
-        })
+        }, object: UserClick {
+            override fun onUserClick(username: String) {
+                navigate.toProfileFromBest(username)
+            }}
+        )
     }
 
 }

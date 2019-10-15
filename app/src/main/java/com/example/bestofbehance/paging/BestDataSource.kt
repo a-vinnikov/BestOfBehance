@@ -2,12 +2,9 @@ package com.example.bestofbehance.paging
 import android.content.Context
 import androidx.paging.PageKeyedDataSource
 import com.example.bestofbehance.binding.CardBinding
-import com.example.bestofbehance.module.NetworkModule
+import com.example.bestofbehance.dagger.module.NetworkModule
 import com.example.bestofbehance.database.CardDataBase
 import com.example.bestofbehance.gson.GeneralResponse
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import timber.log.Timber
 
 const val FIRST_PAGE = 1
@@ -16,57 +13,43 @@ class BestDataSource(val context: Context) : PageKeyedDataSource<Int, CardBindin
     private val recList: MutableList<CardBinding> = mutableListOf()
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, CardBinding>) {
-        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getGeneral("appreciations", FIRST_PAGE)}.enqueue(object : Callback<GeneralResponse> {
-            override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {}
 
-            override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
-                response.body()?.run {
-                    general(this){result ->
-                        dbFill(result)
-                        val listSorting = result.sortedByDescending { it.published }.toMutableList()
-                        callback.onResult(listSorting, null, FIRST_PAGE + 1)}
-                        Timber.d("Loaded first page")
-                }
+        with(NetworkModule()){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getGeneral("appreciations", FIRST_PAGE)}.run { generalResponse, _ ->
+            generalResponse?.run {
+                general(this){result ->
+                    dbFill(result)
+                    val listSorting = result.sortedByDescending { it.published }.toMutableList()
+                    callback.onResult(listSorting, null, FIRST_PAGE + 1)}
+                Timber.d("Loaded first page")
             }
-        })
+        }
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getGeneral("appreciations", params.key)}
-            .enqueue(object : Callback<GeneralResponse> {
-                override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
-                }
 
-                override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
-                    response.body()?.run {
-                        val key = params.key + 1
-                        response.body()?.run {
-                            general(this){result ->
-                                val abc = result.sortedByDescending { it.published }
-                                callback.onResult(abc, key)}
-                            Timber.d("Loaded next page, ${params.key} page")
-                        }
-                    }
+        with(NetworkModule()){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getGeneral("appreciations", params.key)}.run { generalResponse, _ ->
+            generalResponse?.run {
+                val key = params.key + 1
+                generalResponse.run {
+                    general(this){result ->
+                        val abc = result.sortedByDescending { it.published }
+                        callback.onResult(abc, key)}
+                    Timber.d("Loaded next page, ${params.key} page")
                 }
-            })
+            }
+        }
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, CardBinding>) {
-        with(NetworkModule(context)){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getGeneral("appreciations", params.key)}
-            .enqueue(object : Callback<GeneralResponse> {
-                override fun onFailure(call: Call<GeneralResponse>, t: Throwable) {
-                }
-
-                override fun onResponse(call: Call<GeneralResponse>, response: Response<GeneralResponse>) {
-                    response.body()?.run {
-                        val key = if (params.key > 1) params.key - 1 else null
-                        general(this){result ->
-                            val abc = result.sortedByDescending { it.published }
-                            callback.onResult(abc, key)}
-                        Timber.d("Loaded previous page, ${params.key} page")
-                    }
-                }
-            })
+        with(NetworkModule()){providesBehanceApi(providesRetrofit(providesOkHttpClient().build())).getGeneral("appreciations", params.key)}.run { generalResponse, _ ->
+            generalResponse?.run {
+                val key = if (params.key > 1) params.key - 1 else null
+                general(this){result ->
+                    val abc = result.sortedByDescending { it.published }
+                    callback.onResult(abc, key)}
+                Timber.d("Loaded previous page, ${params.key} page")
+            }
+        }
     }
 
     fun general(response: GeneralResponse, myCallBack: (result: MutableList<CardBinding>) -> Unit){

@@ -1,7 +1,7 @@
-package com.example.bestofbehance.classesToSupport
+package com.example.bestofbehance.classesToSupport.listeners
 
 import com.example.bestofbehance.binding.CardBinding
 
-interface InClick{
+interface LayoutClick{
     fun onItemClick(item: CardBinding, position: Int)
 }

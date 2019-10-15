@@ -10,18 +10,22 @@ import kotlinx.android.synthetic.main.list_item.view.*
 import com.example.bestofbehance.binding.CardBinding
 import com.example.bestofbehance.databinding.ListItemBinding
 import com.example.bestofbehance.BR
-import com.example.bestofbehance.R
 import com.example.bestofbehance.classesToSupport.*
-import com.example.bestofbehance.module.FragmentNavigate
+import com.example.bestofbehance.classesToSupport.listeners.BookmarkClick
+import com.example.bestofbehance.classesToSupport.listeners.LayoutClick
+import com.example.bestofbehance.classesToSupport.listeners.UserClick
 import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.extension.MathObject
-import com.example.bestofbehance.module.StorageModule
 
 
-class AdapterOfflineBest(var list: MutableList<CardBinding>, val inClick: InClick, val bookmarkClick: BookmarkClick) : RecyclerView.Adapter<AdapterOfflineBest.ViewHolder>() {
+class AdapterOfflineBest(private val currentViewMode: String, var list: MutableList<CardBinding>, val layoutClick: LayoutClick, val bookmarkClick: BookmarkClick, val avatarClick: UserClick) : RecyclerView.Adapter<AdapterOfflineBest.ViewHolder>() {
+
+    /*@Inject
+    lateinit var preferences: AllAboutSharedPreferences*/
 
     lateinit var context: Context
     var position = 0
+    var viewMode = currentViewMode
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -32,12 +36,11 @@ class AdapterOfflineBest(var list: MutableList<CardBinding>, val inClick: InClic
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
-        var currentViewMode = ""
 
-        currentViewMode = StorageModule.getPreferences(context, context.resources.getString(R.string.current_view_mode), currentViewMode)
+        //currentViewMode = preferences.stringGet(activity.resources.getString(R.string.current_view_mode), currentViewMode)
 
         holder.itemView.avatarView.setOnClickListener {
-            FragmentNavigate(context).toProfileFromBest(list[holder.adapterPosition].username!!)
+            avatarClick.onUserClick(list[position].username!!)
         }
 
         holder.itemView.bookmark.isChecked = ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(list[position].id!!) != null
@@ -45,12 +48,12 @@ class AdapterOfflineBest(var list: MutableList<CardBinding>, val inClick: InClic
         holder.itemView.bookmark.setOnClickListener { bookmarkClick.setPosition(position) }
 
         holder.itemView.constLayout.setOnClickListener {
-            inClick.onItemClick(list[holder.adapterPosition], holder.adapterPosition)
+            layoutClick.onItemClick(list[holder.adapterPosition], holder.adapterPosition)
         }
 
         var copyList = list[holder.adapterPosition].copy()
 
-        when (currentViewMode) {
+        when (viewMode) {
             VIEW_MODE_GRIDVIEW -> {
                 holder.itemView.avatarView.visibility = GONE
 

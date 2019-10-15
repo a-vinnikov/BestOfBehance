@@ -6,3 +6,5 @@ const val BASE_URL = "https://api.behance.net/v2/"
 const val VIEW_MODE_LISTVIEW = "list"
 const val VIEW_MODE_GRIDVIEW = "tile"
 const val PAGING_PAGE_SIZE = 10
+const val SCHEME = "https"
+const val HOST = "api.behance.net"

@@ -7,8 +7,8 @@ import android.view.*
 import android.view.View.VISIBLE
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.navArgs
 import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.GridLayoutManager
@@ -21,16 +21,29 @@ import com.example.bestofbehance.classesToSupport.*
 import com.example.bestofbehance.databinding.FragmentProfileBinding
 import com.example.bestofbehance.adapter.PagingAdapterProfile
 import com.example.bestofbehance.binding.mapper.MapperForPeopleBinding
+import com.example.bestofbehance.classesToSupport.listeners.BookmarkClick
+import com.example.bestofbehance.classesToSupport.listeners.LayoutClick
+import com.example.bestofbehance.dagger.AllAboutSharedPreferences
+import com.example.bestofbehance.dagger.FragmentNavigate
+import com.example.bestofbehance.dagger.Injectable
 import com.example.bestofbehance.extension.WebOpening
-import com.example.bestofbehance.module.FragmentNavigate
-import com.example.bestofbehance.module.StorageModule
 import com.example.bestofbehance.viewModel.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.profile_card.*
+import javax.inject.Inject
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment(), Injectable {
 
-    private val args: ProfileFragmentArgs by navArgs()
+    @Inject
+    lateinit var preferences: AllAboutSharedPreferences
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var navigate: FragmentNavigate
+
+    private var username: String = ""
     lateinit var jsonModel: ViewModelForParse
 
     private var currentViewMode = VIEW_MODE_LISTVIEW
@@ -41,7 +54,7 @@ class ProfileFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.two_buttons_toolbar, menu)
 
-        if (jsonModel.getByUsernameFromPeopleDB(args.profileBindingArg) == null) {
+        if (jsonModel.getByUsernameFromPeopleDB(username) == null) {
             menu.findItem(R.id.menu_bookmark)
                 ?.setIcon(R.drawable.ic_bookmarks_normal)
         } else {
@@ -60,12 +73,12 @@ class ProfileFragment : Fragment() {
             R.id.menu_bookmark -> {
                 when {
                     nameProfile.text == null -> item.isCheckable = false
-                    jsonModel.getByUsernameFromPeopleDB(args.profileBindingArg) == null -> {
+                    jsonModel.getByUsernameFromPeopleDB(username) == null -> {
 
-                        jsonModel.setUser(args.profileBindingArg)
+                        jsonModel.setUser(username)
                         val observerGSON = Observer<MutableList<ProfileBinding>> { list ->
                             jsonModel.insertInPeopleDB(
-                                MapperForPeopleBinding.from(list[0], args.profileBindingArg)
+                                MapperForPeopleBinding.from(list[0], username)
                             )
                         }
 
@@ -73,7 +86,7 @@ class ProfileFragment : Fragment() {
                         item.setIcon(R.drawable.ic_bookmarks_pressed)
                     }
                     else -> {
-                        jsonModel.deleteByUsernameFromPeopleDB(args.profileBindingArg)
+                        jsonModel.deleteByUsernameFromPeopleDB(username)
                         item.setIcon(R.drawable.ic_bookmarks_normal)
                     }
                 }
@@ -110,9 +123,11 @@ class ProfileFragment : Fragment() {
         val fragmentDetailsView: View = binding.root
 
         jsonModel =
-            ViewModelProviders.of(this, ViewModelFactory(context!!)).get(ViewModelForParse::class.java)
+            ViewModelProviders.of(this, viewModelFactory).get(ViewModelForParse::class.java)
 
-        jsonModel.setUser(args.profileBindingArg)
+        username = arguments?.getString("username")!!
+
+        jsonModel.setUser(username)
 
         val observerGSON = Observer<MutableList<ProfileBinding>> { list ->
 
@@ -207,8 +222,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        currentViewMode = StorageModule.getPreferences(
-            context!!, resources.getString(R.string.current_view_mode_profile), currentViewMode
+        currentViewMode = preferences.stringGet(resources.getString(R.string.current_view_mode_profile), currentViewMode
         )
 
         when (currentViewMode) {
@@ -219,19 +233,13 @@ class ProfileFragment : Fragment() {
         viewModeProfile.setOnClickListener {
             when (viewModeProfile.isChecked) {
                 false -> {
-                    StorageModule.editorPreferences(
-                        context!!,
-                        resources.getString(R.string.current_view_mode_profile),
-                        VIEW_MODE_LISTVIEW
-                    )
+                    preferences.stringEdit(resources.getString(R.string.current_view_mode_profile), VIEW_MODE_LISTVIEW)
+                    adapterProfile.viewMode = VIEW_MODE_LISTVIEW
                     recyclerViewProfile.layoutManager = LinearLayoutManager(activity)
                 }
                 true -> {
-                    StorageModule.editorPreferences(
-                        context!!,
-                        resources.getString(R.string.current_view_mode_profile),
-                        VIEW_MODE_GRIDVIEW
-                    )
+                    preferences.stringEdit(resources.getString(R.string.current_view_mode_profile), VIEW_MODE_GRIDVIEW)
+                    adapterProfile.viewMode = VIEW_MODE_GRIDVIEW
                     recyclerViewProfile.layoutManager = GridLayoutManager(activity, 2)
                 }
             }
@@ -269,7 +277,7 @@ class ProfileFragment : Fragment() {
 
     private fun createRecyclerView() {
         if (jsonModel.profilePagedList?.value == null) {
-            jsonModel.setUserProjects(args.profileBindingArg)
+            jsonModel.setUserProjects(username)
         }
         adapterProfile = adapterFun() as PagingAdapterProfile
         recyclerViewProfile.adapter = adapterProfile
@@ -282,9 +290,10 @@ class ProfileFragment : Fragment() {
 
     private fun adapterFun(): PagedListAdapter<CardBinding, PagingAdapterProfile.ViewHolder> {
 
-        return PagingAdapterProfile(object : InClick {
+        return PagingAdapterProfile(currentViewMode, object :
+            LayoutClick {
             override fun onItemClick(item: CardBinding, position: Int) {
-                FragmentNavigate(context!!).toDetailsFromProfile(item)
+                navigate.toDetailsFromProfile(item.id.toString())
             }
         }, object : BookmarkClick {
             override fun setPosition(position: Int) {

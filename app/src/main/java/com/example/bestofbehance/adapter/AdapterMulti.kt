@@ -12,14 +12,18 @@ import com.example.bestofbehance.binding.detailsBinding.ImageBinding
 import com.example.bestofbehance.binding.detailsBinding.TextBinding
 import com.example.bestofbehance.database.PeopleDataBase
 import com.example.bestofbehance.databinding.*
-import com.example.bestofbehance.classesToSupport.BookmarkClick
+import com.example.bestofbehance.classesToSupport.listeners.BookmarkClick
 import com.example.bestofbehance.classesToSupport.MultiList
-import com.example.bestofbehance.module.FragmentNavigate
+import com.example.bestofbehance.classesToSupport.listeners.UserClick
 import kotlinx.android.synthetic.main.comment_item.view.*
 import kotlinx.android.synthetic.main.people_item.view.*
 
 
-class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class AdapterMulti(
+    var list: MutableList<MultiList>,
+    val bookmark: BookmarkClick?,
+    val userClick: UserClick
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     lateinit var context: Context
 
@@ -62,8 +66,21 @@ class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick
             is ImageViewHolder -> holder.onBindImage((list[position] as MultiList.ImageList).multiImage)
             is TextViewHolder -> holder.onBindText((list[position] as MultiList.TextList).multiText)
             is CountViewHolder -> holder.onBindCount((list[position] as MultiList.CountList).multiCount)
-            is CommentsViewHolder -> holder.onBindComments((list[position] as MultiList.CommentsList).multiComment, context)
-            is PeopleViewHolder -> holder.onBindPeople((list[position] as MultiList.PeopleList).multiPeople, context, bookmark!!)
+            is CommentsViewHolder -> {
+                holder.onBindComments(
+                    (list[position] as MultiList.CommentsList).multiComment)
+                holder.itemView.commentAvatarView.setOnClickListener { userClick.onUserClick((list[position] as MultiList.CommentsList).multiComment.commentatorUsername!!) }
+            }
+            is PeopleViewHolder -> {
+                holder.onBindPeople(
+                    (list[position] as MultiList.PeopleList).multiPeople)
+                holder.itemView.peopleLayout.setOnClickListener {
+                    userClick.onUserClick((list[position] as MultiList.PeopleList).multiPeople.username!!)
+                    holder.itemView.bookmarkPeople.setOnClickListener { bookmark?.setPosition(position) }
+                    holder.itemView.bookmarkPeople.isChecked =
+                        PeopleDataBase.getDatabase(context)?.getPeopleDao()?.getByUsername((list[position] as MultiList.PeopleList).multiPeople.username!!) != null
+                }
+            }
             else -> throw IllegalArgumentException()
         }
 
@@ -79,7 +96,8 @@ class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick
             else -> throw IllegalArgumentException()
         }
 
-    class ImageViewHolder(private val binding: ListImageBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ImageViewHolder(private val binding: ListImageBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun onBindImage(image: ImageBinding) {
             binding.cardViewImage = image
@@ -87,7 +105,8 @@ class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick
         }
     }
 
-    class TextViewHolder(private val binding: ListTextBinding) : RecyclerView.ViewHolder(binding.root) {
+    class TextViewHolder(private val binding: ListTextBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun onBindText(text: TextBinding) {
             binding.cardViewText = text
@@ -95,7 +114,8 @@ class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick
         }
     }
 
-    class CountViewHolder(private val binding: CountItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    class CountViewHolder(private val binding: CountItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun onBindCount(count: CountBinding) {
             binding.countsView = count
@@ -103,28 +123,22 @@ class AdapterMulti(var list: MutableList<MultiList>, val bookmark: BookmarkClick
         }
     }
 
-    class CommentsViewHolder(private val binding: CommentItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    class CommentsViewHolder(private val binding: CommentItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        fun onBindComments(comment: CommentsBinding, context: Context) {
+        fun onBindComments(comment: CommentsBinding) {
             binding.commentsView = comment
             binding.notifyPropertyChanged(BR._all)
-
-            itemView.commentAvatarView.setOnClickListener { FragmentNavigate(
-                context
-            ).toProfileFromDetails(comment.commentatorUsername!!) }
         }
 
     }
 
-    class PeopleViewHolder(private val binding: PeopleItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    class PeopleViewHolder(private val binding: PeopleItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        fun onBindPeople(people: PeopleBinding, context: Context, bookmark: BookmarkClick) {
+        fun onBindPeople(people: PeopleBinding) {
             binding.peopleView = people
             binding.notifyPropertyChanged(BR._all)
-
-            itemView.bookmarkPeople.isChecked = PeopleDataBase.getDatabase(context)?.getPeopleDao()?.getByUsername(people.username!!) != null
-                itemView.peopleLayout.setOnClickListener { FragmentNavigate(context).toProfileFromPeople(people.username!!) }
-                itemView.bookmarkPeople.setOnClickListener { bookmark.setPosition(adapterPosition) }
         }
 
     }

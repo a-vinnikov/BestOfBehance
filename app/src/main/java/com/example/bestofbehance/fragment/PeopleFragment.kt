@@ -7,20 +7,30 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bestofbehance.R
-import com.example.bestofbehance.classesToSupport.BookmarkClick
+import com.example.bestofbehance.classesToSupport.listeners.BookmarkClick
 import com.example.bestofbehance.classesToSupport.MultiList
 import com.example.bestofbehance.adapter.AdapterMulti
+import com.example.bestofbehance.classesToSupport.listeners.UserClick
+import com.example.bestofbehance.dagger.FragmentNavigate
+import com.example.bestofbehance.dagger.Injectable
 import com.example.bestofbehance.extension.Converter
 import com.example.bestofbehance.viewModel.ViewModelForParse
-import com.example.bestofbehance.viewModel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_people.*
+import javax.inject.Inject
 
 
-class PeopleFragment : Fragment() {
+class PeopleFragment : Fragment(), Injectable {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var navigate: FragmentNavigate
 
     lateinit var jsonModel: ViewModelForParse
     lateinit var adapterPeople: AdapterMulti
@@ -52,7 +62,7 @@ class PeopleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        jsonModel = ViewModelProviders.of(this, ViewModelFactory(context!!)).get(ViewModelForParse::class.java)
+        jsonModel = ViewModelProviders.of(this, viewModelFactory).get(ViewModelForParse::class.java)
 
         if (recyclerViewPeople.adapter == null) {
             createRecyclerView()
@@ -76,7 +86,10 @@ class PeopleFragment : Fragment() {
                              }
                          }
                      }
-                 })
+                 }, object: UserClick {
+                     override fun onUserClick(username: String) {
+                         navigate.toProfileFromPeople(username)
+                     }})
 
                 recyclerViewPeople.adapter = adapterPeople
                 recyclerViewPeople.layoutManager = LinearLayoutManager(activity)

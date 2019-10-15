@@ -17,13 +17,14 @@ import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.paging.ProfileDataSource
 import com.example.bestofbehance.paging.BestDataSource
 import com.example.bestofbehance.paging.DataSourceFactory
+import javax.inject.Inject
 
 
-
-class ViewModelForParse(val context: Context) : AndroidViewModel(Application()) {
+class ViewModelForParse @Inject constructor(val context: Context) : AndroidViewModel(Application()) {
 
     val listForContents: MutableLiveData<MutableList<MultiList>> by lazy { MutableLiveData<MutableList<MultiList>>() }
     val listForComments: MutableLiveData<MutableList<MultiList>> by lazy { MutableLiveData<MutableList<MultiList>>() }
+    val listForProject: MutableLiveData<MutableList<CardBinding>> by lazy { MutableLiveData<MutableList<CardBinding>>() }
     val listForUser: MutableLiveData<MutableList<ProfileBinding>> by lazy { MutableLiveData<MutableList<ProfileBinding>>() }
     val listForLinks: MutableLiveData<MutableMap<String, String?>> by lazy { MutableLiveData<MutableMap<String, String?>>() }
     val liveDataMulti = MediatorLiveData<MutableList<MultiList>>()
@@ -44,6 +45,11 @@ class ViewModelForParse(val context: Context) : AndroidViewModel(Application()) 
     private fun setContent(id: Int): MutableLiveData<MutableList<MultiList>> {
         ParseForViewModel(context).fetchProject(id) { result -> listForContents.postValue(result) }
         return listForContents
+    }
+
+    fun setSingleProject(id: Int): MutableLiveData<MutableList<CardBinding>> {
+        ParseForViewModel(context).fetchSingleProject(id) { result -> listForProject.postValue(result) }
+        return listForProject
     }
 
     private fun setComments(id: Int): MutableLiveData<MutableList<MultiList>> {
@@ -84,12 +90,12 @@ class ViewModelForParse(val context: Context) : AndroidViewModel(Application()) 
             catch (e: IllegalArgumentException){}
     }
 
-    fun bookmarksToolbar(binding: CardBinding, item: MenuItem){
-        if (ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(binding.id!!) == null) {
-            ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.insert(MapperForProjectsBinding.from(binding))
+    fun bookmarksToolbar(binding: CardBinding?, item: MenuItem){
+        if (ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.getById(binding?.id!!) == null) {
+            ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.insert(MapperForProjectsBinding.from(binding!!))
             item.setIcon(R.drawable.ic_bookmarks_pressed)
         } else {
-            ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.deleteById(binding.id!!)
+            ProjectsDataBase.getDatabase(context)?.getProjectsDao()?.deleteById(binding?.id!!)
             item.setIcon(R.drawable.ic_bookmarks_normal)
         }
     }
