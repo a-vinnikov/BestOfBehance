@@ -3,7 +3,7 @@ package com.example.bestofbehance.dagger
 import androidx.navigation.NavController
 import com.example.bestofbehance.fragment.*
 
-class FragmentNavigate(private val nav: NavController){
+class FragmentNavigate(private val nav: NavController) {
 
     fun toDetailsFromBest(item: String) = nav.navigate(BestFragmentDirections.actionBestToDetails(item))
 

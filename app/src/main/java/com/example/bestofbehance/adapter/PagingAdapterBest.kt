@@ -19,7 +19,6 @@ import com.example.bestofbehance.classesToSupport.VIEW_MODE_GRIDVIEW
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_LISTVIEW
 import com.example.bestofbehance.classesToSupport.listeners.UserClick
 import com.example.bestofbehance.extension.MathObject
-import com.example.bestofbehance.dagger.module.NavigateModule
 
 
 class PagingAdapterBest(private val currentViewMode: String, val layoutClick: LayoutClick, val bookmarkClick: BookmarkClick, val userClick: UserClick) :
@@ -38,7 +37,7 @@ class PagingAdapterBest(private val currentViewMode: String, val layoutClick: La
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
-        //currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode), currentViewMode)
+        //currentViewMode = preferences.stringGet(activity.resources.getString(R.string.current_view_mode), currentViewMode)
 
 
         holder.itemView.avatarView.setOnClickListener {

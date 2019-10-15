@@ -11,7 +11,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class NavigateModule{
+class MainModule{
 
     @Provides
     fun provideController(context: Context) = Navigation.findNavController(context as Activity, R.id.fr)

@@ -7,7 +7,6 @@ import com.example.bestofbehance.dagger.module.*
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
-import dagger.android.AndroidInjector
 import javax.inject.Singleton
 
 @Singleton
@@ -15,8 +14,8 @@ import javax.inject.Singleton
     modules = [
         AndroidInjectionModule::class,
         StorageModule::class,
-        NavigateModule::class,
         CommonModule::class,
+        MainModule::class,
         ConfiguratorModule::class,
         NetworkModule::class,
         ActivityBuilder::class])

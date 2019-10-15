@@ -16,9 +16,7 @@ import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.classesToSupport.listeners.BookmarkClick
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_GRIDVIEW
 import com.example.bestofbehance.classesToSupport.VIEW_MODE_LISTVIEW
-import com.example.bestofbehance.classesToSupport.listeners.UserClick
 import com.example.bestofbehance.extension.MathObject
-import com.example.bestofbehance.dagger.module.NavigateModule
 
 
 class PagingAdapterProfile(private val currentViewMode: String, val inClick: LayoutClick, val bookmarkClick: BookmarkClick) :
@@ -37,7 +35,7 @@ class PagingAdapterProfile(private val currentViewMode: String, val inClick: Lay
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
-        //currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode_profile), currentViewMode)
+        //currentViewMode = preferences.stringGet(activity.resources.getString(R.string.current_view_mode_profile), currentViewMode)
 
         /*holder.itemView.avatarView.setOnClickListener {
             userClick.onUserClick(getItem(holder.adapterPosition)?.username!!)

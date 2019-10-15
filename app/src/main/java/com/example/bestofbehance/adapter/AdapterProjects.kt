@@ -14,7 +14,6 @@ import com.example.bestofbehance.classesToSupport.*
 import com.example.bestofbehance.classesToSupport.listeners.BookmarkClick
 import com.example.bestofbehance.classesToSupport.listeners.LayoutClick
 import com.example.bestofbehance.classesToSupport.listeners.UserClick
-import com.example.bestofbehance.dagger.module.NavigateModule
 import com.example.bestofbehance.database.ProjectsDataBase
 import com.example.bestofbehance.extension.MathObject
 
@@ -35,7 +34,7 @@ class AdapterProjects(private val currentViewMode: String, var list: MutableList
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.position = holder.adapterPosition
 
-        //currentViewMode = preferences.stringGet(context.resources.getString(R.string.current_view_mode_projects), currentViewMode)
+        //currentViewMode = preferences.stringGet(activity.resources.getString(R.string.current_view_mode_projects), currentViewMode)
 
         holder.itemView.avatarView.setOnClickListener {
             userClick.onUserClick(list[position].username!!)
