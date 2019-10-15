@@ -12,6 +12,12 @@ import dagger.android.ContributesAndroidInjector
 abstract class ActivityBuilder {
 
     @PerActivity
-    @ContributesAndroidInjector(modules = [FragmentModule::class, ViewModelModule::class])
+    @ContributesAndroidInjector(
+        modules = [
+            MainModule::class,
+            FragmentModule::class,
+            ViewModelModule::class
+        ]
+    )
     abstract fun bindMainActivity(): MainActivity
 }
